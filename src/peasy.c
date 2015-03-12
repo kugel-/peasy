@@ -18,6 +18,39 @@
  *      51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
-#include "geanyplugin.h"	/* plugin API, always comes first */
+/* plugin API, always comes first */
+#include "geanyplugin.h"
 
 #include <libpeas/peas-engine.h>
+
+/* These items are set by Geany before plugin_init() is called. */
+GeanyPlugin		*geany_plugin;
+GeanyData		*geany_data;
+GeanyFunctions	*geany_functions;
+
+/* Check that the running Geany supports the plugin API version used below, and check
+ * for binary compatibility. */
+PLUGIN_VERSION_CHECK(224)
+
+/* All plugins must set name, description, version and author. */
+PLUGIN_SET_INFO(
+	_("Peasy"),
+	_("Provides libpeas-based plugins"),
+	"0.1" ,
+	_("Thomas Martitz <kugel@rockbox.org>")
+)
+
+/* Called by Geany to initialize the plugin.
+ * Note: data is the same as geany_data. */
+void plugin_init(GeanyData *data)
+{
+	printf("plugin_init\n");
+}
+
+/* Called by Geany before unloading the plugin.
+ * Here any UI changes should be removed, memory freed and any other finalization done.
+ * Be sure to leave Geany as it was before plugin_init(). */
+void plugin_cleanup(void)
+{
+	printf("plugin_exit\n");
+}
