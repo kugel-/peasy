@@ -1,0 +1,27 @@
+*.o
+Makefile
+Makefile.in
+configure
+
+#-----------------------------------------------------------------------
+# / (root)
+#-----------------------------------------------------------------------
+/aclocal.m4
+/autom4te.cache
+/build-aux/
+/build-stamp
+/config.guess
+/config.h
+/config.h.in
+/config.h.in~
+/config.log
+/config.status
+/config.sub
+/configure
+/m4/lt*.m4
+/m4/intltool.m4
+/m4/libtool.m4
+/stamp-h
+/stamp-h1
+/stamp-h.in
+
