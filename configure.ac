@@ -19,5 +19,16 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 
+PKG_CHECK_MODULES([PEAS], [libpeas-1.0 >= 1.12.0])
+AC_SUBST([PEAS_CFLAGS])
+AC_SUBST([PEAS_LIBS])
+
+PKG_CHECK_MODULES([GEANY], [geany >= 1.24])
+AC_SUBST([GEANY_CFLAGS])
+AC_SUBST([GEANY_LIBS])
+
+geany_prefix=`$PKG_CONFIG --variable prefix geany`
+AC_SUBST([GEANY_PLUGINDIR],[$geany_prefix/lib/geany])
+
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
