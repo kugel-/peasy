@@ -18,6 +18,10 @@
  *      51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
  */
 
+#ifdef HAVE_CONFIG_H
+#include "config.h"
+#endif
+
 /* plugin API, always comes first */
 #include "geanyplugin.h"
 
@@ -27,6 +31,8 @@
 GeanyPlugin		*geany_plugin;
 GeanyData		*geany_data;
 GeanyFunctions	*geany_functions;
+
+static PeasEngine *peas;
 
 /* Check that the running Geany supports the plugin API version used below, and check
  * for binary compatibility. */
@@ -40,11 +46,38 @@ PLUGIN_SET_INFO(
 	_("Thomas Martitz <kugel@rockbox.org>")
 )
 
+gboolean peasy_probe(const gchar *filename, gpointer proxy_data)
+{
+	printf("%s() %s\n", __func__, filename);
+	return FALSE;
+}
+
+gboolean peasy_load(GeanyPlugin *plugin, const gchar *filename, gpointer proxy_data, PluginHooks *hooks, gpointer *plugin_data)
+{
+	printf("%s() %s\n", __func__, filename);
+	return FALSE;
+}
+void peasy_unload(GeanyPlugin *plugin, gpointer proxy_data, gpointer plugin_data)
+{
+	printf("%s()\n", __func__);
+}
+
 /* Called by Geany to initialize the plugin.
  * Note: data is the same as geany_data. */
 void plugin_init(GeanyData *data)
 {
-	printf("plugin_init\n");
+	const gchar *extensions[] = { "plugin", NULL };
+	PluxyHooks hooks = {
+		.probe  = peasy_probe,
+		.load   = peasy_load,
+		.unload = peasy_unload,
+	};
+	plugin_register_proxy(geany_plugin, extensions, &hooks, sizeof(hooks), NULL);
+
+	peas = peas_engine_get_default();
+	peas_engine_add_search_path(peas, GEANY_PLUGINDIR, data->app->datadir);
+
+	plugin_module_make_resident(geany_plugin);
 }
 
 /* Called by Geany before unloading the plugin.

@@ -28,7 +28,9 @@ AC_SUBST([GEANY_CFLAGS])
 AC_SUBST([GEANY_LIBS])
 
 geany_prefix=`$PKG_CONFIG --variable prefix geany`
-AC_SUBST([GEANY_PLUGINDIR],[$geany_prefix/lib/geany])
+GEANY_PLUGINDIR="$geany_prefix/lib/geany"
+AC_SUBST([GEANY_PLUGINDIR])
+AC_DEFINE_UNQUOTED([GEANY_PLUGINDIR],["$GEANY_PLUGINDIR"],[Path to Geany plugin])
 
 AC_CONFIG_FILES([Makefile src/Makefile])
 AC_OUTPUT
