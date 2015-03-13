@@ -1,0 +1,10 @@
+[Plugin]
+Version=1.25
+Authors=kugel
+Copyright=None
+Module=peasytest
+Website=http://www.geany.org/Support/Plugins
+X-Geany-ABI=70
+X-Geany-API=224
+Name=Peasy Tester
+Description=Tests whether peasy actually works
