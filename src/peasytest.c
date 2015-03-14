@@ -39,34 +39,46 @@ void peas_register_types(PeasObjectModule *mod)
 	printf("Success\n");
 }
 
+enum
+{
+  PROP_0,
+
+  PROP_OBJECT,
+
+  N_PROPERTIES
+};
+
 
 /*
  * NOTE: In a real plugin plugins would inherit from a GeanyPluginXXX class instead
  * of generic PeasActivatable
  **/
 
+G_MODULE_EXPORT
+GType peasy_test_get_type(void);
 
 static void
 peasy_test_finalize (GObject *object);
 
 typedef struct _PeasyTestPrivate
 {
+	int dummy;
 } PeasyTestPrivate;
 
 
 static void peasy_test_activate(PeasActivatable *act)
 {
-	printf("%s()\n");
+	printf("%s()\n", __func__);
 }
 
 static void peasy_test_deactivate(PeasActivatable *act)
 {
-	printf("%s()\n");
+	printf("%s()\n", __func__);
 }
 
 static void peasy_test_update_state(PeasActivatable *act)
 {
-	printf("%s()\n");
+	printf("%s()\n", __func__);
 }
 
 static void peasy_test_iface_init(PeasActivatableInterface *iface)
@@ -87,9 +99,55 @@ peasy_test_finalize (GObject *object)
 }
 
 static void
+peasy_test_set_property(GObject      *object,
+                        guint         prop_id,
+                        const GValue *value,
+                        GParamSpec   *pspec)
+{
+	PeasyTest *baz = PEASY_TEST(object);
+
+	switch (prop_id)
+	{
+	case PROP_OBJECT:
+		/* stub */
+		break;
+
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
+peasy_test_get_property(GObject    *object,
+                        guint       prop_id,
+                        GValue     *value,
+                        GParamSpec *pspec)
+{
+	PeasyTest *baz = PEASY_TEST(object);
+
+	switch (prop_id)
+	{
+	case PROP_OBJECT:
+		/* stub */
+		g_value_set_object(value, NULL);
+		break;
+
+	default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+		break;
+	}
+}
+
+static void
 peasy_test_class_init (PeasyTestClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+	object_class->set_property = peasy_test_set_property;
+	object_class->get_property = peasy_test_get_property;
+
+	g_object_class_override_property (object_class, PROP_OBJECT, "object");
 
 	object_class->finalize = peasy_test_finalize;
 }

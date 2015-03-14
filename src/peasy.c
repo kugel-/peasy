@@ -27,6 +27,7 @@
 
 #include <libpeas/peas-engine.h>
 #include <libpeas/peas-activatable.h>
+#include <libpeas/peas-extension-base.h>
 
 /* These items are set by Geany before plugin_init() is called. */
 GeanyPlugin		*geany_plugin;
@@ -66,7 +67,8 @@ gboolean peasy_probe(const gchar *filename, gpointer proxy_data)
 
 void peas_proxy_set_info(PluginInfo *info, gpointer pdata)
 {
-	PeasPluginInfo *info_ = (PeasPluginInfo *) pdata;
+	PeasPluginInfo *info_;
+	g_object_get(PEAS_ACTIVATABLE(pdata), "plugin-info", &info_, NULL);
 	info->name = peas_plugin_info_get_name(info_);
 	info->description = peas_plugin_info_get_description(info_);
 	info->version = peas_plugin_info_get_version(info_);
@@ -80,7 +82,8 @@ gint peas_proxy_version_check(gint abi_ver, gpointer pdata)
 
 void peas_proxy_init(GeanyData *data, gpointer pdata)
 {
-	printf("Hello Peas!\n");
+	printf("Hello Peas!\n"); 
+	peas_activatable_activate(PEAS_ACTIVATABLE(pdata));
 }
 
 GtkWidget* peas_proxy_configure(GtkDialog *dialog, gpointer pdata)
@@ -98,6 +101,7 @@ void peas_proxy_help(gpointer pdata)
 void peas_proxy_cleanup(gpointer pdata)
 {
 	printf("Bye Peas!\n");
+	peas_activatable_deactivate(PEAS_ACTIVATABLE(pdata));
 }
 
 gboolean peasy_load(GeanyPlugin *plugin, const gchar *filename, gpointer proxy_data, PluginHooks *hooks, gpointer *plugin_data)
@@ -107,28 +111,43 @@ gboolean peasy_load(GeanyPlugin *plugin, const gchar *filename, gpointer proxy_d
 	gchar *modname = get_mod_name(filename);
 	gboolean loaded;
 	PeasPluginInfo *info = peas_engine_get_plugin_info(peas, modname);
+	PeasExtension *obj;
 	g_free(modname);
+
+	if (!modname)
+		printf("error\n");
 
 	loaded = peas_engine_load_plugin(peas, info);
 	if (!loaded)
 		return FALSE;
 
-	*plugin_data = info;
+	if (!peas_engine_provides_extension(peas, info, PEAS_TYPE_ACTIVATABLE))
+		return FALSE;
 
 	hooks->version_check = peas_proxy_version_check;
 	hooks->set_info = peas_proxy_set_info;
 	hooks->init = peas_proxy_init;
 	hooks->cleanup = peas_proxy_cleanup;
 
-	printf("%s() before peas_engine_provides_extension\n", __func__, filename);
-	return peas_engine_provides_extension(peas, info, PEAS_TYPE_ACTIVATABLE);
-	/* TODO: Create instance, performa ABI check */
+	obj = peas_engine_create_extension(peas, info, PEAS_TYPE_ACTIVATABLE, NULL);
+	if (!info)
+		printf("error\n");
+	g_object_get(obj, "plugin-info", &info, NULL);
+	if (!info)
+		printf("error 2\n");
+
+	/* TODO: perform ABI check */
+
+	*plugin_data = obj;
+	return TRUE;
 }
 void peasy_unload(GeanyPlugin *plugin, gpointer proxy_data, gpointer plugin_data)
 {
 	printf("%s()\n", __func__);
 	PeasEngine *peas = (PeasEngine *) proxy_data;
-	PeasPluginInfo *info = (PeasPluginInfo *) plugin_data;
+	PeasExtension *obj = PEAS_EXTENSION(plugin_data);
+	PeasPluginInfo *info;
+	g_object_get(obj, "plugin-info", &info, NULL);
 	peas_engine_unload_plugin(peas, info);
 }
 
@@ -144,6 +163,8 @@ void plugin_init(GeanyData *data)
 	};
 	PeasEngine *peas = peas_engine_get_default();
 	plugin_register_proxy(geany_plugin, extensions, &hooks, sizeof(hooks), peas);
+
+	peas_engine_enable_loader(peas, "python");
 
 	peas_engine_add_search_path(peas, GEANY_PLUGINDIR, data->app->datadir);
 
