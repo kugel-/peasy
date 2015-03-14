@@ -13,4 +13,4 @@ libpeasytest_la_CFLAGS  = @PEAS_CFLAGS@ @GEANY_CFLAGS@
 libpeasytest_la_LDFLAGS = -module -avoid-version -no-undefined
 libpeasytest_la_LIBADD  = @PEAS_LIBS@ @GEANY_LIBS@
 
-nobase_dist_plugin_DATA = peasytest.plugin
+nobase_dist_plugin_DATA = peasytest.plugin peasypytest.py peasypytest.plugin

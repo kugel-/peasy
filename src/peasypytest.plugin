@@ -1,0 +1,11 @@
+[Plugin]
+Version=1.25
+Authors=kugel
+Copyright=None
+Module=peasypytest
+Website=http://www.geany.org/Support/Plugins
+Loader=python
+X-Geany-ABI=70
+X-Geany-API=224
+Name=Peasy Python Tester
+Description=Tests whether peasy actually works with python
