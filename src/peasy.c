@@ -43,11 +43,12 @@ get_mod_name(const gchar *filename)
 }
 
 
-static void
+static gboolean
 peas_proxy_init(GeanyPlugin *plugin, gpointer pdata)
 {
 	printf("Hello Peas!\n"); 
 	peas_activatable_activate(PEAS_ACTIVATABLE(pdata));
+	return TRUE;
 }
 
 
@@ -74,16 +75,16 @@ peas_proxy_cleanup(GeanyPlugin *plugin, gpointer pdata)
 static gint
 peasy_probe(GeanyPlugin *plugin, const gchar *filename, gpointer pdata)
 {
-	gint ret = GEANY_PROBE_RESULT_NOMATCH;
+	gint ret = PROXY_IGNORED;
 	PeasEngine *peas = (PeasEngine *) pdata;
 	gchar *modname = get_mod_name(filename);
 	if (peas_engine_get_plugin_info(peas, modname) != NULL)
 	{
 		/* We only *load* .plugin files, however we are
 		 * responsible for the corresponding code as wel */
-		ret = GEANY_PROBE_RESULT_MATCH;
+		ret = PROXY_MATCHED;
 		if (!g_strrstr(filename, ".plugin"))
-			ret |= GEANY_PROBE_FLAG_NOLOAD;
+			ret |= PROXY_NOLOAD;
 	}
 	g_free(modname);
 
@@ -91,7 +92,7 @@ peasy_probe(GeanyPlugin *plugin, const gchar *filename, gpointer pdata)
 }
 
 
-static gboolean
+static void
 peasy_load(GeanyPlugin *plugin, GeanyPlugin *inferior,
            const gchar *filename, gpointer *plugin_data, gpointer pdata)
 {
@@ -102,17 +103,12 @@ peasy_load(GeanyPlugin *plugin, GeanyPlugin *inferior,
 	PeasExtension *obj;
 	g_free(modname);
 
-	static GeanyPluginHooks hooks = {
-		.init = peas_proxy_init,
-		.cleanup = peas_proxy_cleanup,
-	};
-
 	if (!info)
-		return FALSE;
+		return;
 
 	loaded = peas_engine_load_plugin(peas, info);
 	if (!loaded)
-		return FALSE;
+		return;
 
 	if (!peas_engine_provides_extension(peas, info, PEAS_TYPE_ACTIVATABLE))
 		goto unload;
@@ -126,22 +122,23 @@ peasy_load(GeanyPlugin *plugin, GeanyPlugin *inferior,
 	inferior->info->version = peas_plugin_info_get_version(info);
 	inferior->info->author = peas_plugin_info_get_authors(info)[0];
 
+	inferior->funcs->init = peas_proxy_init;
+	inferior->funcs->cleanup = peas_proxy_cleanup;
+
 	*plugin_data = obj;
 	/* TODO: perform ABI check */
-	if (geany_plugin_register(inferior, GEANY_API_VERSION, 224, GEANY_ABI_VERSION, &hooks))
+	if (GEANY_PLUGIN_REGISTER(inferior, 224))
 	{
 		/* Don't pass g_object_unref because the object needs to be still alive
 		 * in peasy_unload() */
 		geany_plugin_set_data(inferior, obj, NULL);
-		return TRUE;
+		return;
 	}
 
 unref:
 	g_object_unref(obj);
 unload:
 	peas_engine_unload_plugin(peas, info);
-
-	return FALSE;
 }
 
 
@@ -159,22 +156,19 @@ peasy_unload(GeanyPlugin *plugin, GeanyPlugin *inferior, gpointer proxy_data, gp
 
 
 /* Called by Geany to initialize the plugin */
-static void
+static gboolean
 peasy_init(GeanyPlugin *plugin, gpointer pdata)
 {
 	const gchar *extensions[] = { "plugin", "so", NULL };
-	static GeanyProxyHooks hooks = {
-		.probe  = peasy_probe,
-		.load   = peasy_load,
-		.unload = peasy_unload,
-	};
 	PeasEngine *peas = peas_engine_get_default();
 
 	geany_plugin_set_data(plugin, peas, g_object_unref);
-	geany_plugin_register_proxy(plugin, extensions, &hooks);
+	geany_plugin_register_proxy(plugin, extensions);
 
 	peas_engine_enable_loader(peas, "python");
 	peas_engine_add_search_path(peas, GEANY_PLUGINDIR, plugin->geany_data->app->datadir);
+
+	return TRUE;
 }
 
 
@@ -188,19 +182,21 @@ peasy_cleanup(GeanyPlugin *plugin, gpointer pdata)
 }
 
 
-G_MODULE_EXPORT gboolean
+G_MODULE_EXPORT void
 geany_load_module(GeanyPlugin *plugin, GModule *module, gint geany_api_version)
 {
-	static GeanyPluginHooks hooks = {
-		.init = peasy_init,
-		.cleanup = peasy_cleanup,
-	};
-	
 	plugin->info->name = _("Peasy");
 	plugin->info->description = _("Provides libpeas-based plugins");
 	plugin->info->version = "0.1";
 	plugin->info->author = _("Thomas Martitz <kugel@rockbox.org>");
 	g_module_make_resident(module);
 
-	return geany_plugin_register(plugin, GEANY_API_VERSION, 224, GEANY_ABI_VERSION, &hooks);
+	plugin->funcs->init = peasy_init;
+	plugin->funcs->cleanup = peasy_cleanup;
+
+	plugin->proxy_hooks->probe  = peasy_probe;
+	plugin->proxy_hooks->load   = peasy_load;
+	plugin->proxy_hooks->unload = peasy_unload;
+
+	GEANY_PLUGIN_REGISTER(plugin, 224);
 }
