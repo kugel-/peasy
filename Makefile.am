@@ -1,3 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4
 
-SUBDIRS = src
+include initvars.mk
+
+include src/Makefile.rel.am
+
