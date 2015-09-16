@@ -4,7 +4,7 @@ AC_PREREQ([2.60])
 
 AC_INIT([peasy],[0.1],[kugel@rockbox.org])
 AC_CONFIG_AUX_DIR([build-aux])
-AC_CONFIG_SRCDIR([src/peasy.c])
+AC_CONFIG_SRCDIR([src/peasy-plugin.c])
 AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.11 -Wall parallel-tests subdir-objects])
 AC_CONFIG_HEADERS([config.h])
@@ -17,7 +17,7 @@ AC_PROG_CC_C99
 AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
-AM_PROG_VALAC
+AM_PROG_VALAC(0.29.3)
 
 GP_CHECK_GTK_VERSION
 
@@ -43,7 +43,9 @@ AC_SUBST([GEANY_LIBS])
 
 geany_prefix=`$PKG_CONFIG --variable prefix geany`
 GEANY_PLUGINDIR="$geany_prefix/lib/geany"
+GEANY_VAPIDIR="$geany_prefix/share/vala/vapi"
 AC_SUBST([GEANY_PLUGINDIR])
+AC_SUBST([GEANY_VAPIDIR])
 AC_DEFINE_UNQUOTED([GEANY_PLUGINDIR],["$GEANY_PLUGINDIR"],[Path to Geany plugin])
 
 GEANY_INCLUDEDIR=`$PKG_CONFIG --variable includedir geany`
@@ -53,5 +55,6 @@ VAPIGEN_CHECK
 
 AC_CONFIG_FILES([
 	Makefile
-	src/Makefile])
+	src/Makefile
+	src/peasy/Makefile])
 AC_OUTPUT
