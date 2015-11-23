@@ -17,7 +17,7 @@ namespace Peasy
 		public static GenericArray<Filetype> all_filetypes()
 		{
 			GenericArray<Filetype> fts = new GenericArray<Filetype>();
-			peasy_plugin.geany_data.filetypes_array.foreach((ft) => {
+			geany_plugin.geany_data.filetypes_array.foreach((ft) => {
 				fts.add(new Filetype(ft));
 			});
 			return fts;

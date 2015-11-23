@@ -46,7 +46,7 @@ struct _PeasyEditor {
 	GObject parent_instance;
 	PeasyEditorPrivate * priv;
 	PeasyDocument* document;
-	GeanyEditor _editor;
+	GeanyEditor* _editor;
 };
 
 struct _PeasyEditorClass {
@@ -113,8 +113,8 @@ PeasyEditor* peasy_editor_construct_create (GType object_type, PeasyDocument* do
 	self = (PeasyEditor*) g_object_new (object_type, NULL);
 	_tmp0_ = doc;
 	_tmp1_ = _tmp0_->_doc;
-	_tmp2_ = (*_tmp1_).editor;
-	self->_editor = *_tmp2_;
+	_tmp2_ = _tmp1_->editor;
+	self->_editor = _tmp2_;
 	_tmp3_ = doc;
 	self->document = _tmp3_;
 	return self;
@@ -128,59 +128,69 @@ PeasyEditor* peasy_editor_new_create (PeasyDocument* doc) {
 
 gchar* peasy_editor_get_word_at (PeasyEditor* self, gint pos, const gchar* wordchars) {
 	gchar* result = NULL;
-	gint _tmp0_ = 0;
-	const gchar* _tmp1_ = NULL;
-	gchar* _tmp2_ = NULL;
+	GeanyEditor* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	const gchar* _tmp2_ = NULL;
+	gchar* _tmp3_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = pos;
-	_tmp1_ = wordchars;
-	_tmp2_ = editor_get_word_at_pos (&self->_editor, _tmp0_, _tmp1_);
-	result = _tmp2_;
+	_tmp0_ = self->_editor;
+	_tmp1_ = pos;
+	_tmp2_ = wordchars;
+	_tmp3_ = editor_get_word_at_pos (_tmp0_, _tmp1_, _tmp2_);
+	result = _tmp3_;
 	return result;
 }
 
 
 gboolean peasy_editor_goto (PeasyEditor* self, gint pos, gboolean mark) {
 	gboolean result = FALSE;
-	gint _tmp0_ = 0;
-	gboolean _tmp1_ = FALSE;
+	GeanyEditor* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
 	gboolean _tmp2_ = FALSE;
+	gboolean _tmp3_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
-	_tmp0_ = pos;
-	_tmp1_ = mark;
-	_tmp2_ = editor_goto_pos (&self->_editor, _tmp0_, _tmp1_);
-	result = _tmp2_;
+	_tmp0_ = self->_editor;
+	_tmp1_ = pos;
+	_tmp2_ = mark;
+	_tmp3_ = editor_goto_pos (_tmp0_, _tmp1_, _tmp2_);
+	result = _tmp3_;
 	return result;
 }
 
 
 void peasy_editor_indicator_clear (PeasyEditor* self, GeanyIndicator indic) {
-	GeanyIndicator _tmp0_ = 0;
+	GeanyEditor* _tmp0_ = NULL;
+	GeanyIndicator _tmp1_ = 0;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = indic;
-	editor_indicator_clear (&self->_editor, (gint) _tmp0_);
+	_tmp0_ = self->_editor;
+	_tmp1_ = indic;
+	editor_indicator_clear (_tmp0_, (gint) _tmp1_);
 }
 
 
 void peasy_editor_indicator_set_on_line (PeasyEditor* self, GeanyIndicator indic, gint line) {
-	GeanyIndicator _tmp0_ = 0;
-	gint _tmp1_ = 0;
+	GeanyEditor* _tmp0_ = NULL;
+	GeanyIndicator _tmp1_ = 0;
+	gint _tmp2_ = 0;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = indic;
-	_tmp1_ = line;
-	editor_indicator_set_on_line (&self->_editor, (gint) _tmp0_, _tmp1_);
+	_tmp0_ = self->_editor;
+	_tmp1_ = indic;
+	_tmp2_ = line;
+	editor_indicator_set_on_line (_tmp0_, (gint) _tmp1_, _tmp2_);
 }
 
 
 void peasy_editor_indicator_set_on_range (PeasyEditor* self, GeanyIndicator indic, gint start, gint end) {
-	GeanyIndicator _tmp0_ = 0;
-	gint _tmp1_ = 0;
+	GeanyEditor* _tmp0_ = NULL;
+	GeanyIndicator _tmp1_ = 0;
 	gint _tmp2_ = 0;
+	gint _tmp3_ = 0;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = indic;
-	_tmp1_ = start;
-	_tmp2_ = end;
-	editor_indicator_set_on_range (&self->_editor, (gint) _tmp0_, _tmp1_, _tmp2_);
+	_tmp0_ = self->_editor;
+	_tmp1_ = indic;
+	_tmp2_ = start;
+	_tmp3_ = end;
+	editor_indicator_set_on_range (_tmp0_, (gint) _tmp1_, _tmp2_, _tmp3_);
 }
 
 
@@ -198,11 +208,11 @@ PeasyEditor* peasy_editor_new (void) {
 
 gboolean peasy_editor_get_auto_indent (PeasyEditor* self) {
 	gboolean result;
-	GeanyEditor _tmp0_ = {0};
+	GeanyEditor* _tmp0_ = NULL;
 	gboolean _tmp1_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->_editor;
-	_tmp1_ = _tmp0_.auto_indent;
+	_tmp1_ = _tmp0_->auto_indent;
 	result = _tmp1_;
 	return result;
 }
@@ -210,32 +220,34 @@ gboolean peasy_editor_get_auto_indent (PeasyEditor* self) {
 
 GeanyIndentType peasy_editor_get_indent_type (PeasyEditor* self) {
 	GeanyIndentType result;
-	GeanyEditor _tmp0_ = {0};
+	GeanyEditor* _tmp0_ = NULL;
 	GeanyIndentType _tmp1_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->_editor;
-	_tmp1_ = _tmp0_.indent_type;
+	_tmp1_ = _tmp0_->indent_type;
 	result = _tmp1_;
 	return result;
 }
 
 
 void peasy_editor_set_indent_type (PeasyEditor* self, GeanyIndentType value) {
-	GeanyIndentType _tmp0_ = 0;
+	GeanyEditor* _tmp0_ = NULL;
+	GeanyIndentType _tmp1_ = 0;
 	g_return_if_fail (self != NULL);
-	_tmp0_ = value;
-	editor_set_indent_type (&self->_editor, _tmp0_);
+	_tmp0_ = self->_editor;
+	_tmp1_ = value;
+	editor_set_indent_type (_tmp0_, _tmp1_);
 	g_object_notify ((GObject *) self, "indent-type");
 }
 
 
 gboolean peasy_editor_get_line_breaking (PeasyEditor* self) {
 	gboolean result;
-	GeanyEditor _tmp0_ = {0};
+	GeanyEditor* _tmp0_ = NULL;
 	gboolean _tmp1_ = FALSE;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->_editor;
-	_tmp1_ = _tmp0_.line_breaking;
+	_tmp1_ = _tmp0_->line_breaking;
 	result = _tmp1_;
 	return result;
 }

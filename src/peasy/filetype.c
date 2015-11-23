@@ -46,7 +46,7 @@ struct _PeasyObjectClass {
 struct _PeasyFiletype {
 	PeasyObject parent_instance;
 	PeasyFiletypePrivate * priv;
-	GeanyFiletype _ft;
+	GeanyFiletype* _ft;
 };
 
 struct _PeasyFiletypeClass {
@@ -60,7 +60,7 @@ struct _Block2Data {
 
 
 static gpointer peasy_filetype_parent_class = NULL;
-extern GeanyPlugin* peasy_object_peasy_plugin;
+extern GeanyPlugin* peasy_object_geany_plugin;
 
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_filetype_get_type (void) G_GNUC_CONST;
@@ -78,10 +78,10 @@ GPtrArray* peasy_filetype_all_filetypes (void);
 static Block2Data* block2_data_ref (Block2Data* _data2_);
 static void block2_data_unref (void * _userdata_);
 static void _g_object_unref0_ (gpointer var);
-static void __lambda4_ (Block2Data* _data2_, GeanyFiletype* ft);
+static void __lambda5_ (Block2Data* _data2_, GeanyFiletype* ft);
 PeasyFiletype* peasy_filetype_new (GeanyFiletype* ft);
 PeasyFiletype* peasy_filetype_construct (GType object_type, GeanyFiletype* ft);
-static void ___lambda4__gfunc (gconstpointer data, gpointer self);
+static void ___lambda5__gfunc (gconstpointer data, gpointer self);
 PeasyObject* peasy_object_new (void);
 PeasyObject* peasy_object_construct (GType object_type);
 PeasyFiletype* peasy_filetype_get_by_id (GeanyFiletypeID id);
@@ -119,18 +119,18 @@ static void _g_object_unref0_ (gpointer var) {
 }
 
 
-static void __lambda4_ (Block2Data* _data2_, GeanyFiletype* ft) {
-	GeanyFiletype _tmp0_ = {0};
+static void __lambda5_ (Block2Data* _data2_, GeanyFiletype* ft) {
+	GeanyFiletype* _tmp0_ = NULL;
 	PeasyFiletype* _tmp1_ = NULL;
 	g_return_if_fail (ft != NULL);
-	_tmp0_ = *ft;
-	_tmp1_ = peasy_filetype_new (&_tmp0_);
+	_tmp0_ = ft;
+	_tmp1_ = peasy_filetype_new (_tmp0_);
 	g_ptr_array_add (_data2_->fts, _tmp1_);
 }
 
 
-static void ___lambda4__gfunc (gconstpointer data, gpointer self) {
-	__lambda4_ (self, data);
+static void ___lambda5__gfunc (gconstpointer data, gpointer self) {
+	__lambda5_ (self, (GeanyFiletype*) data);
 }
 
 
@@ -151,10 +151,10 @@ GPtrArray* peasy_filetype_all_filetypes (void) {
 	_data2_->_ref_count_ = 1;
 	_tmp0_ = g_ptr_array_new_with_free_func (_g_object_unref0_);
 	_data2_->fts = _tmp0_;
-	_tmp1_ = peasy_object_peasy_plugin;
-	_tmp2_ = (*_tmp1_).geany_data;
-	_tmp3_ = (*_tmp2_).filetypes_array;
-	g_ptr_array_foreach (_tmp3_, ___lambda4__gfunc, _data2_);
+	_tmp1_ = peasy_object_geany_plugin;
+	_tmp2_ = _tmp1_->geany_data;
+	_tmp3_ = _tmp2_->filetypes_array;
+	g_ptr_array_foreach (_tmp3_, ___lambda5__gfunc, _data2_);
 	_tmp4_ = _g_ptr_array_ref0 (_data2_->fts);
 	result = _tmp4_;
 	block2_data_unref (_data2_);
@@ -165,10 +165,10 @@ GPtrArray* peasy_filetype_all_filetypes (void) {
 
 PeasyFiletype* peasy_filetype_construct (GType object_type, GeanyFiletype* ft) {
 	PeasyFiletype * self = NULL;
-	GeanyFiletype _tmp0_ = {0};
+	GeanyFiletype* _tmp0_ = NULL;
 	g_return_val_if_fail (ft != NULL, NULL);
 	self = (PeasyFiletype*) peasy_object_construct (object_type);
-	_tmp0_ = *ft;
+	_tmp0_ = ft;
 	self->_ft = _tmp0_;
 	return self;
 }
@@ -186,8 +186,7 @@ PeasyFiletype* peasy_filetype_get_by_id (GeanyFiletypeID id) {
 	GeanyFiletype* _tmp1_ = NULL;
 	GeanyFiletype* _tmp2_ = NULL;
 	GeanyFiletype* _tmp3_ = NULL;
-	GeanyFiletype _tmp4_ = {0};
-	PeasyFiletype* _tmp5_ = NULL;
+	PeasyFiletype* _tmp4_ = NULL;
 	_tmp0_ = id;
 	_tmp1_ = filetypes_index ((gint) _tmp0_);
 	ft = _tmp1_;
@@ -197,9 +196,8 @@ PeasyFiletype* peasy_filetype_get_by_id (GeanyFiletypeID id) {
 		return result;
 	}
 	_tmp3_ = ft;
-	_tmp4_ = *_tmp3_;
-	_tmp5_ = peasy_filetype_new (&_tmp4_);
-	result = _tmp5_;
+	_tmp4_ = peasy_filetype_new (_tmp3_);
+	result = _tmp4_;
 	return result;
 }
 
@@ -211,8 +209,7 @@ PeasyFiletype* peasy_filetype_get_by_name (const gchar* name) {
 	GeanyFiletype* _tmp1_ = NULL;
 	GeanyFiletype* _tmp2_ = NULL;
 	GeanyFiletype* _tmp3_ = NULL;
-	GeanyFiletype _tmp4_ = {0};
-	PeasyFiletype* _tmp5_ = NULL;
+	PeasyFiletype* _tmp4_ = NULL;
 	g_return_val_if_fail (name != NULL, NULL);
 	_tmp0_ = name;
 	_tmp1_ = filetypes_lookup_by_name (_tmp0_);
@@ -223,9 +220,8 @@ PeasyFiletype* peasy_filetype_get_by_name (const gchar* name) {
 		return result;
 	}
 	_tmp3_ = ft;
-	_tmp4_ = *_tmp3_;
-	_tmp5_ = peasy_filetype_new (&_tmp4_);
-	result = _tmp5_;
+	_tmp4_ = peasy_filetype_new (_tmp3_);
+	result = _tmp4_;
 	return result;
 }
 
@@ -234,25 +230,23 @@ PeasyFiletype* peasy_filetype_detect_from_file (const gchar* filename) {
 	PeasyFiletype* result = NULL;
 	const gchar* _tmp0_ = NULL;
 	GeanyFiletype* _tmp1_ = NULL;
-	GeanyFiletype _tmp2_ = {0};
-	PeasyFiletype* _tmp3_ = NULL;
+	PeasyFiletype* _tmp2_ = NULL;
 	g_return_val_if_fail (filename != NULL, NULL);
 	_tmp0_ = filename;
 	_tmp1_ = filetypes_lookup_by_name (_tmp0_);
-	_tmp2_ = *_tmp1_;
-	_tmp3_ = peasy_filetype_new (&_tmp2_);
-	result = _tmp3_;
+	_tmp2_ = peasy_filetype_new (_tmp1_);
+	result = _tmp2_;
 	return result;
 }
 
 
 gint peasy_filetype_get_id (PeasyFiletype* self) {
 	gint result;
-	GeanyFiletype _tmp0_ = {0};
+	GeanyFiletype* _tmp0_ = NULL;
 	GeanyFiletypeID _tmp1_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_.id;
+	_tmp1_ = _tmp0_->id;
 	result = (gint) _tmp1_;
 	return result;
 }
@@ -260,11 +254,11 @@ gint peasy_filetype_get_id (PeasyFiletype* self) {
 
 const gchar* peasy_filetype_get_extension (PeasyFiletype* self) {
 	const gchar* result;
-	GeanyFiletype _tmp0_ = {0};
+	GeanyFiletype* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_.extension;
+	_tmp1_ = _tmp0_->extension;
 	result = _tmp1_;
 	return result;
 }
@@ -272,11 +266,11 @@ const gchar* peasy_filetype_get_extension (PeasyFiletype* self) {
 
 const gchar* peasy_filetype_get_name (PeasyFiletype* self) {
 	const gchar* result;
-	GeanyFiletype _tmp0_ = {0};
+	GeanyFiletype* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_.name;
+	_tmp1_ = _tmp0_->name;
 	result = _tmp1_;
 	return result;
 }
@@ -284,11 +278,11 @@ const gchar* peasy_filetype_get_name (PeasyFiletype* self) {
 
 const gchar* peasy_filetype_get_title (PeasyFiletype* self) {
 	const gchar* result;
-	GeanyFiletype _tmp0_ = {0};
+	GeanyFiletype* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_.title;
+	_tmp1_ = _tmp0_->title;
 	result = _tmp1_;
 	return result;
 }
@@ -296,21 +290,23 @@ const gchar* peasy_filetype_get_title (PeasyFiletype* self) {
 
 const gchar* peasy_filetype_get_display_name (PeasyFiletype* self) {
 	const gchar* result;
-	const gchar* _tmp0_ = NULL;
+	GeanyFiletype* _tmp0_ = NULL;
+	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = filetypes_get_display_name (&self->_ft);
-	result = _tmp0_;
+	_tmp0_ = self->_ft;
+	_tmp1_ = filetypes_get_display_name (_tmp0_);
+	result = _tmp1_;
 	return result;
 }
 
 
 const gchar* peasy_filetype_get_mime_type (PeasyFiletype* self) {
 	const gchar* result;
-	GeanyFiletype _tmp0_ = {0};
+	GeanyFiletype* _tmp0_ = NULL;
 	const gchar* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_.mime_type;
+	_tmp1_ = _tmp0_->mime_type;
 	result = _tmp1_;
 	return result;
 }
@@ -318,11 +314,11 @@ const gchar* peasy_filetype_get_mime_type (PeasyFiletype* self) {
 
 GIcon* peasy_filetype_get_icon (PeasyFiletype* self) {
 	GIcon* result;
-	GeanyFiletype _tmp0_ = {0};
+	GeanyFiletype* _tmp0_ = NULL;
 	GIcon* _tmp1_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_.icon;
+	_tmp1_ = _tmp0_->icon;
 	result = _tmp1_;
 	return result;
 }

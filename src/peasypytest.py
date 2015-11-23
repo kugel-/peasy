@@ -1,10 +1,13 @@
 from __future__ import print_function
 
+import gi
+gi.require_version('Peas', '1.0')
+
 from gi.repository import GObject
 from gi.repository import Peas
 from gi.repository import Peasy
 
-class PeasyPyTester(Peas.ExtensionBase, Peas.Activatable):
+class PeasyPyTester(Peasy.Plugin, Peasy.PluginHelp):
 	__gtype_name = 'PeasyPyTester'
 
 	object = GObject.property(type=GObject.Object)
@@ -17,15 +20,17 @@ class PeasyPyTester(Peas.ExtensionBase, Peas.Activatable):
 		print(d.props.display_name + " closed")
 		self.doc = None
 
-	def do_activate(self):
+	def do_enable(self):
 		print("activate!")
 		self.doc = Peasy.Document.new_file("foo")
-		self.doc.connect("closed", self.on_closed)
+		self.doc.connect("closing", self.on_closed)
+		return True
 
-	def do_deactivate(self):
+	def do_disable(self):
 		print("deactivate!")
 		if (self.doc):
+			print("valid: " + str(self.doc.props.is_valid))
 			self.doc.close()
 
-	def do_update_state(self):
-		print("updated state!")
+	def do_help(self):
+		print("Helpl!!")

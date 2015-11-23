@@ -48,7 +48,7 @@ struct _PeasyObjectClass {
 struct _PeasyFiletype {
 	PeasyObject parent_instance;
 	PeasyFiletypePrivate * priv;
-	GeanyFiletype _ft;
+	GeanyFiletype* _ft;
 };
 
 struct _PeasyFiletypeClass {
@@ -125,7 +125,7 @@ static gpointer __geany_lexer_style_dup0 (gpointer self) {
 void peasy_highlighting_get_lexer_style (PeasyFiletype* ft, gint style, GeanyLexerStyle* result) {
 	GeanyLexerStyle* ret = NULL;
 	PeasyFiletype* _tmp0_ = NULL;
-	GeanyFiletype _tmp1_ = {0};
+	GeanyFiletype* _tmp1_ = NULL;
 	GeanyFiletypeID _tmp2_ = 0;
 	gint _tmp3_ = 0;
 	GeanyLexerStyle* _tmp4_ = NULL;
@@ -133,7 +133,7 @@ void peasy_highlighting_get_lexer_style (PeasyFiletype* ft, gint style, GeanyLex
 	g_return_if_fail (ft != NULL);
 	_tmp0_ = ft;
 	_tmp1_ = _tmp0_->_ft;
-	_tmp2_ = _tmp1_.id;
+	_tmp2_ = _tmp1_->id;
 	_tmp3_ = style;
 	_tmp4_ = highlighting_get_style ((gint) _tmp2_, _tmp3_);
 	_tmp5_ = __geany_lexer_style_dup0 (_tmp4_);
