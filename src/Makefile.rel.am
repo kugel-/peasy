@@ -1,4 +1,4 @@
-plugin_LTLIBRARIES += %D%/peasy-plugin.la %D%/libpeasytest.la
+plugin_LTLIBRARIES += %D%/peasy-plugin.la
 
 %C%_peasy_plugin_la_SOURCES    = %D%/peasy-plugin.c
 %C%_peasy_plugin_la_CFLAGS     = @PEAS_CFLAGS@ @GEANY_CFLAGS@
@@ -6,11 +6,3 @@ plugin_LTLIBRARIES += %D%/peasy-plugin.la %D%/libpeasytest.la
 %C%_peasy_plugin_la_LIBADD     = @PEAS_LIBS@ @GEANY_LIBS@ %D%/peasy/libpeasy.la
 %C%_peasy_plugin_la_SHORTNAME  = peasy_plugin_la
 %C%_peasy_plugin_la_CPPFLAGS   = -DTYPELIBDIR=\""$(typelibdir)"\"
-
-%C%_libpeasytest_la_SOURCES = %D%/peasytest.c
-%C%_libpeasytest_la_CFLAGS  = @PEAS_CFLAGS@ @GEANY_CFLAGS@
-%C%_libpeasytest_la_LDFLAGS = -module -avoid-version -no-undefined
-%C%_libpeasytest_la_LIBADD  = @PEAS_LIBS@ @GEANY_LIBS@ %D%/peasy/libpeasy.la
-%C%_libpeasytest_la_SHORTNAME = libpeasytest_la
-
-dist_plugin_DATA = %D%/peasytest.plugin %D%/peasypytest.py %D%/peasypytest.plugin

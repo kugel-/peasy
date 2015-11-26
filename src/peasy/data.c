@@ -117,7 +117,7 @@ struct _PeasyDataClass {
 
 
 static gpointer peasy_app_parent_class = NULL;
-extern GeanyPlugin* peasy_object_geany_plugin;
+extern GeanyPlugin* peasy_peasy_plugin;
 static gpointer peasy_ui_widgets_parent_class = NULL;
 static gpointer peasy_data_parent_class = NULL;
 static PeasyData* peasy_data__instance;
@@ -132,6 +132,7 @@ PeasyApp* peasy_app_new (void);
 PeasyApp* peasy_app_construct (GType object_type);
 PeasyObject* peasy_object_new (void);
 PeasyObject* peasy_object_construct (GType object_type);
+static GObject * peasy_app_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static void peasy_app_finalize (GObject* obj);
 GType peasy_ui_widgets_get_type (void) G_GNUC_CONST;
 enum  {
@@ -152,6 +153,20 @@ static void peasy_data_finalize (GObject* obj);
 
 PeasyApp* peasy_app_construct (GType object_type) {
 	PeasyApp * self = NULL;
+	self = (PeasyApp*) peasy_object_construct (object_type);
+	return self;
+}
+
+
+PeasyApp* peasy_app_new (void) {
+	return peasy_app_construct (PEASY_TYPE_APP);
+}
+
+
+static GObject * peasy_app_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties) {
+	GObject * obj;
+	GObjectClass * parent_class;
+	PeasyApp * self;
 	GeanyPlugin* _tmp0_ = NULL;
 	GeanyData* _tmp1_ = NULL;
 	GeanyApp* _tmp2_ = NULL;
@@ -168,38 +183,36 @@ PeasyApp* peasy_app_construct (GType object_type) {
 	GeanyData* _tmp13_ = NULL;
 	GeanyApp* _tmp14_ = NULL;
 	const gchar* _tmp15_ = NULL;
-	self = (PeasyApp*) peasy_object_construct (object_type);
-	_tmp0_ = peasy_object_geany_plugin;
+	parent_class = G_OBJECT_CLASS (peasy_app_parent_class);
+	obj = parent_class->constructor (type, n_construct_properties, construct_properties);
+	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_APP, PeasyApp);
+	_tmp0_ = peasy_peasy_plugin;
 	_tmp1_ = _tmp0_->geany_data;
 	_tmp2_ = _tmp1_->app;
 	_tmp3_ = _tmp2_->debug_mode;
 	self->debug_mode = _tmp3_;
-	_tmp4_ = peasy_object_geany_plugin;
+	_tmp4_ = peasy_peasy_plugin;
 	_tmp5_ = _tmp4_->geany_data;
 	_tmp6_ = _tmp5_->app;
 	_tmp7_ = _tmp6_->configdir;
 	self->configdir = _tmp7_;
-	_tmp8_ = peasy_object_geany_plugin;
+	_tmp8_ = peasy_peasy_plugin;
 	_tmp9_ = _tmp8_->geany_data;
 	_tmp10_ = _tmp9_->app;
 	_tmp11_ = _tmp10_->datadir;
 	self->datadir = _tmp11_;
-	_tmp12_ = peasy_object_geany_plugin;
+	_tmp12_ = peasy_peasy_plugin;
 	_tmp13_ = _tmp12_->geany_data;
 	_tmp14_ = _tmp13_->app;
 	_tmp15_ = _tmp14_->docdir;
 	self->docdir = _tmp15_;
-	return self;
-}
-
-
-PeasyApp* peasy_app_new (void) {
-	return peasy_app_construct (PEASY_TYPE_APP);
+	return obj;
 }
 
 
 static void peasy_app_class_init (PeasyAppClass * klass) {
 	peasy_app_parent_class = g_type_class_peek_parent (klass);
+	G_OBJECT_CLASS (klass)->constructor = peasy_app_constructor;
 	G_OBJECT_CLASS (klass)->finalize = peasy_app_finalize;
 }
 
@@ -266,47 +279,47 @@ PeasyUiWidgets* peasy_ui_widgets_construct (GType object_type) {
 	GeanyMainWidgets* _tmp34_ = NULL;
 	GtkWidget* _tmp35_ = NULL;
 	self = (PeasyUiWidgets*) peasy_object_construct (object_type);
-	_tmp0_ = peasy_object_geany_plugin;
+	_tmp0_ = peasy_peasy_plugin;
 	_tmp1_ = _tmp0_->geany_data;
 	_tmp2_ = _tmp1_->main_widgets;
 	_tmp3_ = _tmp2_->window;
 	self->window = _tmp3_;
-	_tmp4_ = peasy_object_geany_plugin;
+	_tmp4_ = peasy_peasy_plugin;
 	_tmp5_ = _tmp4_->geany_data;
 	_tmp6_ = _tmp5_->main_widgets;
 	_tmp7_ = _tmp6_->toolbar;
 	self->toolbar = _tmp7_;
-	_tmp8_ = peasy_object_geany_plugin;
+	_tmp8_ = peasy_peasy_plugin;
 	_tmp9_ = _tmp8_->geany_data;
 	_tmp10_ = _tmp9_->main_widgets;
 	_tmp11_ = _tmp10_->sidebar_notebook;
 	self->sidebar_notebook = _tmp11_;
-	_tmp12_ = peasy_object_geany_plugin;
+	_tmp12_ = peasy_peasy_plugin;
 	_tmp13_ = _tmp12_->geany_data;
 	_tmp14_ = _tmp13_->main_widgets;
 	_tmp15_ = _tmp14_->notebook;
 	self->notebook = _tmp15_;
-	_tmp16_ = peasy_object_geany_plugin;
+	_tmp16_ = peasy_peasy_plugin;
 	_tmp17_ = _tmp16_->geany_data;
 	_tmp18_ = _tmp17_->main_widgets;
 	_tmp19_ = _tmp18_->editor_menu;
 	self->editor_menu = _tmp19_;
-	_tmp20_ = peasy_object_geany_plugin;
+	_tmp20_ = peasy_peasy_plugin;
 	_tmp21_ = _tmp20_->geany_data;
 	_tmp22_ = _tmp21_->main_widgets;
 	_tmp23_ = _tmp22_->tools_menu;
 	self->tools_menu = _tmp23_;
-	_tmp24_ = peasy_object_geany_plugin;
+	_tmp24_ = peasy_peasy_plugin;
 	_tmp25_ = _tmp24_->geany_data;
 	_tmp26_ = _tmp25_->main_widgets;
 	_tmp27_ = _tmp26_->progressbar;
 	self->progressbar = _tmp27_;
-	_tmp28_ = peasy_object_geany_plugin;
+	_tmp28_ = peasy_peasy_plugin;
 	_tmp29_ = _tmp28_->geany_data;
 	_tmp30_ = _tmp29_->main_widgets;
 	_tmp31_ = _tmp30_->message_window_notebook;
 	self->message_window_notebook = _tmp31_;
-	_tmp32_ = peasy_object_geany_plugin;
+	_tmp32_ = peasy_peasy_plugin;
 	_tmp33_ = _tmp32_->geany_data;
 	_tmp34_ = _tmp33_->main_widgets;
 	_tmp35_ = _tmp34_->project_menu;
@@ -381,39 +394,39 @@ static PeasyData* peasy_data_construct (GType object_type) {
 	PeasyApp* _tmp27_ = NULL;
 	PeasyUiWidgets* _tmp28_ = NULL;
 	self = (PeasyData*) peasy_object_construct (object_type);
-	_tmp0_ = peasy_object_geany_plugin;
+	_tmp0_ = peasy_peasy_plugin;
 	_tmp1_ = _tmp0_->geany_data;
 	_tmp2_ = _tmp1_->prefs;
 	self->prefs = _tmp2_;
-	_tmp3_ = peasy_object_geany_plugin;
+	_tmp3_ = peasy_peasy_plugin;
 	_tmp4_ = _tmp3_->geany_data;
 	_tmp5_ = _tmp4_->interface_prefs;
 	self->interface_prefs = _tmp5_;
-	_tmp6_ = peasy_object_geany_plugin;
+	_tmp6_ = peasy_peasy_plugin;
 	_tmp7_ = _tmp6_->geany_data;
 	_tmp8_ = _tmp7_->tool_prefs;
 	self->tool_prefs = _tmp8_;
-	_tmp9_ = peasy_object_geany_plugin;
+	_tmp9_ = peasy_peasy_plugin;
 	_tmp10_ = _tmp9_->geany_data;
 	_tmp11_ = _tmp10_->toolbar_prefs;
 	self->toolbar_prefs = _tmp11_;
-	_tmp12_ = peasy_object_geany_plugin;
+	_tmp12_ = peasy_peasy_plugin;
 	_tmp13_ = _tmp12_->geany_data;
 	_tmp14_ = _tmp13_->editor_prefs;
 	self->editor_prefs = _tmp14_;
-	_tmp15_ = peasy_object_geany_plugin;
+	_tmp15_ = peasy_peasy_plugin;
 	_tmp16_ = _tmp15_->geany_data;
 	_tmp17_ = _tmp16_->file_prefs;
 	self->file_prefs = _tmp17_;
-	_tmp18_ = peasy_object_geany_plugin;
+	_tmp18_ = peasy_peasy_plugin;
 	_tmp19_ = _tmp18_->geany_data;
 	_tmp20_ = _tmp19_->search_prefs;
 	self->search_prefs = _tmp20_;
-	_tmp21_ = peasy_object_geany_plugin;
+	_tmp21_ = peasy_peasy_plugin;
 	_tmp22_ = _tmp21_->geany_data;
 	_tmp23_ = _tmp22_->template_prefs;
 	self->template_prefs = _tmp23_;
-	_tmp24_ = peasy_object_geany_plugin;
+	_tmp24_ = peasy_peasy_plugin;
 	_tmp25_ = _tmp24_->geany_data;
 	_tmp26_ = _tmp25_->build_info;
 	self->build_info = _tmp26_;

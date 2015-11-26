@@ -21,13 +21,13 @@ class PeasyPyTester(Peasy.Plugin, Peasy.PluginHelp):
 		self.doc = None
 
 	def do_enable(self):
-		print("activate!")
+		print("enable: Hello from " + self.props.plugin_info.get_name() + "!")
 		self.doc = Peasy.Document.new_file("foo")
 		self.doc.connect("closing", self.on_closed)
 		return True
 
 	def do_disable(self):
-		print("deactivate!")
+		print("disable!")
 		if (self.doc):
 			print("valid: " + str(self.doc.props.is_valid))
 			self.doc.close()

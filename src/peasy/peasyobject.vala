@@ -4,21 +4,32 @@ extern void plugin_signal_connect(Geany.Plugin p, GLib.Object? obj, string signa
 
 namespace Peasy
 {
+
+/* Would rather make this a static field of Peasy.Object, however this breaks the .gir file */
+public unowned Geany.Plugin peasy_plugin;
+public Signals peasy_signals;
+
+public void static_init(Geany.Plugin p)
+{
+	if (peasy_plugin == null)
+	{
+		peasy_plugin = p;
+		peasy_signals = new Signals();
+	}
+}
+
 public class Object : GLib.Object
 {
-	protected static weak Geany.Plugin geany_plugin;
 	protected static void signal_connect(GLib.Object? obj, string signal_name,
 								  bool after, GLib.Callback cb, void *data)
 	{
-		plugin_signal_connect(geany_plugin, obj, signal_name, after, cb, data);
+		plugin_signal_connect(peasy_plugin, obj, signal_name, after, cb, data);
 	}
 
-	private static Signals _plugin;
-	public static Signals peasy_signals()
+	public Signals plugin_signals { public get; private set; }
+	construct
 	{
-		if (_plugin == null)
-			_plugin = new Signals();
-		return _plugin;
+		plugin_signals = peasy_signals;
 	}
 }
 

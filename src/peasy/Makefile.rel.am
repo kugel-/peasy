@@ -1,0 +1,27 @@
+lib_LTLIBRARIES += %D%/libpeasy.la
+
+%C%_libpeasy_la_SOURCES     = \
+	%D%/peasyobject.vala \
+	%D%/plugin.vala \
+	%D%/document.vala \
+	%D%/filetype.vala \
+	%D%/editor.vala \
+	%D%/highlighting.vala \
+	%D%/data.vala \
+	%D%/utils.vala \
+	%D%/keygroup.vala \
+	%D%/keygroup_c.c
+
+%C%_libpeasy_la_VALAFLAGS   = --vapidir $(GEANY_VAPIDIR) --pkg libpeas-1.0 --pkg geany-1.0 --library libpeasy \
+                              --gir=%D%/Peasy-0.1.gir --vapi=%D%/peasy-0.1.vapi \
+                              --disable-version-header -H %D%/peasy.h \
+                              --shared-library=libpeasy.so.0.0.0
+%C%_libpeasy_la_CFLAGS      = @GTK_CFLAGS@ @PEAS_CFLAGS@ @GEANY_CFLAGS@
+%C%_libpeasy_la_LDFLAGS     = -no-undefined -version 0:0:0
+%C%_libpeasy_la_SHORTNAME   = libpeasy_la
+
+%D%/Peasy-0.1.gir: %D%/libpeasy.la
+
+dist_gir_DATA                      += %D%/Peasy-0.1.gir
+dist_typelib_DATA                  += %D%/Peasy-0.1.typelib
+

@@ -60,7 +60,7 @@ struct _Block2Data {
 
 
 static gpointer peasy_filetype_parent_class = NULL;
-extern GeanyPlugin* peasy_object_geany_plugin;
+extern GeanyPlugin* peasy_peasy_plugin;
 
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_filetype_get_type (void) G_GNUC_CONST;
@@ -151,7 +151,7 @@ GPtrArray* peasy_filetype_all_filetypes (void) {
 	_data2_->_ref_count_ = 1;
 	_tmp0_ = g_ptr_array_new_with_free_func (_g_object_unref0_);
 	_data2_->fts = _tmp0_;
-	_tmp1_ = peasy_object_geany_plugin;
+	_tmp1_ = peasy_peasy_plugin;
 	_tmp2_ = _tmp1_->geany_data;
 	_tmp3_ = _tmp2_->filetypes_array;
 	g_ptr_array_foreach (_tmp3_, ___lambda5__gfunc, _data2_);

@@ -57,7 +57,8 @@ peas_proxy_init(GeanyPlugin *plugin, gpointer pdata)
 {
 	PluginContext *ctx = pdata;
 
-	ctx->plugin = peas_engine_create_extension(ctx->engine, ctx->info, PEASY_TYPE_PLUGIN_IFACE, NULL);
+	ctx->plugin = peas_engine_create_extension(ctx->engine, ctx->info, PEASY_TYPE_PLUGIN_IFACE,
+	                                           "geany-plugin", plugin, NULL);
 	if (ctx->plugin) {
 
 		if (peasy_plugin_enable(PEASY_PLUGIN(ctx->plugin)))
@@ -205,7 +206,7 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
 	t = g_irepository_require(NULL, "Peasy", NULL, 0, &err);
 	g_clear_error(&err);
 
-	peasy_object_geany_plugin = plugin;
+	peasy_static_init(plugin);
 
 	plugin_module_make_resident(plugin);
 
@@ -219,7 +220,6 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
 static void
 peasy_cleanup(GeanyPlugin *plugin, gpointer pdata)
 {
-	printf("plugin_exit\n");
 }
 
 

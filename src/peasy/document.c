@@ -102,7 +102,7 @@ struct _PeasyFiletypeClass {
 
 
 static gpointer peasy_document_parent_class = NULL;
-extern GeanyPlugin* peasy_object_geany_plugin;
+extern GeanyPlugin* peasy_peasy_plugin;
 
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_document_get_type (void) G_GNUC_CONST;
@@ -150,7 +150,7 @@ guint peasy_document_get_id (PeasyDocument* self);
 gchar* peasy_document_get_display_name (PeasyDocument* self);
 static GObject * peasy_document_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 GType peasy_signals_get_type (void) G_GNUC_CONST;
-PeasySignals* peasy_object_peasy_signals (void);
+PeasySignals* peasy_object_get_plugin_signals (PeasyObject* self);
 static void _peasy_document___lambda6_ (PeasyDocument* self, PeasyDocument* doc);
 static void __peasy_document___lambda6__peasy_signals_document_close (PeasySignals* _sender, PeasyDocument* doc, gpointer self);
 static void _peasy_document___lambda7_ (PeasyDocument* self, PeasyDocument* doc);
@@ -227,7 +227,7 @@ GPtrArray* peasy_document_all_documents (void) {
 	_data1_->_ref_count_ = 1;
 	_tmp0_ = g_ptr_array_new_with_free_func (_g_object_unref0_);
 	_data1_->docs = _tmp0_;
-	_tmp1_ = peasy_object_geany_plugin;
+	_tmp1_ = peasy_peasy_plugin;
 	_tmp2_ = _tmp1_->geany_data;
 	_tmp3_ = _tmp2_->documents_array;
 	g_ptr_array_foreach (_tmp3_, ___lambda4__gfunc, _data1_);
@@ -666,7 +666,6 @@ static GObject * peasy_document_constructor (GType type, guint n_construct_prope
 	GObject * obj;
 	GObjectClass * parent_class;
 	PeasyDocument * self;
-	PeasySignals* s = NULL;
 	PeasySignals* _tmp0_ = NULL;
 	PeasySignals* _tmp1_ = NULL;
 	PeasySignals* _tmp2_ = NULL;
@@ -674,24 +673,32 @@ static GObject * peasy_document_constructor (GType type, guint n_construct_prope
 	PeasySignals* _tmp4_ = NULL;
 	PeasySignals* _tmp5_ = NULL;
 	PeasySignals* _tmp6_ = NULL;
+	PeasySignals* _tmp7_ = NULL;
+	PeasySignals* _tmp8_ = NULL;
+	PeasySignals* _tmp9_ = NULL;
+	PeasySignals* _tmp10_ = NULL;
+	PeasySignals* _tmp11_ = NULL;
 	parent_class = G_OBJECT_CLASS (peasy_document_parent_class);
 	obj = parent_class->constructor (type, n_construct_properties, construct_properties);
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_DOCUMENT, PeasyDocument);
-	_tmp0_ = peasy_object_peasy_signals ();
-	s = _tmp0_;
-	_tmp1_ = s;
+	_tmp0_ = peasy_object_get_plugin_signals ((PeasyObject*) self);
+	_tmp1_ = _tmp0_;
 	g_signal_connect_object (_tmp1_, "document-close", (GCallback) __peasy_document___lambda6__peasy_signals_document_close, self, 0);
-	_tmp2_ = s;
-	g_signal_connect_object (_tmp2_, "document-reload", (GCallback) __peasy_document___lambda7__peasy_signals_document_reload, self, 0);
-	_tmp3_ = s;
-	g_signal_connect_object (_tmp3_, "document-activate", (GCallback) __peasy_document___lambda8__peasy_signals_document_activate, self, 0);
-	_tmp4_ = s;
-	g_signal_connect_object (_tmp4_, "document-before-save", (GCallback) __peasy_document___lambda9__peasy_signals_document_before_save, self, 0);
-	_tmp5_ = s;
-	g_signal_connect_object (_tmp5_, "document-save", (GCallback) __peasy_document___lambda10__peasy_signals_document_save, self, 0);
-	_tmp6_ = s;
-	g_signal_connect_object (_tmp6_, "document-filetype-set", (GCallback) __peasy_document___lambda11__peasy_signals_document_filetype_set, self, 0);
-	_g_object_unref0 (s);
+	_tmp2_ = peasy_object_get_plugin_signals ((PeasyObject*) self);
+	_tmp3_ = _tmp2_;
+	g_signal_connect_object (_tmp3_, "document-reload", (GCallback) __peasy_document___lambda7__peasy_signals_document_reload, self, 0);
+	_tmp4_ = peasy_object_get_plugin_signals ((PeasyObject*) self);
+	_tmp5_ = _tmp4_;
+	g_signal_connect_object (_tmp5_, "document-activate", (GCallback) __peasy_document___lambda8__peasy_signals_document_activate, self, 0);
+	_tmp6_ = peasy_object_get_plugin_signals ((PeasyObject*) self);
+	_tmp7_ = _tmp6_;
+	g_signal_connect_object (_tmp7_, "document-before-save", (GCallback) __peasy_document___lambda9__peasy_signals_document_before_save, self, 0);
+	_tmp8_ = peasy_object_get_plugin_signals ((PeasyObject*) self);
+	_tmp9_ = _tmp8_;
+	g_signal_connect_object (_tmp9_, "document-save", (GCallback) __peasy_document___lambda10__peasy_signals_document_save, self, 0);
+	_tmp10_ = peasy_object_get_plugin_signals ((PeasyObject*) self);
+	_tmp11_ = _tmp10_;
+	g_signal_connect_object (_tmp11_, "document-filetype-set", (GCallback) __peasy_document___lambda11__peasy_signals_document_filetype_set, self, 0);
 	return obj;
 }
 

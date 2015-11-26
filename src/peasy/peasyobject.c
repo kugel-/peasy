@@ -18,7 +18,6 @@
 
 typedef struct _PeasyObject PeasyObject;
 typedef struct _PeasyObjectClass PeasyObjectClass;
-typedef struct _PeasyObjectPrivate PeasyObjectPrivate;
 
 #define PEASY_TYPE_SIGNALS (peasy_signals_get_type ())
 #define PEASY_SIGNALS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_SIGNALS, PeasySignals))
@@ -30,6 +29,7 @@ typedef struct _PeasyObjectPrivate PeasyObjectPrivate;
 typedef struct _PeasySignals PeasySignals;
 typedef struct _PeasySignalsClass PeasySignalsClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+typedef struct _PeasyObjectPrivate PeasyObjectPrivate;
 typedef struct _PeasySignalsPrivate PeasySignalsPrivate;
 
 #define PEASY_TYPE_DOCUMENT (peasy_document_get_type ())
@@ -61,6 +61,10 @@ struct _PeasyObjectClass {
 	GObjectClass parent_class;
 };
 
+struct _PeasyObjectPrivate {
+	PeasySignals* _plugin_signals;
+};
+
 struct _PeasySignals {
 	PeasyObject parent_instance;
 	PeasySignalsPrivate * priv;
@@ -71,26 +75,33 @@ struct _PeasySignalsClass {
 };
 
 
+extern GeanyPlugin* peasy_peasy_plugin;
+GeanyPlugin* peasy_peasy_plugin = NULL;
+extern PeasySignals* peasy_peasy_signals;
+PeasySignals* peasy_peasy_signals = NULL;
 static gpointer peasy_object_parent_class = NULL;
-extern GeanyPlugin* peasy_object_geany_plugin;
-GeanyPlugin* peasy_object_geany_plugin = NULL;
-static PeasySignals* peasy_object__plugin;
-static PeasySignals* peasy_object__plugin = NULL;
 static gpointer peasy_signals_parent_class = NULL;
 
 void plugin_signal_connect (GeanyPlugin* p, GObject* obj, const gchar* signal_name, gboolean after, GCallback cb, void* data);
 GType peasy_object_get_type (void) G_GNUC_CONST;
-enum  {
-	PEASY_OBJECT_DUMMY_PROPERTY
-};
 GType peasy_signals_get_type (void) G_GNUC_CONST;
-void peasy_object_signal_connect (GObject* obj, const gchar* signal_name, gboolean after, GCallback cb, void* data);
-PeasySignals* peasy_object_peasy_signals (void);
+void peasy_static_init (GeanyPlugin* p);
 PeasySignals* peasy_signals_new (void);
 PeasySignals* peasy_signals_construct (GType object_type);
+#define PEASY_OBJECT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_OBJECT, PeasyObjectPrivate))
+enum  {
+	PEASY_OBJECT_DUMMY_PROPERTY,
+	PEASY_OBJECT_PLUGIN_SIGNALS
+};
+void peasy_object_signal_connect (GObject* obj, const gchar* signal_name, gboolean after, GCallback cb, void* data);
 PeasyObject* peasy_object_new (void);
 PeasyObject* peasy_object_construct (GType object_type);
+PeasySignals* peasy_object_get_plugin_signals (PeasyObject* self);
+static void peasy_object_set_plugin_signals (PeasyObject* self, PeasySignals* value);
+static GObject * peasy_object_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties);
 static void peasy_object_finalize (GObject* obj);
+static void _vala_peasy_object_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
+static void _vala_peasy_object_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 enum  {
 	PEASY_SIGNALS_DUMMY_PROPERTY
 };
@@ -110,6 +121,22 @@ PeasyFiletype* peasy_filetype_get_by_id (GeanyFiletypeID id);
 static void g_cclosure_user_marshal_VOID__OBJECT_OBJECT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 
 
+void peasy_static_init (GeanyPlugin* p) {
+	GeanyPlugin* _tmp0_ = NULL;
+	g_return_if_fail (p != NULL);
+	_tmp0_ = peasy_peasy_plugin;
+	if (_tmp0_ == NULL) {
+		GeanyPlugin* _tmp1_ = NULL;
+		PeasySignals* _tmp2_ = NULL;
+		_tmp1_ = p;
+		peasy_peasy_plugin = _tmp1_;
+		_tmp2_ = peasy_signals_new ();
+		_g_object_unref0 (peasy_peasy_signals);
+		peasy_peasy_signals = _tmp2_;
+	}
+}
+
+
 void peasy_object_signal_connect (GObject* obj, const gchar* signal_name, gboolean after, GCallback cb, void* data) {
 	GeanyPlugin* _tmp0_ = NULL;
 	GObject* _tmp1_ = NULL;
@@ -118,37 +145,13 @@ void peasy_object_signal_connect (GObject* obj, const gchar* signal_name, gboole
 	GCallback _tmp4_ = NULL;
 	void* _tmp5_ = NULL;
 	g_return_if_fail (signal_name != NULL);
-	_tmp0_ = peasy_object_geany_plugin;
+	_tmp0_ = peasy_peasy_plugin;
 	_tmp1_ = obj;
 	_tmp2_ = signal_name;
 	_tmp3_ = after;
 	_tmp4_ = cb;
 	_tmp5_ = data;
 	plugin_signal_connect (_tmp0_, _tmp1_, _tmp2_, _tmp3_, _tmp4_, _tmp5_);
-}
-
-
-static gpointer _g_object_ref0 (gpointer self) {
-	return self ? g_object_ref (self) : NULL;
-}
-
-
-PeasySignals* peasy_object_peasy_signals (void) {
-	PeasySignals* result = NULL;
-	PeasySignals* _tmp0_ = NULL;
-	PeasySignals* _tmp2_ = NULL;
-	PeasySignals* _tmp3_ = NULL;
-	_tmp0_ = peasy_object__plugin;
-	if (_tmp0_ == NULL) {
-		PeasySignals* _tmp1_ = NULL;
-		_tmp1_ = peasy_signals_new ();
-		_g_object_unref0 (peasy_object__plugin);
-		peasy_object__plugin = _tmp1_;
-	}
-	_tmp2_ = peasy_object__plugin;
-	_tmp3_ = _g_object_ref0 (_tmp2_);
-	result = _tmp3_;
-	return result;
 }
 
 
@@ -164,19 +167,67 @@ PeasyObject* peasy_object_new (void) {
 }
 
 
+PeasySignals* peasy_object_get_plugin_signals (PeasyObject* self) {
+	PeasySignals* result;
+	PeasySignals* _tmp0_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = self->priv->_plugin_signals;
+	result = _tmp0_;
+	return result;
+}
+
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
+
+
+static void peasy_object_set_plugin_signals (PeasyObject* self, PeasySignals* value) {
+	PeasySignals* _tmp0_ = NULL;
+	PeasySignals* _tmp1_ = NULL;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = value;
+	_tmp1_ = _g_object_ref0 (_tmp0_);
+	_g_object_unref0 (self->priv->_plugin_signals);
+	self->priv->_plugin_signals = _tmp1_;
+	g_object_notify ((GObject *) self, "plugin-signals");
+}
+
+
+static GObject * peasy_object_constructor (GType type, guint n_construct_properties, GObjectConstructParam * construct_properties) {
+	GObject * obj;
+	GObjectClass * parent_class;
+	PeasyObject * self;
+	PeasySignals* _tmp0_ = NULL;
+	parent_class = G_OBJECT_CLASS (peasy_object_parent_class);
+	obj = parent_class->constructor (type, n_construct_properties, construct_properties);
+	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_OBJECT, PeasyObject);
+	_tmp0_ = peasy_peasy_signals;
+	peasy_object_set_plugin_signals (self, _tmp0_);
+	return obj;
+}
+
+
 static void peasy_object_class_init (PeasyObjectClass * klass) {
 	peasy_object_parent_class = g_type_class_peek_parent (klass);
+	g_type_class_add_private (klass, sizeof (PeasyObjectPrivate));
+	G_OBJECT_CLASS (klass)->get_property = _vala_peasy_object_get_property;
+	G_OBJECT_CLASS (klass)->set_property = _vala_peasy_object_set_property;
+	G_OBJECT_CLASS (klass)->constructor = peasy_object_constructor;
 	G_OBJECT_CLASS (klass)->finalize = peasy_object_finalize;
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_OBJECT_PLUGIN_SIGNALS, g_param_spec_object ("plugin-signals", "plugin-signals", "plugin-signals", PEASY_TYPE_SIGNALS, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 }
 
 
 static void peasy_object_instance_init (PeasyObject * self) {
+	self->priv = PEASY_OBJECT_GET_PRIVATE (self);
 }
 
 
 static void peasy_object_finalize (GObject* obj) {
 	PeasyObject * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_OBJECT, PeasyObject);
+	_g_object_unref0 (self->priv->_plugin_signals);
 	G_OBJECT_CLASS (peasy_object_parent_class)->finalize (obj);
 }
 
@@ -190,6 +241,34 @@ GType peasy_object_get_type (void) {
 		g_once_init_leave (&peasy_object_type_id__volatile, peasy_object_type_id);
 	}
 	return peasy_object_type_id__volatile;
+}
+
+
+static void _vala_peasy_object_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
+	PeasyObject * self;
+	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_OBJECT, PeasyObject);
+	switch (property_id) {
+		case PEASY_OBJECT_PLUGIN_SIGNALS:
+		g_value_set_object (value, peasy_object_get_plugin_signals (self));
+		break;
+		default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
+}
+
+
+static void _vala_peasy_object_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
+	PeasyObject * self;
+	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_OBJECT, PeasyObject);
+	switch (property_id) {
+		case PEASY_OBJECT_PLUGIN_SIGNALS:
+		peasy_object_set_plugin_signals (self, g_value_get_object (value));
+		break;
+		default:
+		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
+		break;
+	}
 }
 
 

@@ -1,0 +1,1269 @@
+<?xml version="1.0"?>
+<repository version="1.2" xmlns="http://www.gtk.org/introspection/core/1.0" xmlns:c="http://www.gtk.org/introspection/c/1.0" xmlns:glib="http://www.gtk.org/introspection/glib/1.0">
+<include name="GObject" version="2.0"/>
+<include name="GLib" version="2.0"/>
+<include name="Geany" version="1.0"/>
+<include name="Gio" version="2.0"/>
+<include name="Gtk" version="3.0"/>
+<include name="Gdk" version="3.0"/>
+<package name="libpeasy"/>
+<c:include name="peasy.h"/>
+<namespace name="Peasy" version="0.1" shared-library="libpeasy.so.0.0.0" c:prefix="Peasy">
+	<class name="Object" c:type="PeasyObject" glib:type-name="PeasyObject" glib:get-type="peasy_object_get_type" glib:type-struct="ObjectClass" parent="GObject.Object">
+		<field name="parent_instance">
+			<type name="GObject.Object" c:type="GObject"/>
+		</field>
+		<field name="priv">
+			<type name="ObjectPrivate" c:type="PeasyObjectPrivate*"/>
+		</field>
+		<function name="signal_connect" c:identifier="peasy_object_signal_connect">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="obj" transfer-ownership="none" allow-none="1">
+					<type name="GObject.Object" c:type="GObject*"/>
+				</parameter>
+				<parameter name="signal_name" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="after" transfer-ownership="none">
+					<type name="gboolean" c:type="gboolean"/>
+				</parameter>
+				<parameter name="cb" transfer-ownership="none" scope="call">
+					<type name="GObject.Callback" c:type="GCallback"/>
+				</parameter>
+				<parameter name="data" transfer-ownership="none" allow-none="1">
+					<type name="gpointer" c:type="void*"/>
+				</parameter>
+			</parameters>
+		</function>
+		<constructor name="new" c:identifier="peasy_object_new">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Object" c:type="PeasyObject*"/>
+			</return-value>
+		</constructor>
+		<property name="plugin-signals" writable="1">
+			<type name="Peasy.Signals" c:type="PeasySignals*"/>
+		</property>
+		<method name="get_plugin_signals" c:identifier="peasy_object_get_plugin_signals">
+			<return-value transfer-ownership="none">
+				<type name="Peasy.Signals" c:type="PeasySignals*"/>
+			</return-value>
+		</method>
+	</class>
+	<record name="ObjectClass" c:type="PeasyObjectClass" glib:is-gtype-struct-for="Object">
+		<field name="parent_class">
+			<type name="GObject.ObjectClass" c:type="GObjectClass"/>
+		</field>
+	</record>
+	<record name="ObjectPrivate" c:type="PeasyObjectPrivate" disguised="1"/>
+	<class name="Signals" c:type="PeasySignals" glib:type-name="PeasySignals" glib:get-type="peasy_signals_get_type" glib:type-struct="SignalsClass" parent="Peasy.Object">
+		<field name="parent_instance">
+			<type name="Peasy.Object" c:type="PeasyObject"/>
+		</field>
+		<field name="priv">
+			<type name="SignalsPrivate" c:type="PeasySignalsPrivate*"/>
+		</field>
+		<constructor name="new" c:identifier="peasy_signals_new">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Signals" c:type="PeasySignals*"/>
+			</return-value>
+		</constructor>
+		<glib:signal name="document_new">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="doc" transfer-ownership="none">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+		<glib:signal name="document_open">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="doc" transfer-ownership="none">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+		<glib:signal name="document_activate">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="doc" transfer-ownership="none">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+		<glib:signal name="document_reload">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="doc" transfer-ownership="none">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+		<glib:signal name="document_before_save">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="doc" transfer-ownership="none">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+		<glib:signal name="document_save">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="doc" transfer-ownership="none">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+		<glib:signal name="document_close">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="doc" transfer-ownership="none">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+		<glib:signal name="document_filetype_set">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="doc" transfer-ownership="none">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</parameter>
+				<parameter name="old_ft" transfer-ownership="none" allow-none="1">
+					<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+	</class>
+	<record name="SignalsClass" c:type="PeasySignalsClass" glib:is-gtype-struct-for="Signals">
+		<field name="parent_class">
+			<type name="Peasy.ObjectClass" c:type="PeasyObjectClass"/>
+		</field>
+	</record>
+	<record name="SignalsPrivate" c:type="PeasySignalsPrivate" disguised="1"/>
+	<class name="Plugin" c:type="PeasyPlugin" glib:type-name="PeasyPlugin" glib:get-type="peasy_plugin_get_type" glib:type-struct="PluginClass" parent="Peasy.Object" abstract="1">
+		<implements name="Peasy.PluginIface"/>
+		<field name="parent_instance">
+			<type name="Peasy.Object" c:type="PeasyObject"/>
+		</field>
+		<field name="priv">
+			<type name="PluginPrivate" c:type="PeasyPluginPrivate*"/>
+		</field>
+		<method name="enable" c:identifier="peasy_plugin_enable">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
+		<virtual-method name="enable" invoker="enable">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</virtual-method>
+		<method name="disable" c:identifier="peasy_plugin_disable">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</method>
+		<virtual-method name="disable" invoker="disable">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</virtual-method>
+		<method name="add_key_group" c:identifier="peasy_plugin_add_key_group">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.KeyGroup" c:type="PeasyKeyGroup*"/>
+			</return-value>
+			<parameters>
+				<parameter name="section_name" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="count" transfer-ownership="none">
+					<type name="gulong" c:type="gsize"/>
+				</parameter>
+			</parameters>
+		</method>
+	</class>
+	<record name="PluginClass" c:type="PeasyPluginClass" glib:is-gtype-struct-for="Plugin">
+		<field name="parent_class">
+			<type name="Peasy.ObjectClass" c:type="PeasyObjectClass"/>
+		</field>
+				<field name="enable">
+			<callback name="enable" c:type="enable">
+				<return-value transfer-ownership="full">
+					<type name="gboolean" c:type="gboolean"/>
+				</return-value>
+				<parameters>
+					<parameter name="self" transfer-ownership="none">
+						<type name="Peasy.Plugin" c:type="PeasyPlugin*"/>
+					</parameter>
+				</parameters>
+			</callback>
+		</field>
+				<field name="disable">
+			<callback name="disable" c:type="disable">
+				<return-value transfer-ownership="full">
+					<type name="none"/>
+				</return-value>
+				<parameters>
+					<parameter name="self" transfer-ownership="none">
+						<type name="Peasy.Plugin" c:type="PeasyPlugin*"/>
+					</parameter>
+				</parameters>
+			</callback>
+		</field>
+	</record>
+	<record name="PluginPrivate" c:type="PeasyPluginPrivate" disguised="1"/>
+	<class name="Document" c:type="PeasyDocument" glib:type-name="PeasyDocument" glib:get-type="peasy_document_get_type" glib:type-struct="DocumentClass" parent="Peasy.Object">
+		<field name="parent_instance">
+			<type name="Peasy.Object" c:type="PeasyObject"/>
+		</field>
+		<field name="priv">
+			<type name="DocumentPrivate" c:type="PeasyDocumentPrivate*"/>
+		</field>
+		<field name="editor">
+			<type name="Peasy.Editor" c:type="PeasyEditor*"/>
+		</field>
+		<function name="all_documents" c:identifier="peasy_document_all_documents">
+			<return-value transfer-ownership="full">
+				<array name="GLib.PtrArray" c:type="GPtrArray*">
+					<type name="Peasy.Document" c:type="PeasyDocument*"/>
+				</array>
+			</return-value>
+		</function>
+		<constructor name="new_file" c:identifier="peasy_document_new_new_file">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Document" c:type="PeasyDocument*"/>
+			</return-value>
+			<parameters>
+				<parameter name="utf8_filename" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="ft" transfer-ownership="none" allow-none="1">
+					<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+				</parameter>
+				<parameter name="text" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</constructor>
+		<constructor name="from_file" c:identifier="peasy_document_new_from_file">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Document" c:type="PeasyDocument*"/>
+			</return-value>
+			<parameters>
+				<parameter name="locale_filename" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="readonly" transfer-ownership="none">
+					<type name="gboolean" c:type="gboolean"/>
+				</parameter>
+				<parameter name="ft" transfer-ownership="none" allow-none="1">
+					<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+				</parameter>
+				<parameter name="forced_enc" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</constructor>
+		<function name="get_current" c:identifier="peasy_document_get_current">
+			<return-value transfer-ownership="full" allow-none="1">
+				<type name="Peasy.Document" c:type="PeasyDocument*"/>
+			</return-value>
+		</function>
+		<method name="close" c:identifier="peasy_document_close">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
+		<method name="save" c:identifier="peasy_document_save">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="force" transfer-ownership="none">
+					<type name="gboolean" c:type="gboolean"/>
+				</parameter>
+			</parameters>
+		</method>
+		<method name="save_as" c:identifier="peasy_document_save_as">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="file_name" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</method>
+		<method name="reload" c:identifier="peasy_document_reload">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="forced_enc" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</method>
+		<property name="changed" writable="1">
+			<type name="gboolean" c:type="gboolean"/>
+		</property>
+		<method name="get_changed" c:identifier="peasy_document_get_changed">
+			<return-value transfer-ownership="none">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
+		<method name="set_changed" c:identifier="peasy_document_set_changed">
+			<return-value transfer-ownership="none">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="value" transfer-ownership="none">
+					<type name="gboolean" c:type="gboolean"/>
+				</parameter>
+			</parameters>
+		</method>
+		<property name="encoding" writable="1">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_encoding" c:identifier="peasy_document_get_encoding">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<method name="set_encoding" c:identifier="peasy_document_set_encoding">
+			<return-value transfer-ownership="none">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="value" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</method>
+		<property name="is-valid">
+			<type name="gboolean" c:type="gboolean"/>
+		</property>
+		<method name="get_is_valid" c:identifier="peasy_document_get_is_valid">
+			<return-value transfer-ownership="none">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
+		<property name="has-bom">
+			<type name="gboolean" c:type="gboolean"/>
+		</property>
+		<method name="get_has_bom" c:identifier="peasy_document_get_has_bom">
+			<return-value transfer-ownership="none">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
+		<property name="has-tags">
+			<type name="gboolean" c:type="gboolean"/>
+		</property>
+		<method name="get_has_tags" c:identifier="peasy_document_get_has_tags">
+			<return-value transfer-ownership="none">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
+		<property name="id">
+			<type name="guint" c:type="guint"/>
+		</property>
+		<method name="get_id" c:identifier="peasy_document_get_id">
+			<return-value transfer-ownership="none">
+				<type name="guint" c:type="guint"/>
+			</return-value>
+		</method>
+		<property name="display-name">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_display_name" c:identifier="peasy_document_get_display_name">
+			<return-value transfer-ownership="full">
+				<type name="utf8" c:type="gchar*"/>
+			</return-value>
+		</method>
+		<glib:signal name="closing">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</glib:signal>
+		<glib:signal name="reloaded">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</glib:signal>
+		<glib:signal name="activate">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</glib:signal>
+		<glib:signal name="before_save">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</glib:signal>
+		<glib:signal name="saved">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</glib:signal>
+		<glib:signal name="filetype_set">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="old_ft" transfer-ownership="none" allow-none="1">
+					<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+				</parameter>
+			</parameters>
+		</glib:signal>
+	</class>
+	<record name="DocumentClass" c:type="PeasyDocumentClass" glib:is-gtype-struct-for="Document">
+		<field name="parent_class">
+			<type name="Peasy.ObjectClass" c:type="PeasyObjectClass"/>
+		</field>
+	</record>
+	<record name="DocumentPrivate" c:type="PeasyDocumentPrivate" disguised="1"/>
+	<class name="Filetype" c:type="PeasyFiletype" glib:type-name="PeasyFiletype" glib:get-type="peasy_filetype_get_type" glib:type-struct="FiletypeClass" parent="Peasy.Object">
+		<field name="parent_instance">
+			<type name="Peasy.Object" c:type="PeasyObject"/>
+		</field>
+		<field name="priv">
+			<type name="FiletypePrivate" c:type="PeasyFiletypePrivate*"/>
+		</field>
+		<function name="all_filetypes" c:identifier="peasy_filetype_all_filetypes">
+			<return-value transfer-ownership="full">
+				<array name="GLib.PtrArray" c:type="GPtrArray*">
+					<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+				</array>
+			</return-value>
+		</function>
+		<function name="get_by_id" c:identifier="peasy_filetype_get_by_id">
+			<return-value transfer-ownership="full" allow-none="1">
+				<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+			</return-value>
+			<parameters>
+				<parameter name="id" transfer-ownership="none">
+					<type name="Geany.FiletypeID" c:type="GeanyFiletypeID"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="get_by_name" c:identifier="peasy_filetype_get_by_name">
+			<return-value transfer-ownership="full" allow-none="1">
+				<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+			</return-value>
+			<parameters>
+				<parameter name="name" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="detect_from_file" c:identifier="peasy_filetype_detect_from_file">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+			</return-value>
+			<parameters>
+				<parameter name="filename" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</function>
+		<property name="id">
+			<type name="gint" c:type="gint"/>
+		</property>
+		<method name="get_id" c:identifier="peasy_filetype_get_id">
+			<return-value transfer-ownership="none">
+				<type name="gint" c:type="gint"/>
+			</return-value>
+		</method>
+		<property name="extension">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_extension" c:identifier="peasy_filetype_get_extension">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="name">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_name" c:identifier="peasy_filetype_get_name">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="title">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_title" c:identifier="peasy_filetype_get_title">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="display-name">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_display_name" c:identifier="peasy_filetype_get_display_name">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="mime-type">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_mime_type" c:identifier="peasy_filetype_get_mime_type">
+			<return-value transfer-ownership="none" allow-none="1">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="icon">
+			<type name="Gio.Icon" c:type="GIcon*"/>
+		</property>
+		<method name="get_icon" c:identifier="peasy_filetype_get_icon">
+			<return-value transfer-ownership="none" allow-none="1">
+				<type name="Gio.Icon" c:type="GIcon*"/>
+			</return-value>
+		</method>
+	</class>
+	<record name="FiletypeClass" c:type="PeasyFiletypeClass" glib:is-gtype-struct-for="Filetype">
+		<field name="parent_class">
+			<type name="Peasy.ObjectClass" c:type="PeasyObjectClass"/>
+		</field>
+	</record>
+	<record name="FiletypePrivate" c:type="PeasyFiletypePrivate" disguised="1"/>
+	<class name="Editor" c:type="PeasyEditor" glib:type-name="PeasyEditor" glib:get-type="peasy_editor_get_type" glib:type-struct="EditorClass" parent="GObject.Object">
+		<field name="parent_instance">
+			<type name="GObject.Object" c:type="GObject"/>
+		</field>
+		<field name="priv">
+			<type name="EditorPrivate" c:type="PeasyEditorPrivate*"/>
+		</field>
+		<field name="document" allow-none="1">
+			<type name="Peasy.Document" c:type="PeasyDocument*"/>
+		</field>
+		<method name="get_word_at" c:identifier="peasy_editor_get_word_at">
+			<return-value transfer-ownership="full" allow-none="1">
+				<type name="utf8" c:type="gchar*"/>
+			</return-value>
+			<parameters>
+				<parameter name="pos" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="wordchars" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</method>
+		<method name="goto" c:identifier="peasy_editor_goto">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="pos" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="mark" transfer-ownership="none">
+					<type name="gboolean" c:type="gboolean"/>
+				</parameter>
+			</parameters>
+		</method>
+		<method name="indicator_clear" c:identifier="peasy_editor_indicator_clear">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="indic" transfer-ownership="none">
+					<type name="Geany.Indicator" c:type="GeanyIndicator"/>
+				</parameter>
+			</parameters>
+		</method>
+		<method name="indicator_set_on_line" c:identifier="peasy_editor_indicator_set_on_line">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="indic" transfer-ownership="none">
+					<type name="Geany.Indicator" c:type="GeanyIndicator"/>
+				</parameter>
+				<parameter name="line" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</method>
+		<method name="indicator_set_on_range" c:identifier="peasy_editor_indicator_set_on_range">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="indic" transfer-ownership="none">
+					<type name="Geany.Indicator" c:type="GeanyIndicator"/>
+				</parameter>
+				<parameter name="start" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="end" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</method>
+		<constructor name="new" c:identifier="peasy_editor_new">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Editor" c:type="PeasyEditor*"/>
+			</return-value>
+		</constructor>
+		<property name="auto-indent">
+			<type name="gboolean" c:type="gboolean"/>
+		</property>
+		<method name="get_auto_indent" c:identifier="peasy_editor_get_auto_indent">
+			<return-value transfer-ownership="none">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
+		<property name="indent-type" writable="1">
+			<type name="Geany.IndentType" c:type="GeanyIndentType"/>
+		</property>
+		<method name="get_indent_type" c:identifier="peasy_editor_get_indent_type">
+			<return-value transfer-ownership="none">
+				<type name="Geany.IndentType" c:type="GeanyIndentType"/>
+			</return-value>
+		</method>
+		<method name="set_indent_type" c:identifier="peasy_editor_set_indent_type">
+			<return-value transfer-ownership="none">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="value" transfer-ownership="none">
+					<type name="Geany.IndentType" c:type="GeanyIndentType"/>
+				</parameter>
+			</parameters>
+		</method>
+		<property name="line-breaking">
+			<type name="gboolean" c:type="gboolean"/>
+		</property>
+		<method name="get_line_breaking" c:identifier="peasy_editor_get_line_breaking">
+			<return-value transfer-ownership="none">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
+	</class>
+	<record name="EditorClass" c:type="PeasyEditorClass" glib:is-gtype-struct-for="Editor">
+		<field name="parent_class">
+			<type name="GObject.ObjectClass" c:type="GObjectClass"/>
+		</field>
+	</record>
+	<record name="EditorPrivate" c:type="PeasyEditorPrivate" disguised="1"/>
+	<record name="Highlighting">
+		<function name="is_string_style" c:identifier="peasy_highlighting_is_string_style">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="lexer" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="style" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="is_comment_style" c:identifier="peasy_highlighting_is_comment_style">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="lexer" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="style" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="is_code_style" c:identifier="peasy_highlighting_is_code_style">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="lexer" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="style" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="get_lexer_style" c:identifier="peasy_highlighting_get_lexer_style">
+			<return-value transfer-ownership="none">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="ft" transfer-ownership="none">
+					<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+				</parameter>
+				<parameter name="style" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="result" direction="out" transfer-ownership="full" caller-allocates="1">
+					<type name="Geany.LexerStyle" c:type="GeanyLexerStyle*"/>
+				</parameter>
+			</parameters>
+		</function>
+	</record>
+	<class name="App" c:type="PeasyApp" glib:type-name="PeasyApp" glib:get-type="peasy_app_get_type" glib:type-struct="AppClass" parent="Peasy.Object">
+		<field name="parent_instance">
+			<type name="Peasy.Object" c:type="PeasyObject"/>
+		</field>
+		<field name="priv">
+			<type name="AppPrivate" c:type="PeasyAppPrivate*"/>
+		</field>
+		<field name="debug_mode">
+			<type name="gboolean" c:type="gboolean"/>
+		</field>
+		<field name="configdir">
+			<type name="utf8" c:type="const gchar*"/>
+		</field>
+		<field name="datadir">
+			<type name="utf8" c:type="const gchar*"/>
+		</field>
+		<field name="docdir">
+			<type name="utf8" c:type="const gchar*"/>
+		</field>
+		<constructor name="new" c:identifier="peasy_app_new">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.App" c:type="PeasyApp*"/>
+			</return-value>
+		</constructor>
+	</class>
+	<record name="AppClass" c:type="PeasyAppClass" glib:is-gtype-struct-for="App">
+		<field name="parent_class">
+			<type name="Peasy.ObjectClass" c:type="PeasyObjectClass"/>
+		</field>
+	</record>
+	<record name="AppPrivate" c:type="PeasyAppPrivate" disguised="1"/>
+	<class name="UiWidgets" c:type="PeasyUiWidgets" glib:type-name="PeasyUiWidgets" glib:get-type="peasy_ui_widgets_get_type" glib:type-struct="UiWidgetsClass" parent="Peasy.Object">
+		<field name="parent_instance">
+			<type name="Peasy.Object" c:type="PeasyObject"/>
+		</field>
+		<field name="priv">
+			<type name="UiWidgetsPrivate" c:type="PeasyUiWidgetsPrivate*"/>
+		</field>
+		<field name="window">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<field name="toolbar">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<field name="sidebar_notebook">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<field name="notebook">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<field name="editor_menu">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<field name="tools_menu">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<field name="progressbar">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<field name="message_window_notebook">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<field name="project_menu">
+			<type name="Gtk.Widget" c:type="GtkWidget*"/>
+		</field>
+		<constructor name="new" c:identifier="peasy_ui_widgets_new">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.UiWidgets" c:type="PeasyUiWidgets*"/>
+			</return-value>
+		</constructor>
+	</class>
+	<record name="UiWidgetsClass" c:type="PeasyUiWidgetsClass" glib:is-gtype-struct-for="UiWidgets">
+		<field name="parent_class">
+			<type name="Peasy.ObjectClass" c:type="PeasyObjectClass"/>
+		</field>
+	</record>
+	<record name="UiWidgetsPrivate" c:type="PeasyUiWidgetsPrivate" disguised="1"/>
+	<class name="Data" c:type="PeasyData" glib:type-name="PeasyData" glib:get-type="peasy_data_get_type" glib:type-struct="DataClass" parent="Peasy.Object">
+		<field name="parent_instance">
+			<type name="Peasy.Object" c:type="PeasyObject"/>
+		</field>
+		<field name="priv">
+			<type name="DataPrivate" c:type="PeasyDataPrivate*"/>
+		</field>
+		<field name="widgets">
+			<type name="Peasy.UiWidgets" c:type="PeasyUiWidgets*"/>
+		</field>
+		<field name="app">
+			<type name="Peasy.App" c:type="PeasyApp*"/>
+		</field>
+		<field name="prefs">
+			<type name="Geany.Prefs" c:type="GeanyPrefs*"/>
+		</field>
+		<field name="interface_prefs">
+			<type name="Geany.InterfacePrefs" c:type="GeanyInterfacePrefs*"/>
+		</field>
+		<field name="tool_prefs">
+			<type name="Geany.ToolPrefs" c:type="GeanyToolPrefs*"/>
+		</field>
+		<field name="toolbar_prefs">
+			<type name="Geany.ToolbarPrefs" c:type="GeanyToolbarPrefs*"/>
+		</field>
+		<field name="editor_prefs">
+			<type name="Geany.EditorPrefs" c:type="GeanyEditorPrefs*"/>
+		</field>
+		<field name="file_prefs">
+			<type name="Geany.FilePrefs" c:type="GeanyFilePrefs*"/>
+		</field>
+		<field name="search_prefs">
+			<type name="Geany.SearchPrefs" c:type="GeanySearchPrefs*"/>
+		</field>
+		<field name="template_prefs">
+			<type name="Geany.TemplatePrefs" c:type="GeanyTemplatePrefs*"/>
+		</field>
+		<field name="build_info">
+			<type name="Geany.BuildInfo" c:type="GeanyBuildInfo*"/>
+		</field>
+		<function name="instance" c:identifier="peasy_data_instance">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Data" c:type="PeasyData*"/>
+			</return-value>
+		</function>
+	</class>
+	<record name="DataClass" c:type="PeasyDataClass" glib:is-gtype-struct-for="Data">
+		<field name="parent_class">
+			<type name="Peasy.ObjectClass" c:type="PeasyObjectClass"/>
+		</field>
+	</record>
+	<record name="DataPrivate" c:type="PeasyDataPrivate" disguised="1"/>
+	<class name="UiUtils" c:type="PeasyUiUtils" glib:type-name="PeasyUiUtils" glib:get-type="peasy_ui_utils_get_type" glib:type-struct="UiUtilsClass" parent="GObject.Object">
+		<field name="parent_instance">
+			<type name="GObject.Object" c:type="GObject"/>
+		</field>
+		<field name="priv">
+			<type name="UiUtilsPrivate" c:type="PeasyUiUtilsPrivate*"/>
+		</field>
+		<function name="button_new_with_image" c:identifier="peasy_ui_utils_button_new_with_image">
+			<return-value transfer-ownership="full">
+				<type name="Gtk.Widget" c:type="GtkWidget*"/>
+			</return-value>
+			<parameters>
+				<parameter name="stock_id" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="text" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="image_menu_item_new" c:identifier="peasy_ui_utils_image_menu_item_new">
+			<return-value transfer-ownership="full">
+				<type name="Gtk.Widget" c:type="GtkWidget*"/>
+			</return-value>
+			<parameters>
+				<parameter name="stock_id" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="label" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="path_box_new" c:identifier="peasy_ui_utils_path_box_new">
+			<return-value transfer-ownership="full">
+				<type name="Gtk.Widget" c:type="GtkWidget*"/>
+			</return-value>
+			<parameters>
+				<parameter name="title" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="action" transfer-ownership="none">
+					<type name="Gtk.FileChooserAction" c:type="GtkFileChooserAction"/>
+				</parameter>
+				<parameter name="entry" transfer-ownership="none">
+					<type name="Gtk.Entry" c:type="GtkEntry*"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="dialog_vbox_new" c:identifier="peasy_ui_utils_dialog_vbox_new">
+			<return-value transfer-ownership="full">
+				<type name="Gtk.Widget" c:type="GtkWidget*"/>
+			</return-value>
+			<parameters>
+				<parameter name="dialog" transfer-ownership="none">
+					<type name="Gtk.Dialog" c:type="GtkDialog*"/>
+				</parameter>
+			</parameters>
+		</function>
+		<function name="add_document_sensitive" c:identifier="peasy_ui_utils_add_document_sensitive">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="widget" transfer-ownership="none">
+					<type name="Gtk.Widget" c:type="GtkWidget*"/>
+				</parameter>
+			</parameters>
+		</function>
+		<method name="lookup_widget" c:identifier="peasy_ui_utils_lookup_widget">
+			<return-value transfer-ownership="none" allow-none="1">
+				<type name="Gtk.Widget" c:type="GtkWidget*"/>
+			</return-value>
+			<parameters>
+				<parameter name="widget" transfer-ownership="none">
+					<type name="Gtk.Widget" c:type="GtkWidget*"/>
+				</parameter>
+				<parameter name="widget_name" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</method>
+		<constructor name="new" c:identifier="peasy_ui_utils_new">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.UiUtils" c:type="PeasyUiUtils*"/>
+			</return-value>
+		</constructor>
+	</class>
+	<record name="UiUtilsClass" c:type="PeasyUiUtilsClass" glib:is-gtype-struct-for="UiUtils">
+		<field name="parent_class">
+			<type name="GObject.ObjectClass" c:type="GObjectClass"/>
+		</field>
+	</record>
+	<record name="UiUtilsPrivate" c:type="PeasyUiUtilsPrivate" disguised="1"/>
+	<class name="KeyBinding" c:type="PeasyKeyBinding" glib:type-name="PeasyKeyBinding" glib:get-type="peasy_key_binding_get_type" glib:type-struct="KeyBindingClass" parent="GObject.Object">
+		<field name="parent_instance">
+			<type name="GObject.Object" c:type="GObject"/>
+		</field>
+		<field name="priv">
+			<type name="KeyBindingPrivate" c:type="PeasyKeyBindingPrivate*"/>
+		</field>
+		<method name="default_handler" c:identifier="peasy_key_binding_default_handler">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="id" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</method>
+		<virtual-method name="default_handler" invoker="default_handler">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="id" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</virtual-method>
+	</class>
+	<record name="KeyBindingClass" c:type="PeasyKeyBindingClass" glib:is-gtype-struct-for="KeyBinding">
+		<field name="parent_class">
+			<type name="GObject.ObjectClass" c:type="GObjectClass"/>
+		</field>
+				<field name="default_handler">
+			<callback name="default_handler" c:type="default_handler">
+				<return-value transfer-ownership="full">
+					<type name="gboolean" c:type="gboolean"/>
+				</return-value>
+				<parameters>
+					<parameter name="self" transfer-ownership="none">
+						<type name="Peasy.KeyBinding" c:type="PeasyKeyBinding*"/>
+					</parameter>
+					<parameter name="id" transfer-ownership="none">
+						<type name="gint" c:type="gint"/>
+					</parameter>
+				</parameters>
+			</callback>
+		</field>
+	</record>
+	<record name="KeyBindingPrivate" c:type="PeasyKeyBindingPrivate" disguised="1"/>
+	<class name="KeyGroup" c:type="PeasyKeyGroup" glib:type-name="PeasyKeyGroup" glib:get-type="peasy_key_group_get_type" glib:type-struct="KeyGroupClass" parent="GObject.Object">
+		<field name="parent_instance">
+			<type name="GObject.Object" c:type="GObject"/>
+		</field>
+		<field name="priv">
+			<type name="KeyGroupPrivate" c:type="PeasyKeyGroupPrivate*"/>
+		</field>
+		<method name="default_handler" c:identifier="peasy_key_group_default_handler">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="id" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</method>
+		<virtual-method name="default_handler" invoker="default_handler">
+			<return-value transfer-ownership="full">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+			<parameters>
+				<parameter name="id" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</virtual-method>
+		<method name="add_keybinding" c:identifier="peasy_key_group_add_keybinding">
+			<return-value transfer-ownership="full" allow-none="1">
+				<type name="Peasy.KeyBinding" c:type="PeasyKeyBinding*"/>
+			</return-value>
+			<parameters>
+				<parameter name="name" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="label" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="menu_item" transfer-ownership="none" allow-none="1">
+					<type name="Gtk.MenuItem" c:type="GtkMenuItem*"/>
+				</parameter>
+				<parameter name="def_key" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="def_mod" transfer-ownership="none">
+					<type name="Gdk.ModifierType" c:type="GdkModifierType"/>
+				</parameter>
+			</parameters>
+		</method>
+		<method name="add_keybinding_with_id" c:identifier="peasy_key_group_add_keybinding_with_id">
+			<return-value transfer-ownership="full" allow-none="1">
+				<type name="Peasy.KeyBinding" c:type="PeasyKeyBinding*"/>
+			</return-value>
+			<parameters>
+				<parameter name="name" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="label" transfer-ownership="none">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="menu_item" transfer-ownership="none" allow-none="1">
+					<type name="Gtk.MenuItem" c:type="GtkMenuItem*"/>
+				</parameter>
+				<parameter name="def_key" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+				<parameter name="def_mod" transfer-ownership="none">
+					<type name="Gdk.ModifierType" c:type="GdkModifierType"/>
+				</parameter>
+				<parameter name="id" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</method>
+		<method name="get_item" c:identifier="peasy_key_group_get_item">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.KeyBinding" c:type="PeasyKeyBinding*"/>
+			</return-value>
+			<parameters>
+				<parameter name="id" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</method>
+		<constructor name="new" c:identifier="peasy_key_group_new">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.KeyGroup" c:type="PeasyKeyGroup*"/>
+			</return-value>
+		</constructor>
+	</class>
+	<record name="KeyGroupClass" c:type="PeasyKeyGroupClass" glib:is-gtype-struct-for="KeyGroup">
+		<field name="parent_class">
+			<type name="GObject.ObjectClass" c:type="GObjectClass"/>
+		</field>
+				<field name="default_handler">
+			<callback name="default_handler" c:type="default_handler">
+				<return-value transfer-ownership="full">
+					<type name="gboolean" c:type="gboolean"/>
+				</return-value>
+				<parameters>
+					<parameter name="self" transfer-ownership="none">
+						<type name="Peasy.KeyGroup" c:type="PeasyKeyGroup*"/>
+					</parameter>
+					<parameter name="id" transfer-ownership="none">
+						<type name="gint" c:type="gint"/>
+					</parameter>
+				</parameters>
+			</callback>
+		</field>
+	</record>
+	<record name="KeyGroupPrivate" c:type="PeasyKeyGroupPrivate" disguised="1"/>
+	<interface name="PluginConfigure" c:type="PeasyPluginConfigure" glib:type-name="PeasyPluginConfigure" glib:get-type="peasy_plugin_configure_get_type" glib:type-struct="PluginConfigureIface">
+		<method name="configure" c:identifier="peasy_plugin_configure_configure">
+			<return-value transfer-ownership="full">
+				<type name="Gtk.Widget" c:type="GtkWidget*"/>
+			</return-value>
+			<parameters>
+				<parameter name="parent" transfer-ownership="none">
+					<type name="Gtk.Dialog" c:type="GtkDialog*"/>
+				</parameter>
+			</parameters>
+		</method>
+		<virtual-method name="configure" invoker="configure">
+			<return-value transfer-ownership="full">
+				<type name="Gtk.Widget" c:type="GtkWidget*"/>
+			</return-value>
+			<parameters>
+				<parameter name="parent" transfer-ownership="none">
+					<type name="Gtk.Dialog" c:type="GtkDialog*"/>
+				</parameter>
+			</parameters>
+		</virtual-method>
+	</interface>
+	<record name="PluginConfigureIface" c:type="PeasyPluginConfigureIface" glib:is-gtype-struct-for="PluginConfigure">
+		<field name="parent_iface">
+			<type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+		</field>
+		<field name="configure">
+			<callback name="configure" c:type="configure">
+				<return-value transfer-ownership="full">
+					<type name="Gtk.Widget" c:type="GtkWidget*"/>
+				</return-value>
+				<parameters>
+					<parameter name="self" transfer-ownership="none">
+						<type name="Peasy.PluginConfigure" c:type="PeasyPluginConfigure*"/>
+					</parameter>
+					<parameter name="parent" transfer-ownership="none">
+						<type name="Gtk.Dialog" c:type="GtkDialog*"/>
+					</parameter>
+				</parameters>
+			</callback>
+		</field>
+	</record>
+	<interface name="PluginHelp" c:type="PeasyPluginHelp" glib:type-name="PeasyPluginHelp" glib:get-type="peasy_plugin_help_get_type" glib:type-struct="PluginHelpIface">
+		<method name="help" c:identifier="peasy_plugin_help_help">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</method>
+		<virtual-method name="help" invoker="help">
+			<return-value transfer-ownership="full">
+				<type name="none"/>
+			</return-value>
+		</virtual-method>
+	</interface>
+	<record name="PluginHelpIface" c:type="PeasyPluginHelpIface" glib:is-gtype-struct-for="PluginHelp">
+		<field name="parent_iface">
+			<type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+		</field>
+		<field name="help">
+			<callback name="help" c:type="help">
+				<return-value transfer-ownership="full">
+					<type name="none"/>
+				</return-value>
+				<parameters>
+					<parameter name="self" transfer-ownership="none">
+						<type name="Peasy.PluginHelp" c:type="PeasyPluginHelp*"/>
+					</parameter>
+				</parameters>
+			</callback>
+		</field>
+	</record>
+	<interface name="PluginIface" c:type="PeasyPluginIface" glib:type-name="PeasyPluginIface" glib:get-type="peasy_plugin_iface_get_type" glib:type-struct="PluginIfaceIface">
+		<prerequisite name="GObject.Object"/>
+		<property name="geany-plugin" writable="1" construct="1">
+			<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+		</property>
+		<method name="get_geany_plugin" c:identifier="peasy_plugin_iface_get_geany_plugin">
+			<return-value transfer-ownership="none">
+				<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+			</return-value>
+		</method>
+		<virtual-method name="get_geany_plugin" invoker="get_geany_plugin">
+			<return-value transfer-ownership="none">
+				<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+			</return-value>
+		</virtual-method>
+		<method name="set_geany_plugin" c:identifier="peasy_plugin_iface_set_geany_plugin">
+			<return-value transfer-ownership="none">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="value" transfer-ownership="none">
+					<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+				</parameter>
+			</parameters>
+		</method>
+		<virtual-method name="set_geany_plugin" invoker="set_geany_plugin">
+			<return-value transfer-ownership="none">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="value" transfer-ownership="none">
+					<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+				</parameter>
+			</parameters>
+		</virtual-method>
+	</interface>
+	<record name="PluginIfaceIface" c:type="PeasyPluginIfaceIface" glib:is-gtype-struct-for="PluginIface">
+		<field name="parent_iface">
+			<type name="GObject.TypeInterface" c:type="GTypeInterface"/>
+		</field>
+		<field name="get_geany_plugin">
+			<callback name="get_geany_plugin" c:type="get_geany_plugin">
+				<return-value transfer-ownership="none">
+					<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+				</return-value>
+				<parameters>
+					<parameter name="self" transfer-ownership="none">
+						<type name="Peasy.PluginIface" c:type="PeasyPluginIface*"/>
+					</parameter>
+				</parameters>
+			</callback>
+		</field>
+		<field name="set_geany_plugin">
+			<callback name="set_geany_plugin" c:type="set_geany_plugin">
+				<return-value transfer-ownership="none">
+					<type name="none"/>
+				</return-value>
+				<parameters>
+					<parameter name="self" transfer-ownership="none">
+						<type name="Peasy.PluginIface" c:type="PeasyPluginIface*"/>
+					</parameter>
+					<parameter name="value" transfer-ownership="none">
+						<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+					</parameter>
+				</parameters>
+			</callback>
+		</field>
+	</record>
+	<field name="peasy_peasy_plugin">
+		<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+	</field>
+	<field name="peasy_peasy_signals">
+		<type name="Peasy.Signals" c:type="PeasySignals*"/>
+	</field>
+	<function name="static_init" c:identifier="peasy_static_init">
+		<return-value transfer-ownership="full">
+			<type name="none"/>
+		</return-value>
+		<parameters>
+			<parameter name="p" transfer-ownership="none">
+				<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
+			</parameter>
+		</parameters>
+	</function>
+</namespace>
+</repository>

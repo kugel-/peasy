@@ -55,6 +55,7 @@ VAPIGEN_CHECK
 
 AC_CONFIG_FILES([
 	Makefile
+	plugins/Makefile
 	src/Makefile
 	src/peasy/Makefile])
 AC_OUTPUT

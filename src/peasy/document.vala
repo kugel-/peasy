@@ -10,7 +10,7 @@ namespace Peasy
 		public static GenericArray<Document> all_documents()
 		{
 			GenericArray<Document> docs = new GenericArray<Document>();
-			geany_plugin.geany_data.documents_array.foreach((doc) => {
+			peasy_plugin.geany_data.documents_array.foreach((doc) => {
 				if (doc.is_valid)
 					docs.add(new Document(doc));
 			});
@@ -63,13 +63,12 @@ namespace Peasy
 		/* constructors */
 		construct
 		{
-			Signals s = peasy_signals();
-			s.document_close.connect((doc) => { if (doc._doc == this._doc) this.closing(); });
-			s.document_reload.connect((doc) => { if (doc._doc == this._doc) this.reloaded(); });
-			s.document_activate.connect((doc) => { if (doc._doc == this._doc) this.activate(); });
-			s.document_before_save.connect((doc) => { if (doc._doc == this._doc) this.before_save(); });
-			s.document_save.connect((doc) => { if (doc._doc == this._doc) this.saved(); });
-			s.document_filetype_set.connect((doc, ft) => { if (doc._doc == this._doc) this.filetype_set(ft); });
+			plugin_signals.document_close.connect((doc) => { if (doc._doc == this._doc) this.closing(); });
+			plugin_signals.document_reload.connect((doc) => { if (doc._doc == this._doc) this.reloaded(); });
+			plugin_signals.document_activate.connect((doc) => { if (doc._doc == this._doc) this.activate(); });
+			plugin_signals.document_before_save.connect((doc) => { if (doc._doc == this._doc) this.before_save(); });
+			plugin_signals.document_save.connect((doc) => { if (doc._doc == this._doc) this.saved(); });
+			plugin_signals.document_filetype_set.connect((doc, ft) => { if (doc._doc == this._doc) this.filetype_set(ft); });
 		}
 
 		internal Document(Geany.Document doc)
