@@ -51,7 +51,8 @@ namespace Peasy {
 	}
 	[CCode (cheader_filename = "peasy.h")]
 	public class Editor : GLib.Object {
-		public weak Peasy.Document? document;
+		public weak Peasy.Document document;
+		public GeanyScintilla.ScintillaObject sci;
 		public Editor ();
 		public string? get_word_at (int pos, string? wordchars = null);
 		public bool goto (int pos, bool mark = false);
@@ -59,8 +60,10 @@ namespace Peasy {
 		public void indicator_set_on_line (Geany.Indicator indic, int line);
 		public void indicator_set_on_range (Geany.Indicator indic, int start, int end);
 		public bool auto_indent { get; }
-		public Geany.IndentType indent_type { get; set; }
+		public Peasy.IndentType indent_type { get; set; }
+		public int indent_width { get; set; }
 		public bool line_breaking { get; }
+		public bool line_wrapping { get; }
 	}
 	[CCode (cheader_filename = "peasy.h")]
 	public class Filetype : Peasy.Object {
@@ -104,6 +107,7 @@ namespace Peasy {
 	}
 	[CCode (cheader_filename = "peasy.h")]
 	public abstract class Plugin : Peasy.Object, Peasy.PluginIface {
+		public Peasy.Data data;
 		public Peasy.KeyGroup add_key_group (string section_name, size_t count);
 		public abstract void disable ();
 		public abstract bool enable ();
@@ -154,6 +158,24 @@ namespace Peasy {
 	[CCode (cheader_filename = "peasy.h")]
 	public interface PluginIface : GLib.Object {
 		public abstract Geany.Plugin geany_plugin { get; set construct; }
+	}
+	[CCode (cheader_filename = "peasy.h")]
+	public enum AutoIndent {
+		NONE,
+		BASIC,
+		CURRENTCHARS,
+		MATCHBRACES
+	}
+	[CCode (cheader_filename = "peasy.h")]
+	public enum IndentType {
+		TABS,
+		SPACES,
+		BOTH
+	}
+	[CCode (cheader_filename = "peasy.h")]
+	public enum Indicator {
+		ERROR,
+		SEARCH
 	}
 	[CCode (cheader_filename = "peasy.h")]
 	public static weak Geany.Plugin peasy_plugin;

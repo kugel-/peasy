@@ -9,6 +9,12 @@
 #include <string.h>
 
 
+#define PEASY_TYPE_INDENT_TYPE (peasy_indent_type_get_type ())
+
+#define PEASY_TYPE_AUTO_INDENT (peasy_auto_indent_get_type ())
+
+#define PEASY_TYPE_INDICATOR (peasy_indicator_get_type ())
+
 #define PEASY_TYPE_EDITOR (peasy_editor_get_type ())
 #define PEASY_EDITOR(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_EDITOR, PeasyEditor))
 #define PEASY_EDITOR_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_EDITOR, PeasyEditorClass))
@@ -39,13 +45,33 @@ typedef struct _PeasyObjectClass PeasyObjectClass;
 
 typedef struct _PeasyDocument PeasyDocument;
 typedef struct _PeasyDocumentClass PeasyDocumentClass;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 typedef struct _PeasyObjectPrivate PeasyObjectPrivate;
 typedef struct _PeasyDocumentPrivate PeasyDocumentPrivate;
+
+typedef enum  {
+	PEASY_INDENT_TYPE_TABS = GEANY_INDENT_TYPE_TABS,
+	PEASY_INDENT_TYPE_SPACES = GEANY_INDENT_TYPE_SPACES,
+	PEASY_INDENT_TYPE_BOTH = GEANY_INDENT_TYPE_BOTH
+} PeasyIndentType;
+
+typedef enum  {
+	PEASY_AUTO_INDENT_NONE = GEANY_AUTOINDENT_NONE,
+	PEASY_AUTO_INDENT_BASIC = GEANY_AUTOINDENT_BASIC,
+	PEASY_AUTO_INDENT_CURRENTCHARS = GEANY_AUTOINDENT_CURRENTCHARS,
+	PEASY_AUTO_INDENT_MATCHBRACES = GEANY_AUTOINDENT_MATCHBRACES
+} PeasyAutoIndent;
+
+typedef enum  {
+	PEASY_INDICATOR_ERROR = GEANY_INDICATOR_ERROR,
+	PEASY_INDICATOR_SEARCH = GEANY_INDICATOR_SEARCH
+} PeasyIndicator;
 
 struct _PeasyEditor {
 	GObject parent_instance;
 	PeasyEditorPrivate * priv;
 	PeasyDocument* document;
+	ScintillaObject* sci;
 	GeanyEditor* _editor;
 };
 
@@ -76,14 +102,19 @@ struct _PeasyDocumentClass {
 
 static gpointer peasy_editor_parent_class = NULL;
 
+GType peasy_indent_type_get_type (void) G_GNUC_CONST;
+GType peasy_auto_indent_get_type (void) G_GNUC_CONST;
+GType peasy_indicator_get_type (void) G_GNUC_CONST;
 GType peasy_editor_get_type (void) G_GNUC_CONST;
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_document_get_type (void) G_GNUC_CONST;
 enum  {
 	PEASY_EDITOR_DUMMY_PROPERTY,
+	PEASY_EDITOR_LINE_WRAPPING,
 	PEASY_EDITOR_AUTO_INDENT,
 	PEASY_EDITOR_INDENT_TYPE,
-	PEASY_EDITOR_LINE_BREAKING
+	PEASY_EDITOR_LINE_BREAKING,
+	PEASY_EDITOR_INDENT_WIDTH
 };
 PeasyEditor* peasy_editor_new_create (PeasyDocument* doc);
 PeasyEditor* peasy_editor_construct_create (GType object_type, PeasyDocument* doc);
@@ -94,13 +125,57 @@ void peasy_editor_indicator_set_on_line (PeasyEditor* self, GeanyIndicator indic
 void peasy_editor_indicator_set_on_range (PeasyEditor* self, GeanyIndicator indic, gint start, gint end);
 PeasyEditor* peasy_editor_new (void);
 PeasyEditor* peasy_editor_construct (GType object_type);
+gboolean peasy_editor_get_line_wrapping (PeasyEditor* self);
 gboolean peasy_editor_get_auto_indent (PeasyEditor* self);
-GeanyIndentType peasy_editor_get_indent_type (PeasyEditor* self);
-void peasy_editor_set_indent_type (PeasyEditor* self, GeanyIndentType value);
+PeasyIndentType peasy_editor_get_indent_type (PeasyEditor* self);
+void peasy_editor_set_indent_type (PeasyEditor* self, PeasyIndentType value);
 gboolean peasy_editor_get_line_breaking (PeasyEditor* self);
+gint peasy_editor_get_indent_width (PeasyEditor* self);
+void peasy_editor_set_indent_width (PeasyEditor* self, gint value);
 static void peasy_editor_finalize (GObject* obj);
 static void _vala_peasy_editor_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void _vala_peasy_editor_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
+
+
+GType peasy_indent_type_get_type (void) {
+	static volatile gsize peasy_indent_type_type_id__volatile = 0;
+	if (g_once_init_enter (&peasy_indent_type_type_id__volatile)) {
+		static const GEnumValue values[] = {{PEASY_INDENT_TYPE_TABS, "PEASY_INDENT_TYPE_TABS", "tabs"}, {PEASY_INDENT_TYPE_SPACES, "PEASY_INDENT_TYPE_SPACES", "spaces"}, {PEASY_INDENT_TYPE_BOTH, "PEASY_INDENT_TYPE_BOTH", "both"}, {0, NULL, NULL}};
+		GType peasy_indent_type_type_id;
+		peasy_indent_type_type_id = g_enum_register_static ("PeasyIndentType", values);
+		g_once_init_leave (&peasy_indent_type_type_id__volatile, peasy_indent_type_type_id);
+	}
+	return peasy_indent_type_type_id__volatile;
+}
+
+
+GType peasy_auto_indent_get_type (void) {
+	static volatile gsize peasy_auto_indent_type_id__volatile = 0;
+	if (g_once_init_enter (&peasy_auto_indent_type_id__volatile)) {
+		static const GEnumValue values[] = {{PEASY_AUTO_INDENT_NONE, "PEASY_AUTO_INDENT_NONE", "none"}, {PEASY_AUTO_INDENT_BASIC, "PEASY_AUTO_INDENT_BASIC", "basic"}, {PEASY_AUTO_INDENT_CURRENTCHARS, "PEASY_AUTO_INDENT_CURRENTCHARS", "currentchars"}, {PEASY_AUTO_INDENT_MATCHBRACES, "PEASY_AUTO_INDENT_MATCHBRACES", "matchbraces"}, {0, NULL, NULL}};
+		GType peasy_auto_indent_type_id;
+		peasy_auto_indent_type_id = g_enum_register_static ("PeasyAutoIndent", values);
+		g_once_init_leave (&peasy_auto_indent_type_id__volatile, peasy_auto_indent_type_id);
+	}
+	return peasy_auto_indent_type_id__volatile;
+}
+
+
+GType peasy_indicator_get_type (void) {
+	static volatile gsize peasy_indicator_type_id__volatile = 0;
+	if (g_once_init_enter (&peasy_indicator_type_id__volatile)) {
+		static const GEnumValue values[] = {{PEASY_INDICATOR_ERROR, "PEASY_INDICATOR_ERROR", "error"}, {PEASY_INDICATOR_SEARCH, "PEASY_INDICATOR_SEARCH", "search"}, {0, NULL, NULL}};
+		GType peasy_indicator_type_id;
+		peasy_indicator_type_id = g_enum_register_static ("PeasyIndicator", values);
+		g_once_init_leave (&peasy_indicator_type_id__volatile, peasy_indicator_type_id);
+	}
+	return peasy_indicator_type_id__volatile;
+}
+
+
+static gpointer _g_object_ref0 (gpointer self) {
+	return self ? g_object_ref (self) : NULL;
+}
 
 
 PeasyEditor* peasy_editor_construct_create (GType object_type, PeasyDocument* doc) {
@@ -109,6 +184,9 @@ PeasyEditor* peasy_editor_construct_create (GType object_type, PeasyDocument* do
 	GeanyDocument* _tmp1_ = NULL;
 	GeanyEditor* _tmp2_ = NULL;
 	PeasyDocument* _tmp3_ = NULL;
+	GeanyEditor* _tmp4_ = NULL;
+	ScintillaObject* _tmp5_ = NULL;
+	ScintillaObject* _tmp6_ = NULL;
 	g_return_val_if_fail (doc != NULL, NULL);
 	self = (PeasyEditor*) g_object_new (object_type, NULL);
 	_tmp0_ = doc;
@@ -117,6 +195,11 @@ PeasyEditor* peasy_editor_construct_create (GType object_type, PeasyDocument* do
 	self->_editor = _tmp2_;
 	_tmp3_ = doc;
 	self->document = _tmp3_;
+	_tmp4_ = self->_editor;
+	_tmp5_ = _tmp4_->sci;
+	_tmp6_ = _g_object_ref0 (_tmp5_);
+	_g_object_unref0 (self->sci);
+	self->sci = _tmp6_;
 	return self;
 }
 
@@ -206,6 +289,18 @@ PeasyEditor* peasy_editor_new (void) {
 }
 
 
+gboolean peasy_editor_get_line_wrapping (PeasyEditor* self) {
+	gboolean result;
+	GeanyEditor* _tmp0_ = NULL;
+	gboolean _tmp1_ = FALSE;
+	g_return_val_if_fail (self != NULL, FALSE);
+	_tmp0_ = self->_editor;
+	_tmp1_ = _tmp0_->line_wrapping;
+	result = _tmp1_;
+	return result;
+}
+
+
 gboolean peasy_editor_get_auto_indent (PeasyEditor* self) {
 	gboolean result;
 	GeanyEditor* _tmp0_ = NULL;
@@ -218,25 +313,25 @@ gboolean peasy_editor_get_auto_indent (PeasyEditor* self) {
 }
 
 
-GeanyIndentType peasy_editor_get_indent_type (PeasyEditor* self) {
-	GeanyIndentType result;
+PeasyIndentType peasy_editor_get_indent_type (PeasyEditor* self) {
+	PeasyIndentType result;
 	GeanyEditor* _tmp0_ = NULL;
 	GeanyIndentType _tmp1_ = 0;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->_editor;
 	_tmp1_ = _tmp0_->indent_type;
-	result = _tmp1_;
+	result = (PeasyIndentType) ((gint) _tmp1_);
 	return result;
 }
 
 
-void peasy_editor_set_indent_type (PeasyEditor* self, GeanyIndentType value) {
+void peasy_editor_set_indent_type (PeasyEditor* self, PeasyIndentType value) {
 	GeanyEditor* _tmp0_ = NULL;
-	GeanyIndentType _tmp1_ = 0;
+	PeasyIndentType _tmp1_ = 0;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->_editor;
 	_tmp1_ = value;
-	editor_set_indent_type (_tmp0_, _tmp1_);
+	editor_set_indent_type (_tmp0_, (GeanyIndentType) ((gint) _tmp1_));
 	g_object_notify ((GObject *) self, "indent-type");
 }
 
@@ -253,14 +348,39 @@ gboolean peasy_editor_get_line_breaking (PeasyEditor* self) {
 }
 
 
+gint peasy_editor_get_indent_width (PeasyEditor* self) {
+	gint result;
+	GeanyEditor* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	g_return_val_if_fail (self != NULL, 0);
+	_tmp0_ = self->_editor;
+	_tmp1_ = _tmp0_->indent_width;
+	result = _tmp1_;
+	return result;
+}
+
+
+void peasy_editor_set_indent_width (PeasyEditor* self, gint value) {
+	GeanyEditor* _tmp0_ = NULL;
+	gint _tmp1_ = 0;
+	g_return_if_fail (self != NULL);
+	_tmp0_ = self->_editor;
+	_tmp1_ = value;
+	editor_set_indent_width (_tmp0_, _tmp1_);
+	g_object_notify ((GObject *) self, "indent-width");
+}
+
+
 static void peasy_editor_class_init (PeasyEditorClass * klass) {
 	peasy_editor_parent_class = g_type_class_peek_parent (klass);
 	G_OBJECT_CLASS (klass)->get_property = _vala_peasy_editor_get_property;
 	G_OBJECT_CLASS (klass)->set_property = _vala_peasy_editor_set_property;
 	G_OBJECT_CLASS (klass)->finalize = peasy_editor_finalize;
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_EDITOR_LINE_WRAPPING, g_param_spec_boolean ("line-wrapping", "line-wrapping", "line-wrapping", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_EDITOR_AUTO_INDENT, g_param_spec_boolean ("auto-indent", "auto-indent", "auto-indent", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_EDITOR_INDENT_TYPE, g_param_spec_int ("indent-type", "indent-type", "indent-type", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_EDITOR_INDENT_TYPE, g_param_spec_enum ("indent-type", "indent-type", "indent-type", PEASY_TYPE_INDENT_TYPE, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_EDITOR_LINE_BREAKING, g_param_spec_boolean ("line-breaking", "line-breaking", "line-breaking", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_EDITOR_INDENT_WIDTH, g_param_spec_int ("indent-width", "indent-width", "indent-width", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
 }
 
 
@@ -271,6 +391,7 @@ static void peasy_editor_instance_init (PeasyEditor * self) {
 static void peasy_editor_finalize (GObject* obj) {
 	PeasyEditor * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_EDITOR, PeasyEditor);
+	_g_object_unref0 (self->sci);
 	G_OBJECT_CLASS (peasy_editor_parent_class)->finalize (obj);
 }
 
@@ -291,14 +412,20 @@ static void _vala_peasy_editor_get_property (GObject * object, guint property_id
 	PeasyEditor * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_EDITOR, PeasyEditor);
 	switch (property_id) {
+		case PEASY_EDITOR_LINE_WRAPPING:
+		g_value_set_boolean (value, peasy_editor_get_line_wrapping (self));
+		break;
 		case PEASY_EDITOR_AUTO_INDENT:
 		g_value_set_boolean (value, peasy_editor_get_auto_indent (self));
 		break;
 		case PEASY_EDITOR_INDENT_TYPE:
-		g_value_set_int (value, peasy_editor_get_indent_type (self));
+		g_value_set_enum (value, peasy_editor_get_indent_type (self));
 		break;
 		case PEASY_EDITOR_LINE_BREAKING:
 		g_value_set_boolean (value, peasy_editor_get_line_breaking (self));
+		break;
+		case PEASY_EDITOR_INDENT_WIDTH:
+		g_value_set_int (value, peasy_editor_get_indent_width (self));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -312,7 +439,10 @@ static void _vala_peasy_editor_set_property (GObject * object, guint property_id
 	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_EDITOR, PeasyEditor);
 	switch (property_id) {
 		case PEASY_EDITOR_INDENT_TYPE:
-		peasy_editor_set_indent_type (self, g_value_get_int (value));
+		peasy_editor_set_indent_type (self, g_value_get_enum (value));
+		break;
+		case PEASY_EDITOR_INDENT_WIDTH:
+		peasy_editor_set_indent_width (self, g_value_get_int (value));
 		break;
 		default:
 		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);

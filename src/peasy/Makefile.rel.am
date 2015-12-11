@@ -12,7 +12,8 @@ lib_LTLIBRARIES += %D%/libpeasy.la
 	%D%/keygroup.vala \
 	%D%/keygroup_c.c
 
-%C%_libpeasy_la_VALAFLAGS   = --vapidir $(GEANY_VAPIDIR) --pkg libpeas-1.0 --pkg geany-1.0 --library libpeasy \
+%C%_libpeasy_la_VALAFLAGS   = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintilla-1.0 \
+                              --vapidir $(GEANY_VAPIDIR) --library libpeasy \
                               --gir=%D%/Peasy-0.1.gir --vapi=%D%/peasy-0.1.vapi \
                               --disable-version-header -H %D%/peasy.h \
                               --shared-library=libpeasy.so.0.0.0

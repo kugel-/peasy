@@ -2,47 +2,66 @@ using Geany;
 
 namespace Peasy
 {
+	public enum IndentType
+	{
+		TABS = Geany.IndentType.TABS,
+		SPACES = Geany.IndentType.SPACES,
+		BOTH = Geany.IndentType.BOTH,
+	}
+
+	public enum AutoIndent
+	{
+		NONE = Geany.AutoIndent.NONE,
+		BASIC = Geany.AutoIndent.BASIC,
+		CURRENTCHARS = Geany.AutoIndent.CURRENTCHARS,
+		MATCHBRACES = Geany.AutoIndent.MATCHBRACES,
+	}
+
+	public enum Indicator
+	{
+		ERROR = Geany.Indicator.ERROR,
+		SEARCH = Geany.Indicator.SEARCH,
+	}
+
 	public class Editor : GLib.Object
 	{
 		/* weak reference to avoid cyclic reference */
-		public weak Document? document;
-#if 0
-		public Scintilla.Object sci;
-#endif
-#if 0
+		public weak Document   document;
+		public GeanyScintilla.ScintillaObject sci;
+
 		/* Properties */
 		public bool line_wrapping {
 			get { return _editor.line_wrapping; }
+#if 0
 			set { _editor.set_line_wrapping(value); }
-		}
 #endif
+		}
+
 		public bool auto_indent {
 			get { return _editor.auto_indent; }
 			/* no setter defined */
 		}
-		public Geany.IndentType indent_type {
-			get { return _editor.indent_type; }
-			set { _editor.set_indent_type(value); }
+		public IndentType indent_type {
+			get { return (IndentType)(int)_editor.indent_type; }
+			set { _editor.set_indent_type((Geany.IndentType)(int)value); }
 		}
+
 		public bool line_breaking {
 			get { return _editor.line_breaking; }
 			/* editor_set_line_wrapping() is not in the plugin api */
 		}
-#if 0
+
 		public int indent_width {
 			get { return _editor.indent_width; }
 			set { _editor.set_indent_width(value); }
 		}
-#endif
 
 		/* This constructor is specifically for GeanyGI.Document, analogous to editor_create() */
 		internal Editor.create(Peasy.Document doc)
 		{
 			_editor = doc._doc.editor;
 			document = doc;
-#if 0
 			sci = _editor.sci;
-#endif
 		}
 
 		public string? get_word_at(int pos, string? wordchars = null)

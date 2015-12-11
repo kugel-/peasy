@@ -16,7 +16,9 @@ public abstract class Plugin: Object, PluginIface
 {
 	public abstract bool enable();
 	public abstract void disable();
+
 	public unowned Geany.Plugin geany_plugin { construct set; public get; }
+	public Data                 data = Data.instance();
 
 	private Plugin()
 	{

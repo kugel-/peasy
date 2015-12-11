@@ -56,6 +56,17 @@ typedef struct _PeasyPlugin PeasyPlugin;
 typedef struct _PeasyPluginClass PeasyPluginClass;
 typedef struct _PeasyPluginPrivate PeasyPluginPrivate;
 
+#define PEASY_TYPE_DATA (peasy_data_get_type ())
+#define PEASY_DATA(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_DATA, PeasyData))
+#define PEASY_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_DATA, PeasyDataClass))
+#define PEASY_IS_DATA(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_DATA))
+#define PEASY_IS_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_DATA))
+#define PEASY_DATA_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_DATA, PeasyDataClass))
+
+typedef struct _PeasyData PeasyData;
+typedef struct _PeasyDataClass PeasyDataClass;
+#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+
 #define PEASY_TYPE_KEY_GROUP (peasy_key_group_get_type ())
 #define PEASY_KEY_GROUP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_KEY_GROUP, PeasyKeyGroup))
 #define PEASY_KEY_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupClass))
@@ -94,6 +105,7 @@ struct _PeasyPluginIfaceIface {
 struct _PeasyPlugin {
 	PeasyObject parent_instance;
 	PeasyPluginPrivate * priv;
+	PeasyData* data;
 };
 
 struct _PeasyPluginClass {
@@ -117,11 +129,13 @@ void peasy_plugin_help_help (PeasyPluginHelp* self);
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_plugin_iface_get_type (void) G_GNUC_CONST;
 GType peasy_plugin_get_type (void) G_GNUC_CONST;
+GType peasy_data_get_type (void) G_GNUC_CONST;
 #define PEASY_PLUGIN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_PLUGIN, PeasyPluginPrivate))
 enum  {
 	PEASY_PLUGIN_DUMMY_PROPERTY,
 	PEASY_PLUGIN_GEANY_PLUGIN
 };
+PeasyData* peasy_data_instance (void);
 gboolean peasy_plugin_enable (PeasyPlugin* self);
 static gboolean peasy_plugin_real_enable (PeasyPlugin* self);
 void peasy_plugin_disable (PeasyPlugin* self);
@@ -288,13 +302,17 @@ static void peasy_plugin_peasy_plugin_iface_interface_init (PeasyPluginIfaceIfac
 
 
 static void peasy_plugin_instance_init (PeasyPlugin * self) {
+	PeasyData* _tmp0_ = NULL;
 	self->priv = PEASY_PLUGIN_GET_PRIVATE (self);
+	_tmp0_ = peasy_data_instance ();
+	self->data = _tmp0_;
 }
 
 
 static void peasy_plugin_finalize (GObject* obj) {
 	PeasyPlugin * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_PLUGIN, PeasyPlugin);
+	_g_object_unref0 (self->data);
 	G_OBJECT_CLASS (peasy_plugin_parent_class)->finalize (obj);
 }
 

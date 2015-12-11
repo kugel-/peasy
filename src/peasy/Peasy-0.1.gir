@@ -4,11 +4,27 @@
 <include name="GLib" version="2.0"/>
 <include name="Geany" version="1.0"/>
 <include name="Gio" version="2.0"/>
+<include name="GeanyScintilla" version="1.0"/>
 <include name="Gtk" version="3.0"/>
 <include name="Gdk" version="3.0"/>
 <package name="libpeasy"/>
 <c:include name="peasy.h"/>
 <namespace name="Peasy" version="0.1" shared-library="libpeasy.so.0.0.0" c:prefix="Peasy">
+	<enumeration name="IndentType" c:type="PeasyIndentType" glib:type-name="PeasyIndentType" glib:get-type="peasy_indent_type_get_type">
+		<member name="tabs" c:identifier="PEASY_INDENT_TYPE_TABS" value="(null)"/>
+		<member name="spaces" c:identifier="PEASY_INDENT_TYPE_SPACES" value="(null)"/>
+		<member name="both" c:identifier="PEASY_INDENT_TYPE_BOTH" value="(null)"/>
+	</enumeration>
+	<enumeration name="AutoIndent" c:type="PeasyAutoIndent" glib:type-name="PeasyAutoIndent" glib:get-type="peasy_auto_indent_get_type">
+		<member name="none" c:identifier="PEASY_AUTO_INDENT_NONE" value="(null)"/>
+		<member name="basic" c:identifier="PEASY_AUTO_INDENT_BASIC" value="(null)"/>
+		<member name="currentchars" c:identifier="PEASY_AUTO_INDENT_CURRENTCHARS" value="(null)"/>
+		<member name="matchbraces" c:identifier="PEASY_AUTO_INDENT_MATCHBRACES" value="(null)"/>
+	</enumeration>
+	<enumeration name="Indicator" c:type="PeasyIndicator" glib:type-name="PeasyIndicator" glib:get-type="peasy_indicator_get_type">
+		<member name="error" c:identifier="PEASY_INDICATOR_ERROR" value="(null)"/>
+		<member name="search" c:identifier="PEASY_INDICATOR_SEARCH" value="(null)"/>
+	</enumeration>
 	<class name="Object" c:type="PeasyObject" glib:type-name="PeasyObject" glib:get-type="peasy_object_get_type" glib:type-struct="ObjectClass" parent="GObject.Object">
 		<field name="parent_instance">
 			<type name="GObject.Object" c:type="GObject"/>
@@ -167,6 +183,9 @@
 		</field>
 		<field name="priv">
 			<type name="PluginPrivate" c:type="PeasyPluginPrivate*"/>
+		</field>
+		<field name="data">
+			<type name="Peasy.Data" c:type="PeasyData*"/>
 		</field>
 		<method name="enable" c:identifier="peasy_plugin_enable">
 			<return-value transfer-ownership="full">
@@ -556,8 +575,11 @@
 		<field name="priv">
 			<type name="EditorPrivate" c:type="PeasyEditorPrivate*"/>
 		</field>
-		<field name="document" allow-none="1">
+		<field name="document">
 			<type name="Peasy.Document" c:type="PeasyDocument*"/>
+		</field>
+		<field name="sci">
+			<type name="GeanyScintilla.ScintillaObject" c:type="ScintillaObject*"/>
 		</field>
 		<method name="get_word_at" c:identifier="peasy_editor_get_word_at">
 			<return-value transfer-ownership="full" allow-none="1">
@@ -629,6 +651,14 @@
 				<type name="Peasy.Editor" c:type="PeasyEditor*"/>
 			</return-value>
 		</constructor>
+		<property name="line-wrapping">
+			<type name="gboolean" c:type="gboolean"/>
+		</property>
+		<method name="get_line_wrapping" c:identifier="peasy_editor_get_line_wrapping">
+			<return-value transfer-ownership="none">
+				<type name="gboolean" c:type="gboolean"/>
+			</return-value>
+		</method>
 		<property name="auto-indent">
 			<type name="gboolean" c:type="gboolean"/>
 		</property>
@@ -638,11 +668,11 @@
 			</return-value>
 		</method>
 		<property name="indent-type" writable="1">
-			<type name="Geany.IndentType" c:type="GeanyIndentType"/>
+			<type name="Peasy.IndentType" c:type="PeasyIndentType"/>
 		</property>
 		<method name="get_indent_type" c:identifier="peasy_editor_get_indent_type">
 			<return-value transfer-ownership="none">
-				<type name="Geany.IndentType" c:type="GeanyIndentType"/>
+				<type name="Peasy.IndentType" c:type="PeasyIndentType"/>
 			</return-value>
 		</method>
 		<method name="set_indent_type" c:identifier="peasy_editor_set_indent_type">
@@ -651,7 +681,7 @@
 			</return-value>
 			<parameters>
 				<parameter name="value" transfer-ownership="none">
-					<type name="Geany.IndentType" c:type="GeanyIndentType"/>
+					<type name="Peasy.IndentType" c:type="PeasyIndentType"/>
 				</parameter>
 			</parameters>
 		</method>
@@ -662,6 +692,24 @@
 			<return-value transfer-ownership="none">
 				<type name="gboolean" c:type="gboolean"/>
 			</return-value>
+		</method>
+		<property name="indent-width" writable="1">
+			<type name="gint" c:type="gint"/>
+		</property>
+		<method name="get_indent_width" c:identifier="peasy_editor_get_indent_width">
+			<return-value transfer-ownership="none">
+				<type name="gint" c:type="gint"/>
+			</return-value>
+		</method>
+		<method name="set_indent_width" c:identifier="peasy_editor_set_indent_width">
+			<return-value transfer-ownership="none">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="value" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
 		</method>
 	</class>
 	<record name="EditorClass" c:type="PeasyEditorClass" glib:is-gtype-struct-for="Editor">

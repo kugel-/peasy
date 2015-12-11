@@ -8,4 +8,5 @@ plugin_LTLIBRARIES += %D%/libpeasytest.la
 
 dist_plugin_DATA  += %D%/peasytest.plugin \
                      %D%/console-peasy.py %D%/console-peasy.plugin \
+                     %D%/modeline.py %D%/modeline.plugin \
                      %D%/peasypytest.py %D%/peasypytest.plugin

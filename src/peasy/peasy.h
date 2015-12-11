@@ -73,6 +73,16 @@ typedef struct _PeasyPlugin PeasyPlugin;
 typedef struct _PeasyPluginClass PeasyPluginClass;
 typedef struct _PeasyPluginPrivate PeasyPluginPrivate;
 
+#define PEASY_TYPE_DATA (peasy_data_get_type ())
+#define PEASY_DATA(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_DATA, PeasyData))
+#define PEASY_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_DATA, PeasyDataClass))
+#define PEASY_IS_DATA(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_DATA))
+#define PEASY_IS_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_DATA))
+#define PEASY_DATA_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_DATA, PeasyDataClass))
+
+typedef struct _PeasyData PeasyData;
+typedef struct _PeasyDataClass PeasyDataClass;
+
 #define PEASY_TYPE_KEY_GROUP (peasy_key_group_get_type ())
 #define PEASY_KEY_GROUP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_KEY_GROUP, PeasyKeyGroup))
 #define PEASY_KEY_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupClass))
@@ -114,6 +124,12 @@ typedef struct _PeasyEditorClass PeasyEditorClass;
 typedef struct _PeasyFiletype PeasyFiletype;
 typedef struct _PeasyFiletypeClass PeasyFiletypeClass;
 typedef struct _PeasyFiletypePrivate PeasyFiletypePrivate;
+
+#define PEASY_TYPE_INDENT_TYPE (peasy_indent_type_get_type ())
+
+#define PEASY_TYPE_AUTO_INDENT (peasy_auto_indent_get_type ())
+
+#define PEASY_TYPE_INDICATOR (peasy_indicator_get_type ())
 typedef struct _PeasyEditorPrivate PeasyEditorPrivate;
 typedef struct _PeasyHighlighting PeasyHighlighting;
 
@@ -138,16 +154,6 @@ typedef struct _PeasyAppPrivate PeasyAppPrivate;
 typedef struct _PeasyUiWidgets PeasyUiWidgets;
 typedef struct _PeasyUiWidgetsClass PeasyUiWidgetsClass;
 typedef struct _PeasyUiWidgetsPrivate PeasyUiWidgetsPrivate;
-
-#define PEASY_TYPE_DATA (peasy_data_get_type ())
-#define PEASY_DATA(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_DATA, PeasyData))
-#define PEASY_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_DATA, PeasyDataClass))
-#define PEASY_IS_DATA(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_DATA))
-#define PEASY_IS_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_DATA))
-#define PEASY_DATA_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_DATA, PeasyDataClass))
-
-typedef struct _PeasyData PeasyData;
-typedef struct _PeasyDataClass PeasyDataClass;
 typedef struct _PeasyDataPrivate PeasyDataPrivate;
 
 #define PEASY_TYPE_UI_UTILS (peasy_ui_utils_get_type ())
@@ -210,6 +216,7 @@ struct _PeasyPluginIfaceIface {
 struct _PeasyPlugin {
 	PeasyObject parent_instance;
 	PeasyPluginPrivate * priv;
+	PeasyData* data;
 };
 
 struct _PeasyPluginClass {
@@ -239,10 +246,29 @@ struct _PeasyFiletypeClass {
 	PeasyObjectClass parent_class;
 };
 
+typedef enum  {
+	PEASY_INDENT_TYPE_TABS = GEANY_INDENT_TYPE_TABS,
+	PEASY_INDENT_TYPE_SPACES = GEANY_INDENT_TYPE_SPACES,
+	PEASY_INDENT_TYPE_BOTH = GEANY_INDENT_TYPE_BOTH
+} PeasyIndentType;
+
+typedef enum  {
+	PEASY_AUTO_INDENT_NONE = GEANY_AUTOINDENT_NONE,
+	PEASY_AUTO_INDENT_BASIC = GEANY_AUTOINDENT_BASIC,
+	PEASY_AUTO_INDENT_CURRENTCHARS = GEANY_AUTOINDENT_CURRENTCHARS,
+	PEASY_AUTO_INDENT_MATCHBRACES = GEANY_AUTOINDENT_MATCHBRACES
+} PeasyAutoIndent;
+
+typedef enum  {
+	PEASY_INDICATOR_ERROR = GEANY_INDICATOR_ERROR,
+	PEASY_INDICATOR_SEARCH = GEANY_INDICATOR_SEARCH
+} PeasyIndicator;
+
 struct _PeasyEditor {
 	GObject parent_instance;
 	PeasyEditorPrivate * priv;
 	PeasyDocument* document;
+	ScintillaObject* sci;
 	GeanyEditor* _editor;
 };
 
@@ -354,6 +380,7 @@ GType peasy_plugin_help_get_type (void) G_GNUC_CONST;
 void peasy_plugin_help_help (PeasyPluginHelp* self);
 GType peasy_plugin_iface_get_type (void) G_GNUC_CONST;
 GType peasy_plugin_get_type (void) G_GNUC_CONST;
+GType peasy_data_get_type (void) G_GNUC_CONST;
 gboolean peasy_plugin_enable (PeasyPlugin* self);
 void peasy_plugin_disable (PeasyPlugin* self);
 GType peasy_key_group_get_type (void) G_GNUC_CONST;
@@ -393,6 +420,9 @@ const gchar* peasy_filetype_get_title (PeasyFiletype* self);
 const gchar* peasy_filetype_get_display_name (PeasyFiletype* self);
 const gchar* peasy_filetype_get_mime_type (PeasyFiletype* self);
 GIcon* peasy_filetype_get_icon (PeasyFiletype* self);
+GType peasy_indent_type_get_type (void) G_GNUC_CONST;
+GType peasy_auto_indent_get_type (void) G_GNUC_CONST;
+GType peasy_indicator_get_type (void) G_GNUC_CONST;
 gchar* peasy_editor_get_word_at (PeasyEditor* self, gint pos, const gchar* wordchars);
 gboolean peasy_editor_goto (PeasyEditor* self, gint pos, gboolean mark);
 void peasy_editor_indicator_clear (PeasyEditor* self, GeanyIndicator indic);
@@ -400,10 +430,13 @@ void peasy_editor_indicator_set_on_line (PeasyEditor* self, GeanyIndicator indic
 void peasy_editor_indicator_set_on_range (PeasyEditor* self, GeanyIndicator indic, gint start, gint end);
 PeasyEditor* peasy_editor_new (void);
 PeasyEditor* peasy_editor_construct (GType object_type);
+gboolean peasy_editor_get_line_wrapping (PeasyEditor* self);
 gboolean peasy_editor_get_auto_indent (PeasyEditor* self);
-GeanyIndentType peasy_editor_get_indent_type (PeasyEditor* self);
-void peasy_editor_set_indent_type (PeasyEditor* self, GeanyIndentType value);
+PeasyIndentType peasy_editor_get_indent_type (PeasyEditor* self);
+void peasy_editor_set_indent_type (PeasyEditor* self, PeasyIndentType value);
 gboolean peasy_editor_get_line_breaking (PeasyEditor* self);
+gint peasy_editor_get_indent_width (PeasyEditor* self);
+void peasy_editor_set_indent_width (PeasyEditor* self, gint value);
 void peasy_highlighting_free (PeasyHighlighting* self);
 gboolean peasy_highlighting_is_string_style (gint lexer, gint style);
 gboolean peasy_highlighting_is_comment_style (gint lexer, gint style);
@@ -415,7 +448,6 @@ PeasyApp* peasy_app_construct (GType object_type);
 GType peasy_ui_widgets_get_type (void) G_GNUC_CONST;
 PeasyUiWidgets* peasy_ui_widgets_new (void);
 PeasyUiWidgets* peasy_ui_widgets_construct (GType object_type);
-GType peasy_data_get_type (void) G_GNUC_CONST;
 PeasyData* peasy_data_instance (void);
 GType peasy_ui_utils_get_type (void) G_GNUC_CONST;
 GtkWidget* peasy_ui_utils_button_new_with_image (const gchar* stock_id, const gchar* text);
