@@ -12,7 +12,6 @@ namespace Peasy {
 	[CCode (cheader_filename = "peasy.h")]
 	public class Data : Peasy.Object {
 		public Peasy.App app;
-		public weak Geany.BuildInfo build_info;
 		public weak Geany.EditorPrefs editor_prefs;
 		public weak Geany.FilePrefs file_prefs;
 		public weak Geany.InterfacePrefs interface_prefs;
@@ -98,6 +97,17 @@ namespace Peasy {
 		public Peasy.KeyBinding? add_keybinding_with_id (string name, string label, Gtk.MenuItem? menu_item, int def_key, Gdk.ModifierType def_mod, int id);
 		public virtual bool default_handler (int id);
 		public Peasy.KeyBinding get_item (int id);
+	}
+	[CCode (cheader_filename = "peasy.h")]
+	public class MsgWindow : Peasy.Object {
+		public void clear_tab (int tab);
+		public void compiler_add (int msg_color, string msg, ...);
+		public void compiler_add_string (int msg_color, string msg);
+		public static Peasy.MsgWindow getMsgWindow ();
+		public void set_messages_dir (string messages_dir);
+		public void status_add (string msg, ...);
+		public void status_add_string (string msg);
+		public void switch_tab (int tabnum, bool show);
 	}
 	[CCode (cheader_filename = "peasy.h")]
 	public class Object : GLib.Object {

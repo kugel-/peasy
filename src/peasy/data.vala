@@ -58,7 +58,6 @@ namespace Peasy
 		public unowned Geany.FilePrefs        file_prefs;
 		public unowned Geany.SearchPrefs      search_prefs;
 		public unowned Geany.TemplatePrefs    template_prefs;
-		public unowned Geany.BuildInfo        build_info;
 
 		private Data()
 		{
@@ -70,7 +69,6 @@ namespace Peasy
 			file_prefs = peasy_plugin.geany_data.file_prefs;
 			search_prefs = peasy_plugin.geany_data.search_prefs;
 			template_prefs = peasy_plugin.geany_data.template_prefs;
-			build_info = peasy_plugin.geany_data.build_info;
 			app = new App();
 			widgets = new UiWidgets();
 		}

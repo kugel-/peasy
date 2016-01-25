@@ -108,7 +108,6 @@ struct _PeasyData {
 	GeanyFilePrefs* file_prefs;
 	GeanySearchPrefs* search_prefs;
 	GeanyTemplatePrefs* template_prefs;
-	GeanyBuildInfo* build_info;
 };
 
 struct _PeasyDataClass {
@@ -388,11 +387,8 @@ static PeasyData* peasy_data_construct (GType object_type) {
 	GeanyPlugin* _tmp21_ = NULL;
 	GeanyData* _tmp22_ = NULL;
 	GeanyTemplatePrefs* _tmp23_ = NULL;
-	GeanyPlugin* _tmp24_ = NULL;
-	GeanyData* _tmp25_ = NULL;
-	GeanyBuildInfo* _tmp26_ = NULL;
-	PeasyApp* _tmp27_ = NULL;
-	PeasyUiWidgets* _tmp28_ = NULL;
+	PeasyApp* _tmp24_ = NULL;
+	PeasyUiWidgets* _tmp25_ = NULL;
 	self = (PeasyData*) peasy_object_construct (object_type);
 	_tmp0_ = peasy_peasy_plugin;
 	_tmp1_ = _tmp0_->geany_data;
@@ -426,16 +422,12 @@ static PeasyData* peasy_data_construct (GType object_type) {
 	_tmp22_ = _tmp21_->geany_data;
 	_tmp23_ = _tmp22_->template_prefs;
 	self->template_prefs = _tmp23_;
-	_tmp24_ = peasy_peasy_plugin;
-	_tmp25_ = _tmp24_->geany_data;
-	_tmp26_ = _tmp25_->build_info;
-	self->build_info = _tmp26_;
-	_tmp27_ = peasy_app_new ();
+	_tmp24_ = peasy_app_new ();
 	_g_object_unref0 (self->app);
-	self->app = _tmp27_;
-	_tmp28_ = peasy_ui_widgets_new ();
+	self->app = _tmp24_;
+	_tmp25_ = peasy_ui_widgets_new ();
 	_g_object_unref0 (self->widgets);
-	self->widgets = _tmp28_;
+	self->widgets = _tmp25_;
 	return self;
 }
 

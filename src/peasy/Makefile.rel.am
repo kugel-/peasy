@@ -1,16 +1,17 @@
 lib_LTLIBRARIES += %D%/libpeasy.la
 
 %C%_libpeasy_la_SOURCES     = \
+	%D%/data.vala \
+	%D%/document.vala \
+	%D%/editor.vala \
+	%D%/filetype.vala \
+	%D%/highlighting.vala \
+	%D%/keygroup.vala \
+	%D%/keygroup_c.c \
+	%D%/msgwin.vala \
 	%D%/peasyobject.vala \
 	%D%/plugin.vala \
-	%D%/document.vala \
-	%D%/filetype.vala \
-	%D%/editor.vala \
-	%D%/highlighting.vala \
-	%D%/data.vala \
-	%D%/utils.vala \
-	%D%/keygroup.vala \
-	%D%/keygroup_c.c
+	%D%/utils.vala
 
 %C%_libpeasy_la_VALAFLAGS   = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintilla-1.0 \
                               --vapidir $(GEANY_VAPIDIR) --library libpeasy \
