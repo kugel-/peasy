@@ -179,6 +179,17 @@ typedef struct _PeasyPlugin PeasyPlugin;
 typedef struct _PeasyPluginClass PeasyPluginClass;
 typedef struct _PeasyPluginPrivate PeasyPluginPrivate;
 
+#define PEASY_TYPE_PROJECT (peasy_project_get_type ())
+#define PEASY_PROJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PROJECT, PeasyProject))
+#define PEASY_PROJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_PROJECT, PeasyProjectClass))
+#define PEASY_IS_PROJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PROJECT))
+#define PEASY_IS_PROJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_PROJECT))
+#define PEASY_PROJECT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_PROJECT, PeasyProjectClass))
+
+typedef struct _PeasyProject PeasyProject;
+typedef struct _PeasyProjectClass PeasyProjectClass;
+typedef struct _PeasyProjectPrivate PeasyProjectPrivate;
+
 #define PEASY_TYPE_UI_UTILS (peasy_ui_utils_get_type ())
 #define PEASY_UI_UTILS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_UI_UTILS, PeasyUiUtils))
 #define PEASY_UI_UTILS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_UI_UTILS, PeasyUiUtilsClass))
@@ -372,6 +383,16 @@ struct _PeasyPluginClass {
 	void (*disable) (PeasyPlugin* self);
 };
 
+struct _PeasyProject {
+	PeasyObject parent_instance;
+	PeasyProjectPrivate * priv;
+	GeanyProject* _project;
+};
+
+struct _PeasyProjectClass {
+	PeasyObjectClass parent_class;
+};
+
 struct _PeasyUiUtils {
 	GObject parent_instance;
 	PeasyUiUtilsPrivate * priv;
@@ -483,8 +504,19 @@ GType peasy_plugin_get_type (void) G_GNUC_CONST;
 gboolean peasy_plugin_enable (PeasyPlugin* self);
 void peasy_plugin_disable (PeasyPlugin* self);
 PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* section_name, gsize count);
+GType peasy_project_get_type (void) G_GNUC_CONST;
+PeasyProject* peasy_plugin_get_project (PeasyPlugin* self);
 GeanyPlugin* peasy_plugin_iface_get_geany_plugin (PeasyPluginIface* self);
 void peasy_plugin_iface_set_geany_plugin (PeasyPluginIface* self, GeanyPlugin* value);
+PeasyProject* peasy_project_new (void);
+PeasyProject* peasy_project_construct (GType object_type);
+const gchar* peasy_project_get_name (PeasyProject* self);
+const gchar* peasy_project_get_description (PeasyProject* self);
+const gchar* peasy_project_get_base_path (PeasyProject* self);
+const gchar* peasy_project_get_file_name (PeasyProject* self);
+gchar** peasy_project_get_file_patterns (PeasyProject* self, int* result_length1);
+gint peasy_project_get_pure (PeasyProject* self);
+void peasy_project_set_pure (PeasyProject* self, gint value);
 GType peasy_ui_utils_get_type (void) G_GNUC_CONST;
 GtkWidget* peasy_ui_utils_button_new_with_image (const gchar* stock_id, const gchar* text);
 GtkWidget* peasy_ui_utils_image_menu_item_new (const gchar* stock_id, const gchar* label);

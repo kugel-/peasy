@@ -1105,6 +1105,11 @@
 				</parameter>
 			</parameters>
 		</method>
+		<method name="get_project" c:identifier="peasy_plugin_get_project">
+			<return-value transfer-ownership="full" allow-none="1">
+				<type name="Peasy.Project" c:type="PeasyProject*"/>
+			</return-value>
+		</method>
 	</class>
 	<record name="PluginClass" c:type="PeasyPluginClass" glib:is-gtype-struct-for="Plugin">
 		<field name="parent_class">
@@ -1136,6 +1141,92 @@
 		</field>
 	</record>
 	<record name="PluginPrivate" c:type="PeasyPluginPrivate" disguised="1"/>
+	<class name="Project" c:type="PeasyProject" glib:type-name="PeasyProject" glib:get-type="peasy_project_get_type" glib:type-struct="ProjectClass" parent="Peasy.Object">
+		<field name="parent_instance">
+			<type name="Peasy.Object" c:type="PeasyObject"/>
+		</field>
+		<field name="priv">
+			<type name="ProjectPrivate" c:type="PeasyProjectPrivate*"/>
+		</field>
+		<constructor name="new" c:identifier="peasy_project_new">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Project" c:type="PeasyProject*"/>
+			</return-value>
+		</constructor>
+		<property name="name" writable="1">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_name" c:identifier="peasy_project_get_name">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="description" writable="1">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_description" c:identifier="peasy_project_get_description">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="base-path" writable="1">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_base_path" c:identifier="peasy_project_get_base_path">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="file-name" writable="1">
+			<type name="utf8" c:type="gchar*"/>
+		</property>
+		<method name="get_file_name" c:identifier="peasy_project_get_file_name">
+			<return-value transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</return-value>
+		</method>
+		<property name="file-patterns" writable="1">
+			<array>
+				<type name="utf8" c:type="gchar*"/>
+			</array>
+		</property>
+		<method name="get_file_patterns" c:identifier="peasy_project_get_file_patterns">
+			<return-value transfer-ownership="none">
+				<array length="0">
+					<type name="utf8" c:type="gchar*"/>
+				</array>
+			</return-value>
+			<parameters>
+				<parameter name="result_length1" direction="out" transfer-ownership="none">
+					<type name="gint" c:type="gint*"/>
+				</parameter>
+			</parameters>
+		</method>
+		<property name="pure" writable="1">
+			<type name="gint" c:type="gint"/>
+		</property>
+		<method name="get_pure" c:identifier="peasy_project_get_pure">
+			<return-value transfer-ownership="none">
+				<type name="gint" c:type="gint"/>
+			</return-value>
+		</method>
+		<method name="set_pure" c:identifier="peasy_project_set_pure">
+			<return-value transfer-ownership="none">
+				<type name="none"/>
+			</return-value>
+			<parameters>
+				<parameter name="value" transfer-ownership="none">
+					<type name="gint" c:type="gint"/>
+				</parameter>
+			</parameters>
+		</method>
+	</class>
+	<record name="ProjectClass" c:type="PeasyProjectClass" glib:is-gtype-struct-for="Project">
+		<field name="parent_class">
+			<type name="Peasy.ObjectClass" c:type="PeasyObjectClass"/>
+		</field>
+	</record>
+	<record name="ProjectPrivate" c:type="PeasyProjectPrivate" disguised="1"/>
 	<class name="UiUtils" c:type="PeasyUiUtils" glib:type-name="PeasyUiUtils" glib:get-type="peasy_ui_utils_get_type" glib:type-struct="UiUtilsClass" parent="GObject.Object">
 		<field name="parent_instance">
 			<type name="GObject.Object" c:type="GObject"/>

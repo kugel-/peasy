@@ -77,6 +77,16 @@ typedef struct _PeasyDataClass PeasyDataClass;
 typedef struct _PeasyKeyGroup PeasyKeyGroup;
 typedef struct _PeasyKeyGroupClass PeasyKeyGroupClass;
 
+#define PEASY_TYPE_PROJECT (peasy_project_get_type ())
+#define PEASY_PROJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PROJECT, PeasyProject))
+#define PEASY_PROJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_PROJECT, PeasyProjectClass))
+#define PEASY_IS_PROJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PROJECT))
+#define PEASY_IS_PROJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_PROJECT))
+#define PEASY_PROJECT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_PROJECT, PeasyProjectClass))
+
+typedef struct _PeasyProject PeasyProject;
+typedef struct _PeasyProjectClass PeasyProjectClass;
+
 struct _PeasyPluginConfigureIface {
 	GTypeInterface parent_iface;
 	GtkWidget* (*configure) (PeasyPluginConfigure* self, GtkDialog* parent);
@@ -120,6 +130,7 @@ struct _PeasyPluginPrivate {
 
 
 static gpointer peasy_plugin_parent_class = NULL;
+extern GeanyPlugin* peasy_peasy_plugin;
 static PeasyPluginIfaceIface* peasy_plugin_peasy_plugin_iface_parent_iface = NULL;
 
 GType peasy_plugin_configure_get_type (void) G_GNUC_CONST;
@@ -148,6 +159,10 @@ PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* secti
 GeanyPlugin* peasy_plugin_iface_get_geany_plugin (PeasyPluginIface* self);
 PeasyKeyGroup* peasy_key_group_new_from_geany (GeanyKeyGroup* kb_group);
 PeasyKeyGroup* peasy_key_group_construct_from_geany (GType object_type, GeanyKeyGroup* kb_group);
+GType peasy_project_get_type (void) G_GNUC_CONST;
+PeasyProject* peasy_plugin_get_project (PeasyPlugin* self);
+PeasyProject* peasy_project_new_from_geany (GeanyProject* project);
+PeasyProject* peasy_project_construct_from_geany (GType object_type, GeanyProject* project);
 static void peasy_plugin_finalize (GObject* obj);
 static void _vala_peasy_plugin_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 void peasy_plugin_iface_set_geany_plugin (PeasyPluginIface* self, GeanyPlugin* value);
@@ -257,6 +272,36 @@ PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* secti
 	g_return_val_if_fail (kb_group != NULL, NULL);
 	_tmp5_ = peasy_key_group_new_from_geany (kb_group);
 	result = _tmp5_;
+	return result;
+}
+
+
+PeasyProject* peasy_plugin_get_project (PeasyPlugin* self) {
+	PeasyProject* result = NULL;
+	GeanyPlugin* _tmp0_ = NULL;
+	GeanyData* _tmp1_ = NULL;
+	GeanyApp* _tmp2_ = NULL;
+	GeanyProject* _tmp3_ = NULL;
+	g_return_val_if_fail (self != NULL, NULL);
+	_tmp0_ = peasy_peasy_plugin;
+	_tmp1_ = _tmp0_->geany_data;
+	_tmp2_ = _tmp1_->app;
+	_tmp3_ = _tmp2_->project;
+	if (_tmp3_ != NULL) {
+		GeanyPlugin* _tmp4_ = NULL;
+		GeanyData* _tmp5_ = NULL;
+		GeanyApp* _tmp6_ = NULL;
+		GeanyProject* _tmp7_ = NULL;
+		PeasyProject* _tmp8_ = NULL;
+		_tmp4_ = peasy_peasy_plugin;
+		_tmp5_ = _tmp4_->geany_data;
+		_tmp6_ = _tmp5_->app;
+		_tmp7_ = _tmp6_->project;
+		_tmp8_ = peasy_project_new_from_geany (_tmp7_);
+		result = _tmp8_;
+		return result;
+	}
+	result = NULL;
 	return result;
 }
 

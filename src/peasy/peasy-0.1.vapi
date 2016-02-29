@@ -121,6 +121,17 @@ namespace Peasy {
 		public Peasy.KeyGroup add_key_group (string section_name, size_t count);
 		public abstract void disable ();
 		public abstract bool enable ();
+		public Peasy.Project? get_project ();
+	}
+	[CCode (cheader_filename = "peasy.h")]
+	public class Project : Peasy.Object {
+		public Project ();
+		public string base_path { get; private set; }
+		public string description { get; private set; }
+		public string file_name { get; private set; }
+		public string[] file_patterns { get; private set; }
+		public string name { get; private set; }
+		public int pure { get; set; }
 	}
 	[CCode (cheader_filename = "peasy.h")]
 	public class Signals : Peasy.Object {

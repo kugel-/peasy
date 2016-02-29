@@ -11,6 +11,7 @@ lib_LTLIBRARIES += %D%/libpeasy.la
 	%D%/msgwin.vala \
 	%D%/peasyobject.vala \
 	%D%/plugin.vala \
+	%D%/project.vala \
 	%D%/utils.vala
 
 %C%_libpeasy_la_VALAFLAGS   = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintilla-1.0 \

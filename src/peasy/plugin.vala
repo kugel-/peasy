@@ -30,6 +30,14 @@ public abstract class Plugin: Object, PluginIface
 		GLib.return_val_if_fail(kb_group != null, null);
 		return new KeyGroup.from_geany(kb_group);
 	}
+
+	public Project? get_project()
+	{
+		if (peasy_plugin.geany_data.app.project != null)
+			return new Project.from_geany(peasy_plugin.geany_data.app.project);
+
+		return null;
+	}
 }
 
 public interface PluginIface: GLib.Object
