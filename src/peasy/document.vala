@@ -4,6 +4,8 @@ namespace Peasy
 {
 	public class Document : Peasy.Object
 	{
+		/* this is the actual GeanyDocument instance */
+		public unowned Geany.Document? geany_doc;
 		/* fields */
 		public         Editor  editor;
 
@@ -22,35 +24,35 @@ namespace Peasy
 		{
 			get
 			{
-				return _doc.readonly;
+				return geany_doc.readonly;
 			}
 			set
 			{
-				_doc.editor.sci.send_message(Scintilla.SCI_SETREADONLY, value?1:0, 0);
-				_doc.readonly = value;
+				geany_doc.editor.sci.send_message(Scintilla.SCI_SETREADONLY, value?1:0, 0);
+				geany_doc.readonly = value;
 			}
 		}
 #endif
 
 		public bool changed
 		{
-			get { GLib.return_val_if_fail(_doc != null, false); return _doc.changed; }
-			set { _doc.set_text_changed(value); }
+			get { GLib.return_val_if_fail(geany_doc != null, false); return geany_doc.changed; }
+			set { geany_doc.set_text_changed(value); }
 		}
 
 		public string encoding
 		{
-			get { GLib.return_val_if_fail(_doc != null, ""); return _doc.encoding; }
-			set { _doc.set_encoding(value); }
+			get { GLib.return_val_if_fail(geany_doc != null, ""); return geany_doc.encoding; }
+			set { geany_doc.set_encoding(value); }
 		}
 
-		public bool   is_valid      { get { if (_doc == null) return false; return _doc.is_valid; } }
-		public bool   has_bom       { get { GLib.return_val_if_fail(_doc != null, false); return _doc.has_bom; } }
-		public bool   has_tags      { get { GLib.return_val_if_fail(_doc != null, false); return _doc.has_tags; } }
-		public uint   id            { get { GLib.return_val_if_fail(_doc != null, 0); return _doc.id; } }
-		public string display_name  { owned get { GLib.return_val_if_fail(_doc != null, null); return _doc.get_basename_for_display(-1); } }
+		public bool   is_valid      { get { if (geany_doc == null) return false; return geany_doc.is_valid; } }
+		public bool   has_bom       { get { GLib.return_val_if_fail(geany_doc != null, false); return geany_doc.has_bom; } }
+		public bool   has_tags      { get { GLib.return_val_if_fail(geany_doc != null, false); return geany_doc.has_tags; } }
+		public uint   id            { get { GLib.return_val_if_fail(geany_doc != null, 0); return geany_doc.id; } }
+		public string display_name  { owned get { GLib.return_val_if_fail(geany_doc != null, null); return geany_doc.get_basename_for_display(-1); } }
 #if 0
-		public Scintilla.Object sci { get { return _doc.editor.sci; }}
+		public Scintilla.Object sci { get { return geany_doc.editor.sci; }}
 #endif
 		/* signals */
 		public signal void closing();
@@ -63,17 +65,17 @@ namespace Peasy
 		/* constructors */
 		construct
 		{
-			plugin_signals.document_close.connect((doc) => { if (doc._doc == this._doc) this.closing(); });
-			plugin_signals.document_reload.connect((doc) => { if (doc._doc == this._doc) this.reloaded(); });
-			plugin_signals.document_activate.connect((doc) => { if (doc._doc == this._doc) this.activate(); });
-			plugin_signals.document_before_save.connect((doc) => { if (doc._doc == this._doc) this.before_save(); });
-			plugin_signals.document_save.connect((doc) => { if (doc._doc == this._doc) this.saved(); });
-			plugin_signals.document_filetype_set.connect((doc, ft) => { if (doc._doc == this._doc) this.filetype_set(ft); });
+			plugin_signals.document_close.connect((doc) => { if (doc.geany_doc == this.geany_doc) this.closing(); });
+			plugin_signals.document_reload.connect((doc) => { if (doc.geany_doc == this.geany_doc) this.reloaded(); });
+			plugin_signals.document_activate.connect((doc) => { if (doc.geany_doc == this.geany_doc) this.activate(); });
+			plugin_signals.document_before_save.connect((doc) => { if (doc.geany_doc == this.geany_doc) this.before_save(); });
+			plugin_signals.document_save.connect((doc) => { if (doc.geany_doc == this.geany_doc) this.saved(); });
+			plugin_signals.document_filetype_set.connect((doc, ft) => { if (doc.geany_doc == this.geany_doc) this.filetype_set(ft); });
 		}
 
 		internal Document(Geany.Document doc)
 		{
-			_doc = doc;
+			geany_doc = doc;
 			editor = new Peasy.Editor.create(this);
 		}
 
@@ -83,8 +85,8 @@ namespace Peasy
 		{
 			unowned Geany.Filetype? gft = null;
 			if (ft != null)
-				gft = ft._ft;
-			_doc = Geany.Document.new_file(utf8_filename, gft, text);
+				gft = ft.geany_ft;
+			geany_doc = Geany.Document.new_file(utf8_filename, gft, text);
 			editor = new Peasy.Editor.create(this);
 		}
 		public Document.from_file(string locale_filename, bool readonly = false,
@@ -92,8 +94,8 @@ namespace Peasy
 		{
 			unowned Geany.Filetype? gft = null;
 			if (ft != null)
-				gft = ft._ft;
-			_doc = Geany.Document.open_file(locale_filename, readonly, gft, forced_enc);
+				gft = ft.geany_ft;
+			geany_doc = Geany.Document.open_file(locale_filename, readonly, gft, forced_enc);
 			editor = new Peasy.Editor.create(this);
 		}
 
@@ -112,31 +114,25 @@ namespace Peasy
 			/* on shutdown it might be closed before the plugin can close it in the cleanup method */
 			if (! is_valid)
 				return true;
-			return _doc.close();
+			return geany_doc.close();
 		}
 
 		public bool save(bool force = false)
 		{
-			GLib.return_val_if_fail(_doc != null, false);
-			return _doc.save_file(force);
+			GLib.return_val_if_fail(geany_doc != null, false);
+			return geany_doc.save_file(force);
 		}
 
 		public bool save_as(string? file_name = null)
 		{
-			GLib.return_val_if_fail(_doc != null, false);
-			return _doc.save_file_as(file_name);
+			GLib.return_val_if_fail(geany_doc != null, false);
+			return geany_doc.save_file_as(file_name);
 		}
 
 		public bool reload(string? forced_enc = null)
 		{
-			GLib.return_val_if_fail(_doc != null, false);
-			return _doc.reload_force(forced_enc);
+			GLib.return_val_if_fail(geany_doc != null, false);
+			return geany_doc.reload_force(forced_enc);
 		}
-
-		/* internal fields
-		 * must be last due to bug in vala's gir generation */
-
-		/* this is the actual GeanyDocument instance */
-		internal unowned Geany.Document? _doc;
 	}
 }

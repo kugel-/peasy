@@ -128,7 +128,7 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
 
 	def parse_doc(self, obj, doc):
 		sci = doc.editor.sci
-		lexer = sci.get_lexer()
+		lexer = Geany.sci_get_lexer(sci)
 		num_lines = sci.get_line_count()
 		for x in range(0, 5):
 			line = sci.get_line(x)
@@ -157,7 +157,7 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
 		self.props.plugin_signals.connect("document-save",   self.parse_doc)
 		self.hid = 0
 		self.prefs = []
-		kf = ModelineKeyFile(self.data.app.configdir)
+		kf = ModelineKeyFile(self.geany_plugin.geany_data.app.configdir)
 		self.gen_pref("use_setting", Pref("preferences", "follow-autodetect-setting", True))
 		self.gen_pref("test", Pref("preferences", "test", True))
 		for pref in self.prefs:

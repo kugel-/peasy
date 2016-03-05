@@ -34,7 +34,7 @@
 typedef struct PluginContext {
 	PeasEngine     *engine;
 	PeasPluginInfo *info;
-	PeasExtension  *plugin;
+	PeasyPlugin    *plugin;
 }
 PluginContext;
 
@@ -56,16 +56,21 @@ static gboolean
 peas_proxy_init(GeanyPlugin *plugin, gpointer pdata)
 {
 	PluginContext *ctx = pdata;
+	PeasExtension *obj;
 
-	ctx->plugin = peas_engine_create_extension(ctx->engine, ctx->info, PEASY_TYPE_PLUGIN_IFACE,
-	                                           "geany-plugin", plugin, NULL);
-	if (ctx->plugin) {
-
+	obj = peas_engine_create_extension(ctx->engine, ctx->info, PEASY_TYPE_PLUGIN_IFACE, NULL);
+	if (PEASY_IS_PLUGIN(obj)) {
+		ctx->plugin = (PeasyPlugin *) obj;
+		ctx->plugin->geany_plugin = plugin;
 		if (peasy_plugin_enable(PEASY_PLUGIN(ctx->plugin)))
 			return TRUE;
 
 		g_object_unref(ctx->plugin);
 		ctx->plugin = NULL;
+	}
+	else if (obj != NULL) {
+		g_warning("Error: Type %s implements PeasyPluginIface but does not inherit from PeasyPlugin",
+		    g_type_name(G_TYPE_FROM_INSTANCE(obj)));
 	}
 
 	return FALSE;

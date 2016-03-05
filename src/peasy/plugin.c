@@ -56,17 +56,6 @@ typedef struct _PeasyPlugin PeasyPlugin;
 typedef struct _PeasyPluginClass PeasyPluginClass;
 typedef struct _PeasyPluginPrivate PeasyPluginPrivate;
 
-#define PEASY_TYPE_DATA (peasy_data_get_type ())
-#define PEASY_DATA(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_DATA, PeasyData))
-#define PEASY_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_DATA, PeasyDataClass))
-#define PEASY_IS_DATA(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_DATA))
-#define PEASY_IS_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_DATA))
-#define PEASY_DATA_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_DATA, PeasyDataClass))
-
-typedef struct _PeasyData PeasyData;
-typedef struct _PeasyDataClass PeasyDataClass;
-#define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
-
 #define PEASY_TYPE_KEY_GROUP (peasy_key_group_get_type ())
 #define PEASY_KEY_GROUP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_KEY_GROUP, PeasyKeyGroup))
 #define PEASY_KEY_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupClass))
@@ -76,16 +65,6 @@ typedef struct _PeasyDataClass PeasyDataClass;
 
 typedef struct _PeasyKeyGroup PeasyKeyGroup;
 typedef struct _PeasyKeyGroupClass PeasyKeyGroupClass;
-
-#define PEASY_TYPE_PROJECT (peasy_project_get_type ())
-#define PEASY_PROJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PROJECT, PeasyProject))
-#define PEASY_PROJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_PROJECT, PeasyProjectClass))
-#define PEASY_IS_PROJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PROJECT))
-#define PEASY_IS_PROJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_PROJECT))
-#define PEASY_PROJECT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_PROJECT, PeasyProjectClass))
-
-typedef struct _PeasyProject PeasyProject;
-typedef struct _PeasyProjectClass PeasyProjectClass;
 
 struct _PeasyPluginConfigureIface {
 	GTypeInterface parent_iface;
@@ -108,14 +87,12 @@ struct _PeasyObjectClass {
 
 struct _PeasyPluginIfaceIface {
 	GTypeInterface parent_iface;
-	GeanyPlugin* (*get_geany_plugin) (PeasyPluginIface* self);
-	void (*set_geany_plugin) (PeasyPluginIface* self, GeanyPlugin* value);
 };
 
 struct _PeasyPlugin {
 	PeasyObject parent_instance;
 	PeasyPluginPrivate * priv;
-	PeasyData* data;
+	GeanyPlugin* geany_plugin;
 };
 
 struct _PeasyPluginClass {
@@ -124,13 +101,8 @@ struct _PeasyPluginClass {
 	void (*disable) (PeasyPlugin* self);
 };
 
-struct _PeasyPluginPrivate {
-	GeanyPlugin* _geany_plugin;
-};
-
 
 static gpointer peasy_plugin_parent_class = NULL;
-extern GeanyPlugin* peasy_peasy_plugin;
 static PeasyPluginIfaceIface* peasy_plugin_peasy_plugin_iface_parent_iface = NULL;
 
 GType peasy_plugin_configure_get_type (void) G_GNUC_CONST;
@@ -140,13 +112,9 @@ void peasy_plugin_help_help (PeasyPluginHelp* self);
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_plugin_iface_get_type (void) G_GNUC_CONST;
 GType peasy_plugin_get_type (void) G_GNUC_CONST;
-GType peasy_data_get_type (void) G_GNUC_CONST;
-#define PEASY_PLUGIN_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_PLUGIN, PeasyPluginPrivate))
 enum  {
-	PEASY_PLUGIN_DUMMY_PROPERTY,
-	PEASY_PLUGIN_GEANY_PLUGIN
+	PEASY_PLUGIN_DUMMY_PROPERTY
 };
-PeasyData* peasy_data_instance (void);
 gboolean peasy_plugin_enable (PeasyPlugin* self);
 static gboolean peasy_plugin_real_enable (PeasyPlugin* self);
 void peasy_plugin_disable (PeasyPlugin* self);
@@ -156,17 +124,9 @@ PeasyObject* peasy_object_new (void);
 PeasyObject* peasy_object_construct (GType object_type);
 GType peasy_key_group_get_type (void) G_GNUC_CONST;
 PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* section_name, gsize count);
-GeanyPlugin* peasy_plugin_iface_get_geany_plugin (PeasyPluginIface* self);
 PeasyKeyGroup* peasy_key_group_new_from_geany (GeanyKeyGroup* kb_group);
 PeasyKeyGroup* peasy_key_group_construct_from_geany (GType object_type, GeanyKeyGroup* kb_group);
-GType peasy_project_get_type (void) G_GNUC_CONST;
-PeasyProject* peasy_plugin_get_project (PeasyPlugin* self);
-PeasyProject* peasy_project_new_from_geany (GeanyProject* project);
-PeasyProject* peasy_project_construct_from_geany (GType object_type, GeanyProject* project);
 static void peasy_plugin_finalize (GObject* obj);
-static void _vala_peasy_plugin_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
-void peasy_plugin_iface_set_geany_plugin (PeasyPluginIface* self, GeanyPlugin* value);
-static void _vala_peasy_plugin_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 
 
 GtkWidget* peasy_plugin_configure_configure (PeasyPluginConfigure* self, GtkDialog* parent) {
@@ -256,108 +216,44 @@ PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* secti
 	PeasyKeyGroup* result = NULL;
 	GeanyKeyGroup* kb_group = NULL;
 	GeanyPlugin* _tmp0_ = NULL;
-	GeanyPlugin* _tmp1_ = NULL;
-	const gchar* _tmp2_ = NULL;
-	gsize _tmp3_ = 0UL;
-	GeanyKeyGroup* _tmp4_ = NULL;
-	PeasyKeyGroup* _tmp5_ = NULL;
+	const gchar* _tmp1_ = NULL;
+	gsize _tmp2_ = 0UL;
+	GeanyKeyGroup* _tmp3_ = NULL;
+	PeasyKeyGroup* _tmp4_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (section_name != NULL, NULL);
-	_tmp0_ = peasy_plugin_iface_get_geany_plugin ((PeasyPluginIface*) self);
-	_tmp1_ = _tmp0_;
-	_tmp2_ = section_name;
-	_tmp3_ = count;
-	_tmp4_ = plugin_set_key_group_full (_tmp1_, _tmp2_, _tmp3_, NULL, NULL, NULL);
-	kb_group = _tmp4_;
+	_tmp0_ = self->geany_plugin;
+	_tmp1_ = section_name;
+	_tmp2_ = count;
+	_tmp3_ = plugin_set_key_group_full (_tmp0_, _tmp1_, _tmp2_, NULL, NULL, NULL);
+	kb_group = _tmp3_;
 	g_return_val_if_fail (kb_group != NULL, NULL);
-	_tmp5_ = peasy_key_group_new_from_geany (kb_group);
-	result = _tmp5_;
+	_tmp4_ = peasy_key_group_new_from_geany (kb_group);
+	result = _tmp4_;
 	return result;
-}
-
-
-PeasyProject* peasy_plugin_get_project (PeasyPlugin* self) {
-	PeasyProject* result = NULL;
-	GeanyPlugin* _tmp0_ = NULL;
-	GeanyData* _tmp1_ = NULL;
-	GeanyApp* _tmp2_ = NULL;
-	GeanyProject* _tmp3_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = peasy_peasy_plugin;
-	_tmp1_ = _tmp0_->geany_data;
-	_tmp2_ = _tmp1_->app;
-	_tmp3_ = _tmp2_->project;
-	if (_tmp3_ != NULL) {
-		GeanyPlugin* _tmp4_ = NULL;
-		GeanyData* _tmp5_ = NULL;
-		GeanyApp* _tmp6_ = NULL;
-		GeanyProject* _tmp7_ = NULL;
-		PeasyProject* _tmp8_ = NULL;
-		_tmp4_ = peasy_peasy_plugin;
-		_tmp5_ = _tmp4_->geany_data;
-		_tmp6_ = _tmp5_->app;
-		_tmp7_ = _tmp6_->project;
-		_tmp8_ = peasy_project_new_from_geany (_tmp7_);
-		result = _tmp8_;
-		return result;
-	}
-	result = NULL;
-	return result;
-}
-
-
-static GeanyPlugin* peasy_plugin_real_get_geany_plugin (PeasyPluginIface* base) {
-	GeanyPlugin* result;
-	PeasyPlugin* self;
-	GeanyPlugin* _tmp0_ = NULL;
-	self = (PeasyPlugin*) base;
-	_tmp0_ = self->priv->_geany_plugin;
-	result = _tmp0_;
-	return result;
-}
-
-
-static void peasy_plugin_real_set_geany_plugin (PeasyPluginIface* base, GeanyPlugin* value) {
-	PeasyPlugin* self;
-	GeanyPlugin* _tmp0_ = NULL;
-	self = (PeasyPlugin*) base;
-	_tmp0_ = value;
-	self->priv->_geany_plugin = _tmp0_;
-	g_object_notify ((GObject *) self, "geany-plugin");
 }
 
 
 static void peasy_plugin_class_init (PeasyPluginClass * klass) {
 	peasy_plugin_parent_class = g_type_class_peek_parent (klass);
-	g_type_class_add_private (klass, sizeof (PeasyPluginPrivate));
 	((PeasyPluginClass *) klass)->enable = peasy_plugin_real_enable;
 	((PeasyPluginClass *) klass)->disable = peasy_plugin_real_disable;
-	G_OBJECT_CLASS (klass)->get_property = _vala_peasy_plugin_get_property;
-	G_OBJECT_CLASS (klass)->set_property = _vala_peasy_plugin_set_property;
 	G_OBJECT_CLASS (klass)->finalize = peasy_plugin_finalize;
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_PLUGIN_GEANY_PLUGIN, g_param_spec_pointer ("geany-plugin", "geany-plugin", "geany-plugin", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
 }
 
 
 static void peasy_plugin_peasy_plugin_iface_interface_init (PeasyPluginIfaceIface * iface) {
 	peasy_plugin_peasy_plugin_iface_parent_iface = g_type_interface_peek_parent (iface);
-	iface->get_geany_plugin = peasy_plugin_real_get_geany_plugin;
-	iface->set_geany_plugin = peasy_plugin_real_set_geany_plugin;
 }
 
 
 static void peasy_plugin_instance_init (PeasyPlugin * self) {
-	PeasyData* _tmp0_ = NULL;
-	self->priv = PEASY_PLUGIN_GET_PRIVATE (self);
-	_tmp0_ = peasy_data_instance ();
-	self->data = _tmp0_;
 }
 
 
 static void peasy_plugin_finalize (GObject* obj) {
 	PeasyPlugin * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_PLUGIN, PeasyPlugin);
-	_g_object_unref0 (self->data);
 	G_OBJECT_CLASS (peasy_plugin_parent_class)->finalize (obj);
 }
 
@@ -376,51 +272,10 @@ GType peasy_plugin_get_type (void) {
 }
 
 
-static void _vala_peasy_plugin_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
-	PeasyPlugin * self;
-	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_PLUGIN, PeasyPlugin);
-	switch (property_id) {
-		case PEASY_PLUGIN_GEANY_PLUGIN:
-		g_value_set_pointer (value, peasy_plugin_iface_get_geany_plugin ((PeasyPluginIface*) self));
-		break;
-		default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
-	}
-}
-
-
-static void _vala_peasy_plugin_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec) {
-	PeasyPlugin * self;
-	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_PLUGIN, PeasyPlugin);
-	switch (property_id) {
-		case PEASY_PLUGIN_GEANY_PLUGIN:
-		peasy_plugin_iface_set_geany_plugin ((PeasyPluginIface*) self, g_value_get_pointer (value));
-		break;
-		default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
-	}
-}
-
-
-GeanyPlugin* peasy_plugin_iface_get_geany_plugin (PeasyPluginIface* self) {
-	g_return_val_if_fail (self != NULL, NULL);
-	return PEASY_PLUGIN_IFACE_GET_INTERFACE (self)->get_geany_plugin (self);
-}
-
-
-void peasy_plugin_iface_set_geany_plugin (PeasyPluginIface* self, GeanyPlugin* value) {
-	g_return_if_fail (self != NULL);
-	PEASY_PLUGIN_IFACE_GET_INTERFACE (self)->set_geany_plugin (self, value);
-}
-
-
 static void peasy_plugin_iface_base_init (PeasyPluginIfaceIface * iface) {
 	static gboolean initialized = FALSE;
 	if (!initialized) {
 		initialized = TRUE;
-		g_object_interface_install_property (iface, g_param_spec_pointer ("geany-plugin", "geany-plugin", "geany-plugin", G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE | G_PARAM_CONSTRUCT));
 	}
 }
 

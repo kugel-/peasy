@@ -83,7 +83,7 @@ public class Signals : Object
 	private static void emit_filetype_set(GLib.Object obj, Geany.Document geany_doc, Geany.Filetype? ft, Peasy.Signals sig)
 	{
 		/* can signal with ft == null, e.g. during Geany.Document.new_file() */
-		Peasy.Filetype ft_ = ft != null ? Filetype.get_by_id(ft.id) : null;
+		Filetype? ft_ = ft != null ? new Filetype(ft) : null;
 		sig.document_filetype_set(new Document(geany_doc), ft_);
 	}
 

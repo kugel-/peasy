@@ -5,16 +5,31 @@
 #define __SRC_PEASY_PEASY_H__
 
 #include <glib.h>
+#include <gtk/gtk.h>
 #include <glib-object.h>
+#include <geanyplugin.h>
 #include <stdlib.h>
 #include <string.h>
-#include <gtk/gtk.h>
-#include <geanyplugin.h>
-#include <gio/gio.h>
 #include <gdk/gdk.h>
 
 G_BEGIN_DECLS
 
+
+#define PEASY_TYPE_PLUGIN_CONFIGURE (peasy_plugin_configure_get_type ())
+#define PEASY_PLUGIN_CONFIGURE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN_CONFIGURE, PeasyPluginConfigure))
+#define PEASY_IS_PLUGIN_CONFIGURE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PLUGIN_CONFIGURE))
+#define PEASY_PLUGIN_CONFIGURE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), PEASY_TYPE_PLUGIN_CONFIGURE, PeasyPluginConfigureIface))
+
+typedef struct _PeasyPluginConfigure PeasyPluginConfigure;
+typedef struct _PeasyPluginConfigureIface PeasyPluginConfigureIface;
+
+#define PEASY_TYPE_PLUGIN_HELP (peasy_plugin_help_get_type ())
+#define PEASY_PLUGIN_HELP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN_HELP, PeasyPluginHelp))
+#define PEASY_IS_PLUGIN_HELP(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PLUGIN_HELP))
+#define PEASY_PLUGIN_HELP_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), PEASY_TYPE_PLUGIN_HELP, PeasyPluginHelpIface))
+
+typedef struct _PeasyPluginHelp PeasyPluginHelp;
+typedef struct _PeasyPluginHelpIface PeasyPluginHelpIface;
 
 #define PEASY_TYPE_OBJECT (peasy_object_get_type ())
 #define PEASY_OBJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_OBJECT, PeasyObject))
@@ -27,38 +42,34 @@ typedef struct _PeasyObject PeasyObject;
 typedef struct _PeasyObjectClass PeasyObjectClass;
 typedef struct _PeasyObjectPrivate PeasyObjectPrivate;
 
-#define PEASY_TYPE_APP (peasy_app_get_type ())
-#define PEASY_APP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_APP, PeasyApp))
-#define PEASY_APP_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_APP, PeasyAppClass))
-#define PEASY_IS_APP(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_APP))
-#define PEASY_IS_APP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_APP))
-#define PEASY_APP_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_APP, PeasyAppClass))
+#define PEASY_TYPE_PLUGIN_IFACE (peasy_plugin_iface_get_type ())
+#define PEASY_PLUGIN_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN_IFACE, PeasyPluginIface))
+#define PEASY_IS_PLUGIN_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PLUGIN_IFACE))
+#define PEASY_PLUGIN_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), PEASY_TYPE_PLUGIN_IFACE, PeasyPluginIfaceIface))
 
-typedef struct _PeasyApp PeasyApp;
-typedef struct _PeasyAppClass PeasyAppClass;
-typedef struct _PeasyAppPrivate PeasyAppPrivate;
+typedef struct _PeasyPluginIface PeasyPluginIface;
+typedef struct _PeasyPluginIfaceIface PeasyPluginIfaceIface;
 
-#define PEASY_TYPE_UI_WIDGETS (peasy_ui_widgets_get_type ())
-#define PEASY_UI_WIDGETS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_UI_WIDGETS, PeasyUiWidgets))
-#define PEASY_UI_WIDGETS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_UI_WIDGETS, PeasyUiWidgetsClass))
-#define PEASY_IS_UI_WIDGETS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_UI_WIDGETS))
-#define PEASY_IS_UI_WIDGETS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_UI_WIDGETS))
-#define PEASY_UI_WIDGETS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_UI_WIDGETS, PeasyUiWidgetsClass))
+#define PEASY_TYPE_PLUGIN (peasy_plugin_get_type ())
+#define PEASY_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN, PeasyPlugin))
+#define PEASY_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_PLUGIN, PeasyPluginClass))
+#define PEASY_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PLUGIN))
+#define PEASY_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_PLUGIN))
+#define PEASY_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_PLUGIN, PeasyPluginClass))
 
-typedef struct _PeasyUiWidgets PeasyUiWidgets;
-typedef struct _PeasyUiWidgetsClass PeasyUiWidgetsClass;
-typedef struct _PeasyUiWidgetsPrivate PeasyUiWidgetsPrivate;
+typedef struct _PeasyPlugin PeasyPlugin;
+typedef struct _PeasyPluginClass PeasyPluginClass;
+typedef struct _PeasyPluginPrivate PeasyPluginPrivate;
 
-#define PEASY_TYPE_DATA (peasy_data_get_type ())
-#define PEASY_DATA(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_DATA, PeasyData))
-#define PEASY_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_DATA, PeasyDataClass))
-#define PEASY_IS_DATA(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_DATA))
-#define PEASY_IS_DATA_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_DATA))
-#define PEASY_DATA_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_DATA, PeasyDataClass))
+#define PEASY_TYPE_KEY_GROUP (peasy_key_group_get_type ())
+#define PEASY_KEY_GROUP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_KEY_GROUP, PeasyKeyGroup))
+#define PEASY_KEY_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupClass))
+#define PEASY_IS_KEY_GROUP(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_KEY_GROUP))
+#define PEASY_IS_KEY_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_KEY_GROUP))
+#define PEASY_KEY_GROUP_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupClass))
 
-typedef struct _PeasyData PeasyData;
-typedef struct _PeasyDataClass PeasyDataClass;
-typedef struct _PeasyDataPrivate PeasyDataPrivate;
+typedef struct _PeasyKeyGroup PeasyKeyGroup;
+typedef struct _PeasyKeyGroupClass PeasyKeyGroupClass;
 
 #define PEASY_TYPE_DOCUMENT (peasy_document_get_type ())
 #define PEASY_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_DOCUMENT, PeasyDocument))
@@ -92,46 +103,7 @@ typedef struct _PeasyFiletype PeasyFiletype;
 typedef struct _PeasyFiletypeClass PeasyFiletypeClass;
 
 #define PEASY_TYPE_INDENT_TYPE (peasy_indent_type_get_type ())
-
-#define PEASY_TYPE_AUTO_INDENT (peasy_auto_indent_get_type ())
-
-#define PEASY_TYPE_INDICATOR (peasy_indicator_get_type ())
 typedef struct _PeasyEditorPrivate PeasyEditorPrivate;
-typedef struct _PeasyFiletypePrivate PeasyFiletypePrivate;
-typedef struct _PeasyHighlighting PeasyHighlighting;
-
-#define PEASY_TYPE_KEY_BINDING (peasy_key_binding_get_type ())
-#define PEASY_KEY_BINDING(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_KEY_BINDING, PeasyKeyBinding))
-#define PEASY_KEY_BINDING_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_KEY_BINDING, PeasyKeyBindingClass))
-#define PEASY_IS_KEY_BINDING(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_KEY_BINDING))
-#define PEASY_IS_KEY_BINDING_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_KEY_BINDING))
-#define PEASY_KEY_BINDING_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_KEY_BINDING, PeasyKeyBindingClass))
-
-typedef struct _PeasyKeyBinding PeasyKeyBinding;
-typedef struct _PeasyKeyBindingClass PeasyKeyBindingClass;
-typedef struct _PeasyKeyBindingPrivate PeasyKeyBindingPrivate;
-
-#define PEASY_TYPE_KEY_GROUP (peasy_key_group_get_type ())
-#define PEASY_KEY_GROUP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_KEY_GROUP, PeasyKeyGroup))
-#define PEASY_KEY_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupClass))
-#define PEASY_IS_KEY_GROUP(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_KEY_GROUP))
-#define PEASY_IS_KEY_GROUP_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_KEY_GROUP))
-#define PEASY_KEY_GROUP_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupClass))
-
-typedef struct _PeasyKeyGroup PeasyKeyGroup;
-typedef struct _PeasyKeyGroupClass PeasyKeyGroupClass;
-typedef struct _PeasyKeyGroupPrivate PeasyKeyGroupPrivate;
-
-#define PEASY_TYPE_MSG_WINDOW (peasy_msg_window_get_type ())
-#define PEASY_MSG_WINDOW(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_MSG_WINDOW, PeasyMsgWindow))
-#define PEASY_MSG_WINDOW_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_MSG_WINDOW, PeasyMsgWindowClass))
-#define PEASY_IS_MSG_WINDOW(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_MSG_WINDOW))
-#define PEASY_IS_MSG_WINDOW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_MSG_WINDOW))
-#define PEASY_MSG_WINDOW_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_MSG_WINDOW, PeasyMsgWindowClass))
-
-typedef struct _PeasyMsgWindow PeasyMsgWindow;
-typedef struct _PeasyMsgWindowClass PeasyMsgWindowClass;
-typedef struct _PeasyMsgWindowPrivate PeasyMsgWindowPrivate;
 
 #define PEASY_TYPE_SIGNALS (peasy_signals_get_type ())
 #define PEASY_SIGNALS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_SIGNALS, PeasySignals))
@@ -143,63 +115,29 @@ typedef struct _PeasyMsgWindowPrivate PeasyMsgWindowPrivate;
 typedef struct _PeasySignals PeasySignals;
 typedef struct _PeasySignalsClass PeasySignalsClass;
 typedef struct _PeasySignalsPrivate PeasySignalsPrivate;
+typedef struct _PeasyFiletypePrivate PeasyFiletypePrivate;
 
-#define PEASY_TYPE_PLUGIN_CONFIGURE (peasy_plugin_configure_get_type ())
-#define PEASY_PLUGIN_CONFIGURE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN_CONFIGURE, PeasyPluginConfigure))
-#define PEASY_IS_PLUGIN_CONFIGURE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PLUGIN_CONFIGURE))
-#define PEASY_PLUGIN_CONFIGURE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), PEASY_TYPE_PLUGIN_CONFIGURE, PeasyPluginConfigureIface))
+#define PEASY_TYPE_KEY_BINDING (peasy_key_binding_get_type ())
+#define PEASY_KEY_BINDING(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_KEY_BINDING, PeasyKeyBinding))
+#define PEASY_KEY_BINDING_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_KEY_BINDING, PeasyKeyBindingClass))
+#define PEASY_IS_KEY_BINDING(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_KEY_BINDING))
+#define PEASY_IS_KEY_BINDING_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_KEY_BINDING))
+#define PEASY_KEY_BINDING_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_KEY_BINDING, PeasyKeyBindingClass))
 
-typedef struct _PeasyPluginConfigure PeasyPluginConfigure;
-typedef struct _PeasyPluginConfigureIface PeasyPluginConfigureIface;
+typedef struct _PeasyKeyBinding PeasyKeyBinding;
+typedef struct _PeasyKeyBindingClass PeasyKeyBindingClass;
+typedef struct _PeasyKeyBindingPrivate PeasyKeyBindingPrivate;
+typedef struct _PeasyKeyGroupPrivate PeasyKeyGroupPrivate;
 
-#define PEASY_TYPE_PLUGIN_HELP (peasy_plugin_help_get_type ())
-#define PEASY_PLUGIN_HELP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN_HELP, PeasyPluginHelp))
-#define PEASY_IS_PLUGIN_HELP(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PLUGIN_HELP))
-#define PEASY_PLUGIN_HELP_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), PEASY_TYPE_PLUGIN_HELP, PeasyPluginHelpIface))
+struct _PeasyPluginConfigureIface {
+	GTypeInterface parent_iface;
+	GtkWidget* (*configure) (PeasyPluginConfigure* self, GtkDialog* parent);
+};
 
-typedef struct _PeasyPluginHelp PeasyPluginHelp;
-typedef struct _PeasyPluginHelpIface PeasyPluginHelpIface;
-
-#define PEASY_TYPE_PLUGIN_IFACE (peasy_plugin_iface_get_type ())
-#define PEASY_PLUGIN_IFACE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN_IFACE, PeasyPluginIface))
-#define PEASY_IS_PLUGIN_IFACE(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PLUGIN_IFACE))
-#define PEASY_PLUGIN_IFACE_GET_INTERFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), PEASY_TYPE_PLUGIN_IFACE, PeasyPluginIfaceIface))
-
-typedef struct _PeasyPluginIface PeasyPluginIface;
-typedef struct _PeasyPluginIfaceIface PeasyPluginIfaceIface;
-
-#define PEASY_TYPE_PLUGIN (peasy_plugin_get_type ())
-#define PEASY_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN, PeasyPlugin))
-#define PEASY_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_PLUGIN, PeasyPluginClass))
-#define PEASY_IS_PLUGIN(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PLUGIN))
-#define PEASY_IS_PLUGIN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_PLUGIN))
-#define PEASY_PLUGIN_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_PLUGIN, PeasyPluginClass))
-
-typedef struct _PeasyPlugin PeasyPlugin;
-typedef struct _PeasyPluginClass PeasyPluginClass;
-typedef struct _PeasyPluginPrivate PeasyPluginPrivate;
-
-#define PEASY_TYPE_PROJECT (peasy_project_get_type ())
-#define PEASY_PROJECT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PROJECT, PeasyProject))
-#define PEASY_PROJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_PROJECT, PeasyProjectClass))
-#define PEASY_IS_PROJECT(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_PROJECT))
-#define PEASY_IS_PROJECT_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_PROJECT))
-#define PEASY_PROJECT_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_PROJECT, PeasyProjectClass))
-
-typedef struct _PeasyProject PeasyProject;
-typedef struct _PeasyProjectClass PeasyProjectClass;
-typedef struct _PeasyProjectPrivate PeasyProjectPrivate;
-
-#define PEASY_TYPE_UI_UTILS (peasy_ui_utils_get_type ())
-#define PEASY_UI_UTILS(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_UI_UTILS, PeasyUiUtils))
-#define PEASY_UI_UTILS_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_UI_UTILS, PeasyUiUtilsClass))
-#define PEASY_IS_UI_UTILS(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_UI_UTILS))
-#define PEASY_IS_UI_UTILS_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_UI_UTILS))
-#define PEASY_UI_UTILS_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_UI_UTILS, PeasyUiUtilsClass))
-
-typedef struct _PeasyUiUtils PeasyUiUtils;
-typedef struct _PeasyUiUtilsClass PeasyUiUtilsClass;
-typedef struct _PeasyUiUtilsPrivate PeasyUiUtilsPrivate;
+struct _PeasyPluginHelpIface {
+	GTypeInterface parent_iface;
+	void (*help) (PeasyPluginHelp* self);
+};
 
 struct _PeasyObject {
 	GObject parent_instance;
@@ -210,61 +148,27 @@ struct _PeasyObjectClass {
 	GObjectClass parent_class;
 };
 
-struct _PeasyApp {
+struct _PeasyPluginIfaceIface {
+	GTypeInterface parent_iface;
+};
+
+struct _PeasyPlugin {
 	PeasyObject parent_instance;
-	PeasyAppPrivate * priv;
-	gboolean debug_mode;
-	const gchar* configdir;
-	const gchar* datadir;
-	const gchar* docdir;
+	PeasyPluginPrivate * priv;
+	GeanyPlugin* geany_plugin;
 };
 
-struct _PeasyAppClass {
+struct _PeasyPluginClass {
 	PeasyObjectClass parent_class;
-};
-
-struct _PeasyUiWidgets {
-	PeasyObject parent_instance;
-	PeasyUiWidgetsPrivate * priv;
-	GtkWidget* window;
-	GtkWidget* toolbar;
-	GtkWidget* sidebar_notebook;
-	GtkWidget* notebook;
-	GtkWidget* editor_menu;
-	GtkWidget* tools_menu;
-	GtkWidget* progressbar;
-	GtkWidget* message_window_notebook;
-	GtkWidget* project_menu;
-};
-
-struct _PeasyUiWidgetsClass {
-	PeasyObjectClass parent_class;
-};
-
-struct _PeasyData {
-	PeasyObject parent_instance;
-	PeasyDataPrivate * priv;
-	PeasyUiWidgets* widgets;
-	PeasyApp* app;
-	GeanyPrefs* prefs;
-	GeanyInterfacePrefs* interface_prefs;
-	GeanyToolPrefs* tool_prefs;
-	GeanyToolbarPrefs* toolbar_prefs;
-	GeanyEditorPrefs* editor_prefs;
-	GeanyFilePrefs* file_prefs;
-	GeanySearchPrefs* search_prefs;
-	GeanyTemplatePrefs* template_prefs;
-};
-
-struct _PeasyDataClass {
-	PeasyObjectClass parent_class;
+	gboolean (*enable) (PeasyPlugin* self);
+	void (*disable) (PeasyPlugin* self);
 };
 
 struct _PeasyDocument {
 	PeasyObject parent_instance;
 	PeasyDocumentPrivate * priv;
+	GeanyDocument* geany_doc;
 	PeasyEditor* editor;
-	GeanyDocument* _doc;
 };
 
 struct _PeasyDocumentClass {
@@ -277,73 +181,15 @@ typedef enum  {
 	PEASY_INDENT_TYPE_BOTH = GEANY_INDENT_TYPE_BOTH
 } PeasyIndentType;
 
-typedef enum  {
-	PEASY_AUTO_INDENT_NONE = GEANY_AUTOINDENT_NONE,
-	PEASY_AUTO_INDENT_BASIC = GEANY_AUTOINDENT_BASIC,
-	PEASY_AUTO_INDENT_CURRENTCHARS = GEANY_AUTOINDENT_CURRENTCHARS,
-	PEASY_AUTO_INDENT_MATCHBRACES = GEANY_AUTOINDENT_MATCHBRACES
-} PeasyAutoIndent;
-
-typedef enum  {
-	PEASY_INDICATOR_ERROR = GEANY_INDICATOR_ERROR,
-	PEASY_INDICATOR_SEARCH = GEANY_INDICATOR_SEARCH
-} PeasyIndicator;
-
 struct _PeasyEditor {
 	GObject parent_instance;
 	PeasyEditorPrivate * priv;
-	PeasyDocument* document;
+	GeanyEditor* geany_editor;
 	ScintillaObject* sci;
-	GeanyEditor* _editor;
 };
 
 struct _PeasyEditorClass {
 	GObjectClass parent_class;
-};
-
-struct _PeasyFiletype {
-	PeasyObject parent_instance;
-	PeasyFiletypePrivate * priv;
-	GeanyFiletype* _ft;
-};
-
-struct _PeasyFiletypeClass {
-	PeasyObjectClass parent_class;
-};
-
-struct _PeasyHighlighting {
-	int dummy;
-};
-
-struct _PeasyKeyBinding {
-	GObject parent_instance;
-	PeasyKeyBindingPrivate * priv;
-	GeanyKeyBinding* _kb_item;
-};
-
-struct _PeasyKeyBindingClass {
-	GObjectClass parent_class;
-	gboolean (*default_handler) (PeasyKeyBinding* self, gint id);
-};
-
-struct _PeasyKeyGroup {
-	GObject parent_instance;
-	PeasyKeyGroupPrivate * priv;
-	GeanyKeyGroup* _kb_group;
-};
-
-struct _PeasyKeyGroupClass {
-	GObjectClass parent_class;
-	gboolean (*default_handler) (PeasyKeyGroup* self, gint id);
-};
-
-struct _PeasyMsgWindow {
-	PeasyObject parent_instance;
-	PeasyMsgWindowPrivate * priv;
-};
-
-struct _PeasyMsgWindowClass {
-	PeasyObjectClass parent_class;
 };
 
 struct _PeasySignals {
@@ -355,63 +201,50 @@ struct _PeasySignalsClass {
 	PeasyObjectClass parent_class;
 };
 
-struct _PeasyPluginConfigureIface {
-	GTypeInterface parent_iface;
-	GtkWidget* (*configure) (PeasyPluginConfigure* self, GtkDialog* parent);
-};
-
-struct _PeasyPluginHelpIface {
-	GTypeInterface parent_iface;
-	void (*help) (PeasyPluginHelp* self);
-};
-
-struct _PeasyPluginIfaceIface {
-	GTypeInterface parent_iface;
-	GeanyPlugin* (*get_geany_plugin) (PeasyPluginIface* self);
-	void (*set_geany_plugin) (PeasyPluginIface* self, GeanyPlugin* value);
-};
-
-struct _PeasyPlugin {
+struct _PeasyFiletype {
 	PeasyObject parent_instance;
-	PeasyPluginPrivate * priv;
-	PeasyData* data;
+	PeasyFiletypePrivate * priv;
+	GeanyFiletype* geany_ft;
 };
 
-struct _PeasyPluginClass {
-	PeasyObjectClass parent_class;
-	gboolean (*enable) (PeasyPlugin* self);
-	void (*disable) (PeasyPlugin* self);
-};
-
-struct _PeasyProject {
-	PeasyObject parent_instance;
-	PeasyProjectPrivate * priv;
-	GeanyProject* _project;
-};
-
-struct _PeasyProjectClass {
+struct _PeasyFiletypeClass {
 	PeasyObjectClass parent_class;
 };
 
-struct _PeasyUiUtils {
+struct _PeasyKeyBinding {
 	GObject parent_instance;
-	PeasyUiUtilsPrivate * priv;
+	PeasyKeyBindingPrivate * priv;
+	GeanyKeyBinding* geany_binding;
 };
 
-struct _PeasyUiUtilsClass {
+struct _PeasyKeyBindingClass {
 	GObjectClass parent_class;
+	gboolean (*default_handler) (PeasyKeyBinding* self, gint id);
+};
+
+struct _PeasyKeyGroup {
+	GObject parent_instance;
+	PeasyKeyGroupPrivate * priv;
+	GeanyKeyGroup* geany_group;
+};
+
+struct _PeasyKeyGroupClass {
+	GObjectClass parent_class;
+	gboolean (*default_handler) (PeasyKeyGroup* self, gint id);
 };
 
 
+GType peasy_plugin_configure_get_type (void) G_GNUC_CONST;
+GtkWidget* peasy_plugin_configure_configure (PeasyPluginConfigure* self, GtkDialog* parent);
+GType peasy_plugin_help_get_type (void) G_GNUC_CONST;
+void peasy_plugin_help_help (PeasyPluginHelp* self);
 GType peasy_object_get_type (void) G_GNUC_CONST;
-GType peasy_app_get_type (void) G_GNUC_CONST;
-PeasyApp* peasy_app_new (void);
-PeasyApp* peasy_app_construct (GType object_type);
-GType peasy_ui_widgets_get_type (void) G_GNUC_CONST;
-PeasyUiWidgets* peasy_ui_widgets_new (void);
-PeasyUiWidgets* peasy_ui_widgets_construct (GType object_type);
-GType peasy_data_get_type (void) G_GNUC_CONST;
-PeasyData* peasy_data_instance (void);
+GType peasy_plugin_iface_get_type (void) G_GNUC_CONST;
+GType peasy_plugin_get_type (void) G_GNUC_CONST;
+gboolean peasy_plugin_enable (PeasyPlugin* self);
+void peasy_plugin_disable (PeasyPlugin* self);
+GType peasy_key_group_get_type (void) G_GNUC_CONST;
+PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* section_name, gsize count);
 GType peasy_document_get_type (void) G_GNUC_CONST;
 GType peasy_editor_get_type (void) G_GNUC_CONST;
 GPtrArray* peasy_document_all_documents (void);
@@ -435,56 +268,14 @@ gboolean peasy_document_get_has_tags (PeasyDocument* self);
 guint peasy_document_get_id (PeasyDocument* self);
 gchar* peasy_document_get_display_name (PeasyDocument* self);
 GType peasy_indent_type_get_type (void) G_GNUC_CONST;
-GType peasy_auto_indent_get_type (void) G_GNUC_CONST;
-GType peasy_indicator_get_type (void) G_GNUC_CONST;
 gchar* peasy_editor_get_word_at (PeasyEditor* self, gint pos, const gchar* wordchars);
 gboolean peasy_editor_goto (PeasyEditor* self, gint pos, gboolean mark);
-void peasy_editor_indicator_clear (PeasyEditor* self, GeanyIndicator indic);
-void peasy_editor_indicator_set_on_line (PeasyEditor* self, GeanyIndicator indic, gint line);
-void peasy_editor_indicator_set_on_range (PeasyEditor* self, GeanyIndicator indic, gint start, gint end);
 PeasyEditor* peasy_editor_new (void);
 PeasyEditor* peasy_editor_construct (GType object_type);
-gboolean peasy_editor_get_line_wrapping (PeasyEditor* self);
-gboolean peasy_editor_get_auto_indent (PeasyEditor* self);
 PeasyIndentType peasy_editor_get_indent_type (PeasyEditor* self);
 void peasy_editor_set_indent_type (PeasyEditor* self, PeasyIndentType value);
-gboolean peasy_editor_get_line_breaking (PeasyEditor* self);
 gint peasy_editor_get_indent_width (PeasyEditor* self);
 void peasy_editor_set_indent_width (PeasyEditor* self, gint value);
-GPtrArray* peasy_filetype_all_filetypes (void);
-PeasyFiletype* peasy_filetype_get_by_id (GeanyFiletypeID id);
-PeasyFiletype* peasy_filetype_get_by_name (const gchar* name);
-PeasyFiletype* peasy_filetype_detect_from_file (const gchar* filename);
-gint peasy_filetype_get_id (PeasyFiletype* self);
-const gchar* peasy_filetype_get_extension (PeasyFiletype* self);
-const gchar* peasy_filetype_get_name (PeasyFiletype* self);
-const gchar* peasy_filetype_get_title (PeasyFiletype* self);
-const gchar* peasy_filetype_get_display_name (PeasyFiletype* self);
-const gchar* peasy_filetype_get_mime_type (PeasyFiletype* self);
-GIcon* peasy_filetype_get_icon (PeasyFiletype* self);
-void peasy_highlighting_free (PeasyHighlighting* self);
-gboolean peasy_highlighting_is_string_style (gint lexer, gint style);
-gboolean peasy_highlighting_is_comment_style (gint lexer, gint style);
-gboolean peasy_highlighting_is_code_style (gint lexer, gint style);
-void peasy_highlighting_get_lexer_style (PeasyFiletype* ft, gint style, GeanyLexerStyle* result);
-GType peasy_key_binding_get_type (void) G_GNUC_CONST;
-gboolean peasy_key_binding_default_handler (PeasyKeyBinding* self, gint id);
-GType peasy_key_group_get_type (void) G_GNUC_CONST;
-gboolean peasy_key_group_default_handler (PeasyKeyGroup* self, gint id);
-PeasyKeyBinding* peasy_key_group_add_keybinding (PeasyKeyGroup* self, const gchar* name, const gchar* label, GtkMenuItem* menu_item, gint def_key, GdkModifierType def_mod);
-PeasyKeyBinding* peasy_key_group_add_keybinding_with_id (PeasyKeyGroup* self, const gchar* name, const gchar* label, GtkMenuItem* menu_item, gint def_key, GdkModifierType def_mod, gint id);
-PeasyKeyBinding* peasy_key_group_get_item (PeasyKeyGroup* self, gint id);
-PeasyKeyGroup* peasy_key_group_new (void);
-PeasyKeyGroup* peasy_key_group_construct (GType object_type);
-GType peasy_msg_window_get_type (void) G_GNUC_CONST;
-PeasyMsgWindow* peasy_msg_window_getMsgWindow (void);
-void peasy_msg_window_clear_tab (PeasyMsgWindow* self, gint tab);
-void peasy_msg_window_compiler_add (PeasyMsgWindow* self, gint msg_color, const gchar* msg, ...);
-void peasy_msg_window_compiler_add_string (PeasyMsgWindow* self, gint msg_color, const gchar* msg);
-void peasy_msg_window_set_messages_dir (PeasyMsgWindow* self, const gchar* messages_dir);
-void peasy_msg_window_status_add (PeasyMsgWindow* self, const gchar* msg, ...);
-void peasy_msg_window_status_add_string (PeasyMsgWindow* self, const gchar* msg);
-void peasy_msg_window_switch_tab (PeasyMsgWindow* self, gint tabnum, gboolean show);
 extern GeanyPlugin* peasy_peasy_plugin;
 GType peasy_signals_get_type (void) G_GNUC_CONST;
 extern PeasySignals* peasy_peasy_signals;
@@ -495,37 +286,15 @@ PeasyObject* peasy_object_construct (GType object_type);
 PeasySignals* peasy_object_get_plugin_signals (PeasyObject* self);
 PeasySignals* peasy_signals_new (void);
 PeasySignals* peasy_signals_construct (GType object_type);
-GType peasy_plugin_configure_get_type (void) G_GNUC_CONST;
-GtkWidget* peasy_plugin_configure_configure (PeasyPluginConfigure* self, GtkDialog* parent);
-GType peasy_plugin_help_get_type (void) G_GNUC_CONST;
-void peasy_plugin_help_help (PeasyPluginHelp* self);
-GType peasy_plugin_iface_get_type (void) G_GNUC_CONST;
-GType peasy_plugin_get_type (void) G_GNUC_CONST;
-gboolean peasy_plugin_enable (PeasyPlugin* self);
-void peasy_plugin_disable (PeasyPlugin* self);
-PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* section_name, gsize count);
-GType peasy_project_get_type (void) G_GNUC_CONST;
-PeasyProject* peasy_plugin_get_project (PeasyPlugin* self);
-GeanyPlugin* peasy_plugin_iface_get_geany_plugin (PeasyPluginIface* self);
-void peasy_plugin_iface_set_geany_plugin (PeasyPluginIface* self, GeanyPlugin* value);
-PeasyProject* peasy_project_new (void);
-PeasyProject* peasy_project_construct (GType object_type);
-const gchar* peasy_project_get_name (PeasyProject* self);
-const gchar* peasy_project_get_description (PeasyProject* self);
-const gchar* peasy_project_get_base_path (PeasyProject* self);
-const gchar* peasy_project_get_file_name (PeasyProject* self);
-gchar** peasy_project_get_file_patterns (PeasyProject* self, int* result_length1);
-gint peasy_project_get_pure (PeasyProject* self);
-void peasy_project_set_pure (PeasyProject* self, gint value);
-GType peasy_ui_utils_get_type (void) G_GNUC_CONST;
-GtkWidget* peasy_ui_utils_button_new_with_image (const gchar* stock_id, const gchar* text);
-GtkWidget* peasy_ui_utils_image_menu_item_new (const gchar* stock_id, const gchar* label);
-GtkWidget* peasy_ui_utils_path_box_new (const gchar* title, GtkFileChooserAction action, GtkEntry* entry);
-GtkWidget* peasy_ui_utils_dialog_vbox_new (GtkDialog* dialog);
-void peasy_ui_utils_add_document_sensitive (GtkWidget* widget);
-GtkWidget* peasy_ui_utils_lookup_widget (PeasyUiUtils* self, GtkWidget* widget, const gchar* widget_name);
-PeasyUiUtils* peasy_ui_utils_new (void);
-PeasyUiUtils* peasy_ui_utils_construct (GType object_type);
+GPtrArray* peasy_filetype_all_filetypes (void);
+GType peasy_key_binding_get_type (void) G_GNUC_CONST;
+gboolean peasy_key_binding_default_handler (PeasyKeyBinding* self, gint id);
+gboolean peasy_key_group_default_handler (PeasyKeyGroup* self, gint id);
+PeasyKeyBinding* peasy_key_group_add_keybinding (PeasyKeyGroup* self, const gchar* name, const gchar* label, GtkMenuItem* menu_item, gint def_key, GdkModifierType def_mod);
+PeasyKeyBinding* peasy_key_group_add_keybinding_with_id (PeasyKeyGroup* self, const gchar* name, const gchar* label, GtkMenuItem* menu_item, gint def_key, GdkModifierType def_mod, gint id);
+PeasyKeyBinding* peasy_key_group_get_item (PeasyKeyGroup* self, gint id);
+PeasyKeyGroup* peasy_key_group_new (void);
+PeasyKeyGroup* peasy_key_group_construct (GType object_type);
 
 
 G_END_DECLS

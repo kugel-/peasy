@@ -54,6 +54,7 @@ from gi.repository import GLib
 from gi.repository import Gtk
 from gi.repository import Gdk
 from gi.repository import Pango
+from gi.repository import Geany
 from gi.repository import Peasy
 
 # commonprefix() from posixpath
@@ -649,33 +650,36 @@ from gi.repository import Peasy
                 self.window.show_all()
             self.window.present()
 
+        def get_string_pref(self, group, key, default = ""):
+            if (self.keyfile.has_group(group)):
+                return self.keyfile.get_string(group, key)
+            else:
+                return default
+
         def do_enable(self):
+            data = self.geany_plugin.geany_data
             self.window = None
-            self.item = Peasy.UiUtils.image_menu_item_new(Gtk.STOCK_EXECUTE, "Open python console")
+            self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_EXECUTE, "Open python console")
             self.item.connect("activate", self.on_item_click)
-            Peasy.Data.instance().widgets.tools_menu.append(self.item)
+            data.main_widgets.tools_menu.append(self.item)
             self.item.show_all()
 
             self.keys = self.add_key_group("python_console", 1)
             self.keys.add_keybinding("open_console", "Open Console Window", self.item, 0, 0)
 
-            self.configfn = os.path.join(Peasy.Data.instance().app.configdir, "plugins", "console-peasy.conf")
+            self.configfn = os.path.join(data.app.configdir, "plugins", "console-peasy.conf")
             self.keyfile = GLib.KeyFile.new()
 
             # load startup config
             if (os.path.isfile(self.configfn)):
                 self.keyfile.load_from_file(self.configfn, GLib.KeyFileFlags.KEEP_COMMENTS)
-                if (self.keyfile.has_group("preferences")):
-                    v = self.keyfile.get_string("preferences", "startup")
-                    if (v is not None):
-                        if (v == "last"):
-                            if (self.keyfile.has_group("status")):
-                                if (self.keyfile.get_boolean("status", "shown")):
-                                    self.on_item_click()
-                        elif (v == "shown"):
+                v = self.get_string_pref("preferences", "startup")
+                if (v == "last"):
+                    if (self.keyfile.has_group("status")):
+                        if (self.keyfile.get_boolean("status", "shown")):
                             self.on_item_click()
-                        else:
-                            GLib.assert_warning(v == "hidden")
+                elif (v == "shown"):
+                    self.on_item_click()
             return True
 
         def do_configure(self, dialog):
@@ -690,15 +694,18 @@ from gi.repository import Peasy
             box.props.homogeneous = False
             btn = Gtk.RadioButton.new_with_label_from_widget(None, "Restore console if it was opened before")
             btn.props.name = "last"
-            if ("last" == self.keyfile.get_string("preferences", "startup")): btn.set_active(True)
+            if ("last" == self.get_string_pref("preferences", "startup")):
+                btn.set_active(True)
             box.add(btn)
             btn = Gtk.RadioButton.new_with_label_from_widget(btn, "Always open the console on start")
             btn.props.name = "shown"
-            if ("shown" == self.keyfile.get_string("preferences", "startup")): btn.set_active(True)
+            if ("shown" == self.get_string_pref("preferences", "startup")):
+                btn.set_active(True)
             box.add(btn)
             btn = Gtk.RadioButton.new_with_label_from_widget(btn, "Always hide the console on start")
             btn.props.name = "hidden"
-            if ("hidden" == self.keyfile.get_string("preferences", "startup")): btn.set_active(True)
+            if ("hidden" == self.get_string_pref("preferences", "startup")):
+                btn.set_active(True)
             box.add(btn)
             align.add(box)
             frame.add(align)

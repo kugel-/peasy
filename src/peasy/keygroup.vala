@@ -5,6 +5,7 @@ namespace Peasy
 
 public class KeyBinding : GLib.Object
 {
+	public unowned Geany.KeyBinding geany_binding;
 	/* defined in C due to use of accumulator
 	 *  public signal bool activate(int id); */
 	private KeyGroup m_group;
@@ -31,15 +32,15 @@ public class KeyBinding : GLib.Object
 	internal KeyBinding(KeyGroup kb_group, int index, int def_key, Gdk.ModifierType def_mod,
 	                    string name, string label, Gtk.MenuItem? menu_item)
 	{
-		_kb_item =
-			Geany.keybindings_set_item_full(kb_group._kb_group, index, def_key, def_mod, name,
+		geany_binding =
+			Geany.keybindings_set_item_full(kb_group.geany_group, index, def_key, def_mod, name,
 			label, menu_item, this.geany_handler);
 		m_group = kb_group;
 	}
 
 	internal KeyBinding.from_geany(KeyGroup kb_group, Geany.KeyBinding kb_item)
 	{
-		_kb_item = kb_item;
+		geany_binding = kb_item;
 		m_group = kb_group;
 	}
 
@@ -48,12 +49,11 @@ public class KeyBinding : GLib.Object
 	{
 		setup_signal_activate();
 	}
-
-	internal unowned Geany.KeyBinding _kb_item;
 }
 
 public class KeyGroup : GLib.Object
 {
+	public unowned Geany.KeyGroup geany_group;
 	/* defined in C code due to use of accumulator
 	 * public signal bool activate(int id); */
 	private int index;
@@ -69,7 +69,7 @@ public class KeyGroup : GLib.Object
 
 	internal KeyGroup.from_geany(Geany.KeyGroup kb_group)
 	{
-		_kb_group = kb_group;
+		geany_group = kb_group;
 		index = 0;
 	}
 
@@ -90,7 +90,7 @@ public class KeyGroup : GLib.Object
 
 	public KeyBinding get_item(int id)
 	{
-		unowned Geany.KeyBinding item = Geany.keybindings_get_item(_kb_group, id);
+		unowned Geany.KeyBinding item = Geany.keybindings_get_item(geany_group, id);
 		GLib.return_val_if_fail(item != null, null);
 		return new KeyBinding.from_geany(this, item);
 	}
@@ -100,8 +100,6 @@ public class KeyGroup : GLib.Object
 	{
 		setup_signal_activate();
 	}
-
-	internal unowned Geany.KeyGroup? _kb_group;
 }
 
 }

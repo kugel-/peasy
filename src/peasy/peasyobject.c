@@ -117,7 +117,8 @@ static void peasy_signals_emit_save (GObject* obj, GeanyDocument* geany_doc, Pea
 static void peasy_signals_emit_close (GObject* obj, GeanyDocument* geany_doc, PeasySignals* sig);
 static void peasy_signals_emit_filetype_set (GObject* obj, GeanyDocument* geany_doc, GeanyFiletype* ft, PeasySignals* sig);
 GType peasy_filetype_get_type (void) G_GNUC_CONST;
-PeasyFiletype* peasy_filetype_get_by_id (GeanyFiletypeID id);
+PeasyFiletype* peasy_filetype_new (GeanyFiletype* ft);
+PeasyFiletype* peasy_filetype_construct (GType object_type, GeanyFiletype* ft);
 static void g_cclosure_user_marshal_VOID__OBJECT_OBJECT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 
 
@@ -395,36 +396,34 @@ static void peasy_signals_emit_filetype_set (GObject* obj, GeanyDocument* geany_
 	PeasyFiletype* _tmp0_ = NULL;
 	GeanyFiletype* _tmp1_ = NULL;
 	PeasyFiletype* ft_ = NULL;
-	PeasyFiletype* _tmp5_ = NULL;
-	PeasySignals* _tmp6_ = NULL;
-	GeanyDocument* _tmp7_ = NULL;
+	PeasyFiletype* _tmp4_ = NULL;
+	PeasySignals* _tmp5_ = NULL;
+	GeanyDocument* _tmp6_ = NULL;
+	PeasyDocument* _tmp7_ = NULL;
 	PeasyDocument* _tmp8_ = NULL;
-	PeasyDocument* _tmp9_ = NULL;
 	g_return_if_fail (obj != NULL);
 	g_return_if_fail (geany_doc != NULL);
 	g_return_if_fail (sig != NULL);
 	_tmp1_ = ft;
 	if (_tmp1_ != NULL) {
 		GeanyFiletype* _tmp2_ = NULL;
-		GeanyFiletypeID _tmp3_ = 0;
-		PeasyFiletype* _tmp4_ = NULL;
+		PeasyFiletype* _tmp3_ = NULL;
 		_tmp2_ = ft;
-		_tmp3_ = _tmp2_->id;
-		_tmp4_ = peasy_filetype_get_by_id (_tmp3_);
+		_tmp3_ = peasy_filetype_new (_tmp2_);
 		_g_object_unref0 (_tmp0_);
-		_tmp0_ = _tmp4_;
+		_tmp0_ = _tmp3_;
 	} else {
 		_g_object_unref0 (_tmp0_);
 		_tmp0_ = NULL;
 	}
-	_tmp5_ = _g_object_ref0 (_tmp0_);
-	ft_ = _tmp5_;
-	_tmp6_ = sig;
-	_tmp7_ = geany_doc;
-	_tmp8_ = peasy_document_new (_tmp7_);
-	_tmp9_ = _tmp8_;
-	g_signal_emit_by_name (_tmp6_, "document-filetype-set", _tmp9_, ft_);
-	_g_object_unref0 (_tmp9_);
+	_tmp4_ = _g_object_ref0 (_tmp0_);
+	ft_ = _tmp4_;
+	_tmp5_ = sig;
+	_tmp6_ = geany_doc;
+	_tmp7_ = peasy_document_new (_tmp6_);
+	_tmp8_ = _tmp7_;
+	g_signal_emit_by_name (_tmp5_, "document-filetype-set", _tmp8_, ft_);
+	_g_object_unref0 (_tmp8_);
 	_g_object_unref0 (ft_);
 	_g_object_unref0 (_tmp0_);
 }

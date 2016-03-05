@@ -38,7 +38,7 @@ typedef struct _PeasyKeyGroupPrivate PeasyKeyGroupPrivate;
 struct _PeasyKeyBinding {
 	GObject parent_instance;
 	PeasyKeyBindingPrivate * priv;
-	GeanyKeyBinding* _kb_item;
+	GeanyKeyBinding* geany_binding;
 };
 
 struct _PeasyKeyBindingClass {
@@ -53,7 +53,7 @@ struct _PeasyKeyBindingPrivate {
 struct _PeasyKeyGroup {
 	GObject parent_instance;
 	PeasyKeyGroupPrivate * priv;
-	GeanyKeyGroup* _kb_group;
+	GeanyKeyGroup* geany_group;
 };
 
 struct _PeasyKeyGroupClass {
@@ -169,7 +169,7 @@ PeasyKeyBinding* peasy_key_binding_construct (GType object_type, PeasyKeyGroup* 
 	g_return_val_if_fail (label != NULL, NULL);
 	self = (PeasyKeyBinding*) g_object_new (object_type, NULL);
 	_tmp0_ = kb_group;
-	_tmp1_ = _tmp0_->_kb_group;
+	_tmp1_ = _tmp0_->geany_group;
 	_tmp2_ = index;
 	_tmp3_ = def_key;
 	_tmp4_ = def_mod;
@@ -177,7 +177,7 @@ PeasyKeyBinding* peasy_key_binding_construct (GType object_type, PeasyKeyGroup* 
 	_tmp6_ = label;
 	_tmp7_ = menu_item;
 	_tmp8_ = keybindings_set_item_full (_tmp1_, (gsize) _tmp2_, (guint) _tmp3_, _tmp4_, _tmp5_, _tmp6_, (GtkWidget*) _tmp7_, _peasy_key_binding_geany_handler_geany_key_binding_func, g_object_ref (self), g_object_unref);
-	self->_kb_item = _tmp8_;
+	self->geany_binding = _tmp8_;
 	_tmp9_ = kb_group;
 	_tmp10_ = _g_object_ref0 (_tmp9_);
 	_g_object_unref0 (self->priv->m_group);
@@ -200,7 +200,7 @@ PeasyKeyBinding* peasy_key_binding_construct_from_geany (GType object_type, Peas
 	g_return_val_if_fail (kb_item != NULL, NULL);
 	self = (PeasyKeyBinding*) g_object_new (object_type, NULL);
 	_tmp0_ = kb_item;
-	self->_kb_item = _tmp0_;
+	self->geany_binding = _tmp0_;
 	_tmp1_ = kb_group;
 	_tmp2_ = _g_object_ref0 (_tmp1_);
 	_g_object_unref0 (self->priv->m_group);
@@ -267,7 +267,7 @@ PeasyKeyGroup* peasy_key_group_construct_from_geany (GType object_type, GeanyKey
 	g_return_val_if_fail (kb_group != NULL, NULL);
 	self = (PeasyKeyGroup*) g_object_new (object_type, NULL);
 	_tmp0_ = kb_group;
-	self->_kb_group = _tmp0_;
+	self->geany_group = _tmp0_;
 	self->priv->index = 0;
 	return self;
 }
@@ -340,7 +340,7 @@ PeasyKeyBinding* peasy_key_group_get_item (PeasyKeyGroup* self, gint id) {
 	GeanyKeyBinding* _tmp2_ = NULL;
 	PeasyKeyBinding* _tmp3_ = NULL;
 	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = self->_kb_group;
+	_tmp0_ = self->geany_group;
 	_tmp1_ = id;
 	_tmp2_ = keybindings_get_item (_tmp0_, (gsize) _tmp1_);
 	item = _tmp2_;

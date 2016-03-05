@@ -67,10 +67,7 @@ typedef struct _PeasyTestPrivate
 
 static gboolean peasy_test_enable(PeasyPlugin *self)
 {
-	GeanyPlugin *geany_plugin = NULL;
-
-	g_object_get(self, "geany-plugin", &geany_plugin, NULL);
-	printf("%s(): Hello from %s!\n", __func__, geany_plugin->info->name);
+	printf("%s(): Hello from %s!\n", __func__, self->geany_plugin->info->name);
 
 	return TRUE;
 }

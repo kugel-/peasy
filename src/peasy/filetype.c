@@ -5,9 +5,6 @@
 #include <glib.h>
 #include <glib-object.h>
 #include <geanyplugin.h>
-#include <stdlib.h>
-#include <string.h>
-#include <gio/gio.h>
 
 
 #define PEASY_TYPE_OBJECT (peasy_object_get_type ())
@@ -46,7 +43,7 @@ struct _PeasyObjectClass {
 struct _PeasyFiletype {
 	PeasyObject parent_instance;
 	PeasyFiletypePrivate * priv;
-	GeanyFiletype* _ft;
+	GeanyFiletype* geany_ft;
 };
 
 struct _PeasyFiletypeClass {
@@ -65,14 +62,7 @@ extern GeanyPlugin* peasy_peasy_plugin;
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_filetype_get_type (void) G_GNUC_CONST;
 enum  {
-	PEASY_FILETYPE_DUMMY_PROPERTY,
-	PEASY_FILETYPE_ID,
-	PEASY_FILETYPE_EXTENSION,
-	PEASY_FILETYPE_NAME,
-	PEASY_FILETYPE_TITLE,
-	PEASY_FILETYPE_DISPLAY_NAME,
-	PEASY_FILETYPE_MIME_TYPE,
-	PEASY_FILETYPE_ICON
+	PEASY_FILETYPE_DUMMY_PROPERTY
 };
 GPtrArray* peasy_filetype_all_filetypes (void);
 static Block2Data* block2_data_ref (Block2Data* _data2_);
@@ -84,18 +74,7 @@ PeasyFiletype* peasy_filetype_construct (GType object_type, GeanyFiletype* ft);
 static void ___lambda5__gfunc (gconstpointer data, gpointer self);
 PeasyObject* peasy_object_new (void);
 PeasyObject* peasy_object_construct (GType object_type);
-PeasyFiletype* peasy_filetype_get_by_id (GeanyFiletypeID id);
-PeasyFiletype* peasy_filetype_get_by_name (const gchar* name);
-PeasyFiletype* peasy_filetype_detect_from_file (const gchar* filename);
-gint peasy_filetype_get_id (PeasyFiletype* self);
-const gchar* peasy_filetype_get_extension (PeasyFiletype* self);
-const gchar* peasy_filetype_get_name (PeasyFiletype* self);
-const gchar* peasy_filetype_get_title (PeasyFiletype* self);
-const gchar* peasy_filetype_get_display_name (PeasyFiletype* self);
-const gchar* peasy_filetype_get_mime_type (PeasyFiletype* self);
-GIcon* peasy_filetype_get_icon (PeasyFiletype* self);
 static void peasy_filetype_finalize (GObject* obj);
-static void _vala_peasy_filetype_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 
 
 static Block2Data* block2_data_ref (Block2Data* _data2_) {
@@ -169,7 +148,7 @@ PeasyFiletype* peasy_filetype_construct (GType object_type, GeanyFiletype* ft) {
 	g_return_val_if_fail (ft != NULL, NULL);
 	self = (PeasyFiletype*) peasy_object_construct (object_type);
 	_tmp0_ = ft;
-	self->_ft = _tmp0_;
+	self->geany_ft = _tmp0_;
 	return self;
 }
 
@@ -179,162 +158,9 @@ PeasyFiletype* peasy_filetype_new (GeanyFiletype* ft) {
 }
 
 
-PeasyFiletype* peasy_filetype_get_by_id (GeanyFiletypeID id) {
-	PeasyFiletype* result = NULL;
-	GeanyFiletype* ft = NULL;
-	GeanyFiletypeID _tmp0_ = 0;
-	GeanyFiletype* _tmp1_ = NULL;
-	GeanyFiletype* _tmp2_ = NULL;
-	GeanyFiletype* _tmp3_ = NULL;
-	PeasyFiletype* _tmp4_ = NULL;
-	_tmp0_ = id;
-	_tmp1_ = filetypes_index ((gint) _tmp0_);
-	ft = _tmp1_;
-	_tmp2_ = ft;
-	if (_tmp2_ == NULL) {
-		result = NULL;
-		return result;
-	}
-	_tmp3_ = ft;
-	_tmp4_ = peasy_filetype_new (_tmp3_);
-	result = _tmp4_;
-	return result;
-}
-
-
-PeasyFiletype* peasy_filetype_get_by_name (const gchar* name) {
-	PeasyFiletype* result = NULL;
-	GeanyFiletype* ft = NULL;
-	const gchar* _tmp0_ = NULL;
-	GeanyFiletype* _tmp1_ = NULL;
-	GeanyFiletype* _tmp2_ = NULL;
-	GeanyFiletype* _tmp3_ = NULL;
-	PeasyFiletype* _tmp4_ = NULL;
-	g_return_val_if_fail (name != NULL, NULL);
-	_tmp0_ = name;
-	_tmp1_ = filetypes_lookup_by_name (_tmp0_);
-	ft = _tmp1_;
-	_tmp2_ = ft;
-	if (_tmp2_ == NULL) {
-		result = NULL;
-		return result;
-	}
-	_tmp3_ = ft;
-	_tmp4_ = peasy_filetype_new (_tmp3_);
-	result = _tmp4_;
-	return result;
-}
-
-
-PeasyFiletype* peasy_filetype_detect_from_file (const gchar* filename) {
-	PeasyFiletype* result = NULL;
-	const gchar* _tmp0_ = NULL;
-	GeanyFiletype* _tmp1_ = NULL;
-	PeasyFiletype* _tmp2_ = NULL;
-	g_return_val_if_fail (filename != NULL, NULL);
-	_tmp0_ = filename;
-	_tmp1_ = filetypes_lookup_by_name (_tmp0_);
-	_tmp2_ = peasy_filetype_new (_tmp1_);
-	result = _tmp2_;
-	return result;
-}
-
-
-gint peasy_filetype_get_id (PeasyFiletype* self) {
-	gint result;
-	GeanyFiletype* _tmp0_ = NULL;
-	GeanyFiletypeID _tmp1_ = 0;
-	g_return_val_if_fail (self != NULL, 0);
-	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_->id;
-	result = (gint) _tmp1_;
-	return result;
-}
-
-
-const gchar* peasy_filetype_get_extension (PeasyFiletype* self) {
-	const gchar* result;
-	GeanyFiletype* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_->extension;
-	result = _tmp1_;
-	return result;
-}
-
-
-const gchar* peasy_filetype_get_name (PeasyFiletype* self) {
-	const gchar* result;
-	GeanyFiletype* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_->name;
-	result = _tmp1_;
-	return result;
-}
-
-
-const gchar* peasy_filetype_get_title (PeasyFiletype* self) {
-	const gchar* result;
-	GeanyFiletype* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_->title;
-	result = _tmp1_;
-	return result;
-}
-
-
-const gchar* peasy_filetype_get_display_name (PeasyFiletype* self) {
-	const gchar* result;
-	GeanyFiletype* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = self->_ft;
-	_tmp1_ = filetypes_get_display_name (_tmp0_);
-	result = _tmp1_;
-	return result;
-}
-
-
-const gchar* peasy_filetype_get_mime_type (PeasyFiletype* self) {
-	const gchar* result;
-	GeanyFiletype* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_->mime_type;
-	result = _tmp1_;
-	return result;
-}
-
-
-GIcon* peasy_filetype_get_icon (PeasyFiletype* self) {
-	GIcon* result;
-	GeanyFiletype* _tmp0_ = NULL;
-	GIcon* _tmp1_ = NULL;
-	g_return_val_if_fail (self != NULL, NULL);
-	_tmp0_ = self->_ft;
-	_tmp1_ = _tmp0_->icon;
-	result = _tmp1_;
-	return result;
-}
-
-
 static void peasy_filetype_class_init (PeasyFiletypeClass * klass) {
 	peasy_filetype_parent_class = g_type_class_peek_parent (klass);
-	G_OBJECT_CLASS (klass)->get_property = _vala_peasy_filetype_get_property;
 	G_OBJECT_CLASS (klass)->finalize = peasy_filetype_finalize;
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_FILETYPE_ID, g_param_spec_int ("id", "id", "id", G_MININT, G_MAXINT, 0, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_FILETYPE_EXTENSION, g_param_spec_string ("extension", "extension", "extension", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_FILETYPE_NAME, g_param_spec_string ("name", "name", "name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_FILETYPE_TITLE, g_param_spec_string ("title", "title", "title", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_FILETYPE_DISPLAY_NAME, g_param_spec_string ("display-name", "display-name", "display-name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_FILETYPE_MIME_TYPE, g_param_spec_string ("mime-type", "mime-type", "mime-type", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_FILETYPE_ICON, g_param_spec_object ("icon", "icon", "icon", G_TYPE_ICON, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 }
 
 
@@ -358,38 +184,6 @@ GType peasy_filetype_get_type (void) {
 		g_once_init_leave (&peasy_filetype_type_id__volatile, peasy_filetype_type_id);
 	}
 	return peasy_filetype_type_id__volatile;
-}
-
-
-static void _vala_peasy_filetype_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec) {
-	PeasyFiletype * self;
-	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_FILETYPE, PeasyFiletype);
-	switch (property_id) {
-		case PEASY_FILETYPE_ID:
-		g_value_set_int (value, peasy_filetype_get_id (self));
-		break;
-		case PEASY_FILETYPE_EXTENSION:
-		g_value_set_string (value, peasy_filetype_get_extension (self));
-		break;
-		case PEASY_FILETYPE_NAME:
-		g_value_set_string (value, peasy_filetype_get_name (self));
-		break;
-		case PEASY_FILETYPE_TITLE:
-		g_value_set_string (value, peasy_filetype_get_title (self));
-		break;
-		case PEASY_FILETYPE_DISPLAY_NAME:
-		g_value_set_string (value, peasy_filetype_get_display_name (self));
-		break;
-		case PEASY_FILETYPE_MIME_TYPE:
-		g_value_set_string (value, peasy_filetype_get_mime_type (self));
-		break;
-		case PEASY_FILETYPE_ICON:
-		g_value_set_object (value, peasy_filetype_get_icon (self));
-		break;
-		default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
-		break;
-	}
 }
 
 
