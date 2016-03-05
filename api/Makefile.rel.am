@@ -19,7 +19,8 @@ SCANNERFLAGS += --program-arg=--introspection-dump=$(srcdir)/get-type.txt,$(buil
 %C%_GeanyScintilla_1_0_gir_LIBS = $(geany_libdir)/libgeany.la
 %C%_GeanyScintilla_1_0_gir_FILES =  $(geany_includedir)/scintilla/ScintillaWidget.h \
 								$(geany_includedir)/scintilla/Scintilla.h \
-								$(geany_includedir)/scintilla/SciLexer.h
+								$(geany_includedir)/scintilla/SciLexer.h \
+								$(geany_includedir)/gtkdoc/geany-scintilla-gtkdoc.h
 %C%_GeanyScintilla_1_0_gir_SCANNERFLAGS = $(SCANNERFLAGS)
 
 VAPIGEN_VAPIS += %D%/geany-1.0.vapi %D%/geany-scintilla-1.0.vapi
