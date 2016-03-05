@@ -41,21 +41,22 @@ PKG_CHECK_MODULES([GEANY], [geany >= 1.24])
 AC_SUBST([GEANY_CFLAGS])
 AC_SUBST([GEANY_LIBS])
 
-geany_prefix=`$PKG_CONFIG --variable prefix geany`
-GEANY_PLUGINDIR="$geany_prefix/lib/geany"
-GEANY_VAPIDIR="$geany_prefix/share/vala/vapi"
-AC_SUBST([GEANY_PLUGINDIR])
-AC_SUBST([GEANY_VAPIDIR])
-AC_DEFINE_UNQUOTED([GEANY_PLUGINDIR],["$GEANY_PLUGINDIR"],[Path to Geany plugin])
-
 GEANY_INCLUDEDIR=`$PKG_CONFIG --variable includedir geany`
 AC_SUBST([GEANY_INCLUDEDIR])
 
-VAPIGEN_CHECK
+GEANY_LIBDIR=`$PKG_CONFIG --variable libdir geany`
+AC_SUBST([GEANY_LIBDIR])
+GEANY_PLUGINDIR="$GEANY_LIBDIR/geany"
+AC_SUBST([GEANY_PLUGINDIR])
+AC_DEFINE_UNQUOTED([GEANY_PLUGINDIR],["$GEANY_PLUGINDIR"],[Path to Geany plugin])
+
+GOBJECT_INTROSPECTION_CHECK([1.30.0])
+VAPIGEN_CHECK([0.30])
 
 AC_CONFIG_FILES([
 	Makefile
 	plugins/Makefile
+	api/Makefile
 	src/Makefile
 	src/peasy/Makefile])
 AC_OUTPUT

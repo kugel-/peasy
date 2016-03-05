@@ -128,7 +128,7 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
 
 	def parse_doc(self, obj, doc):
 		sci = doc.editor.sci
-		lexer = Geany.sci_get_lexer(sci)
+		lexer = sci.get_lexer()
 		num_lines = sci.get_line_count()
 		for x in range(0, 5):
 			line = sci.get_line(x)
