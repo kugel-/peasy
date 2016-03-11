@@ -57,6 +57,8 @@ AC_CONFIG_FILES([
 	Makefile
 	plugins/Makefile
 	api/Makefile
+	api/geany-1.0.deps
+	api/geany-scintilla-1.0.deps
 	src/Makefile
 	src/peasy/Makefile])
 AC_OUTPUT
