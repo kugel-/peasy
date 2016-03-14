@@ -225,7 +225,7 @@ GPtrArray* peasy_document_all_documents (void) {
 	GPtrArray* _tmp4_ = NULL;
 	_data1_ = g_slice_new0 (Block1Data);
 	_data1_->_ref_count_ = 1;
-	_tmp0_ = g_ptr_array_new_with_free_func (_g_object_unref0_);
+	_tmp0_ = g_ptr_array_new_full ((guint) 0, _g_object_unref0_);
 	_data1_->docs = _tmp0_;
 	_tmp1_ = peasy_peasy_plugin;
 	_tmp2_ = _tmp1_->geany_data;

@@ -128,7 +128,7 @@ GPtrArray* peasy_filetype_all_filetypes (void) {
 	GPtrArray* _tmp4_ = NULL;
 	_data2_ = g_slice_new0 (Block2Data);
 	_data2_->_ref_count_ = 1;
-	_tmp0_ = g_ptr_array_new_with_free_func (_g_object_unref0_);
+	_tmp0_ = g_ptr_array_new_full ((guint) 0, _g_object_unref0_);
 	_data2_->fts = _tmp0_;
 	_tmp1_ = peasy_peasy_plugin;
 	_tmp2_ = _tmp1_->geany_data;
