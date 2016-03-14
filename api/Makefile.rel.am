@@ -62,5 +62,5 @@ dist_vapi_DATA          += %D%/geany-scintilla-1.0.vapi %D%/geany-scintilla-1.0.
 
 all-local: $(dist_gir_DATA) $(dist_typelib_DATA) $(dist_vapi_DATA)
 
-CLEANFILES += $(dist_gir_DATA) $(dist_typelib_DATA) %D%/geany-1.0.vapi %D%/geany-scintilla-1.0.vapi
+CLEANFILES += $(dist_gir_DATA) $(dist_typelib_DATA)
 CLEANFILES += %D%/Geany-1.0-pre.gir %D%/GeanyScintilla-1.0-pre.gir %D%/geany-sciwrappers-gtkdoc-tmp.h
