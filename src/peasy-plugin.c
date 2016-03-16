@@ -29,7 +29,7 @@
 #include <libpeas/peas-activatable.h>
 #include <libpeas/peas-extension-base.h>
 
-#include "peasy/peasy.h"
+#include "peasy.h"
 
 typedef struct PluginContext {
 	PeasEngine     *engine;

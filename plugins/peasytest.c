@@ -24,7 +24,7 @@
 
 /* plugin API, always comes first */
 #include "geanyplugin.h"
-#include "peasy/peasy.h"
+#include "peasy.h"
 
 #include <gmodule.h>
 #include <libpeas/peas-object-module.h>

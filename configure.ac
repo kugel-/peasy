@@ -37,7 +37,7 @@ PKG_CHECK_MODULES([PEAS], [libpeas-1.0 >= 1.12.0])
 AC_SUBST([PEAS_CFLAGS])
 AC_SUBST([PEAS_LIBS])
 
-PKG_CHECK_MODULES([GEANY], [geany >= 1.24])
+PKG_CHECK_MODULES([GEANY], [geany >= 1.27])
 AC_SUBST([GEANY_CFLAGS])
 AC_SUBST([GEANY_LIBS])
 
@@ -55,10 +55,10 @@ VAPIGEN_CHECK([0.31])
 
 AC_CONFIG_FILES([
 	Makefile
-	plugins/Makefile
 	api/Makefile
 	api/geany-1.0.deps
 	api/geany-scintilla-1.0.deps
-	src/Makefile
-	src/peasy/Makefile])
+	lib/Makefile
+	plugins/Makefile
+	src/Makefile])
 AC_OUTPUT

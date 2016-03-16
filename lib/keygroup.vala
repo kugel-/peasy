@@ -21,11 +21,11 @@ public class KeyBinding : GLib.Object
 	private bool geany_handler(Geany.KeyBinding item, uint id)
 	{
 		bool ret = false;
-		Signal.emit_by_name(this, "activate", id, &ret);
+		GLib.Signal.emit_by_name(this, "activate", id, &ret);
 		/* Geany won't execute the group callback since a item callback is attached, evne if
 		 * taht returns FALSE. */
 		if (!ret)
-			Signal.emit_by_name(this.m_group, "activate", id, &ret);
+			GLib.Signal.emit_by_name(this.m_group, "activate", id, &ret);
 		return ret;
 	}
 
@@ -57,7 +57,7 @@ public class KeyGroup : GLib.Object
 	/* defined in C code due to use of accumulator
 	 * public signal bool activate(int id); */
 	private int index;
-	List<weak KeyBinding> m_items;
+	GLib.List<weak KeyBinding> m_items;
 
 	/* virtual so that a pointer in the class structure is emitted, C code uses that
 	 * as default signal handler for activate */

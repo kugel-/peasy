@@ -9,9 +9,9 @@ namespace Peasy
 		/* fields */
 		public         Editor  editor;
 
-		public static GenericArray<Document> all_documents()
+		public static GLib.GenericArray<Document> all_documents()
 		{
-			GenericArray<Document> docs = new GenericArray<Document>();
+			GLib.GenericArray<Document> docs = new GLib.GenericArray<Document>();
 			peasy_plugin.geany_data.documents_array.foreach((doc) => {
 				if (doc.is_valid)
 					docs.add(new Document(doc));

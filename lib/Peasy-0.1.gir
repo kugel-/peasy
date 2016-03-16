@@ -8,7 +8,7 @@
 <include name="Gdk" version="3.0"/>
 <package name="libpeasy"/>
 <c:include name="peasy.h"/>
-<namespace name="Peasy" version="0.1" shared-library="libpeasy.so.0.0.0" c:prefix="Peasy">
+<namespace name="Peasy" version="0.1" shared-library="libpeasy.so.0" c:prefix="Peasy">
 	<enumeration name="IndentType" c:type="PeasyIndentType" glib:type-name="PeasyIndentType" glib:get-type="peasy_indent_type_get_type">
 		<member name="tabs" c:identifier="PEASY_INDENT_TYPE_TABS" value="(null)"/>
 		<member name="spaces" c:identifier="PEASY_INDENT_TYPE_SPACES" value="(null)"/>

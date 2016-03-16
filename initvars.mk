@@ -1,15 +1,16 @@
 CLEANFILES              =
-noinst_PROGRAMS         =
-lib_LTLIBRARIES         =
-plugin_LTLIBRARIES      =
 INTROSPECTION_GIRS      =
+INTROSPECTION_COMPILER_ARGS =
 VAPIGEN_VAPIS           =
+BUILT_SOURCES           =
 
-plugindir               = @GEANY_PLUGINDIR@
-plugindatadir           = @GEANY_PLUGINDIR@
-geany_includedir        = @GEANY_INCLUDEDIR@/geany
-geany_libdir            = @GEANY_LIBDIR@
-geany_datadir           = @GEANY_DATA_DIR@
+lib_LTLIBRARIES         =
+plugindir               = $(GEANY_PLUGINDIR)
+plugindatadir           = $(GEANY_PLUGINDIR)
+plugin_LTLIBRARIES      =
+geany_includedir        = $(GEANY_INCLUDEDIR)/geany
+geany_libdir            = $(GEANY_LIBDIR)
+geany_datadir           = $(GEANY_DATA_DIR)
 
 girdir                  = $(datadir)/gir-1.0
 gir_DATA                =
@@ -22,12 +23,3 @@ typelib_DATA            =
 dist_typelib_DATA       =
 dist_plugin_DATA        =
 
-INTROSPECTION_COMPILER_ARGS = --includedir=$(girdir)
-
-if HAVE_INTROSPECTION
-include $(INTROSPECTION_MAKEFILE)
-endif
-
-if ENABLE_VAPIGEN
--include $(VAPIGEN_MAKEFILE)
-endif
