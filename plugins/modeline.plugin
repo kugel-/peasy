@@ -1,6 +1,6 @@
 [Plugin]
 Module=modeline
-Loader=python
+Loader=python3
 Name=Vim modeline parser
 Description=Parses vim modeline and applies them to Geany on a per-file basis.
 Authors=Thomas Maritiz (kugel@rockbox.org)

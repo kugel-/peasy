@@ -202,7 +202,7 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
 	geany_plugin_set_data(plugin, peas, g_object_unref);
 	geany_plugin_register_proxy(plugin, extensions);
 
-	peas_engine_enable_loader(peas, "python");
+	peas_engine_enable_loader(peas, "python3");
 	peas_engine_add_search_path(peas, GEANY_PLUGINDIR, plugin->geany_data->app->datadir);
 	peas_engine_add_search_path(peas, plugin->geany_data->prefs->custom_plugin_path, plugin->geany_data->app->datadir);
 

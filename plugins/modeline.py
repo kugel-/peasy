@@ -4,8 +4,6 @@ import re
 import sys
 import pdb
 
-gi.require_version('Gtk', '3.0')
-
 from gi.repository import GObject
 from gi.repository import GLib
 from gi.repository import Gtk

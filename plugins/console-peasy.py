@@ -46,9 +46,6 @@ import keyword
 import re
 import gi
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
-
 from gi.repository import GObject
 from gi.repository import GLib
 from gi.repository import Gtk
@@ -101,7 +98,7 @@ class ReadLine(Gtk.TextView):
 
             if text != self.items[self.ptr]:
                 self.edited[self.ptr] = text
-            elif self.edited.has_key(self.ptr):
+            elif self.ptr in self.edited:
                 del self.edited[self.ptr]
 
             self.ptr = self.ptr + dir
@@ -357,7 +354,7 @@ class ReadLine(Gtk.TextView):
         self.__delete(iter, end)
 
     def __get_width(self):
-        if not (self.flags() & Gtk.REALIZED):
+        if not (self.is_realized()):
             return 80
         layout = Pango.Layout(self.get_pango_context())
         letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz"
@@ -559,8 +556,7 @@ class Console(ReadLine, code.InteractiveInterpreter):
             else:
                 completions = strings
 
-            completions.sort()
-            return [start + "." + s for s in completions]
+            return [start + "." + s for s in sorted(completions)]
         except:
             return None
 
@@ -575,8 +571,7 @@ class Console(ReadLine, code.InteractiveInterpreter):
                         completions.append(s)
                         i = i + 1
                     else:
-                        completions.sort()
-                        return completions
+                        return sorted(completions)
             except NameError:
                 return None
 
@@ -602,16 +597,18 @@ class Console(ReadLine, code.InteractiveInterpreter):
         for s in strings:
             if s.startswith(text):
                 completions[s] = None
-        completions = completions.keys()
-        completions.sort()
+        completions = sorted(completions.keys())
         return completions
 
 def _make_window(start_script="import geany\n"):
     window = Gtk.Window()
     window.set_title("Python Console")
     swin = Gtk.ScrolledWindow()
-    swin.set_policy(Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS)
-    swin.set_overlay_scrolling(False)
+    try:
+        swin.set_policy(Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS)
+        swin.set_overlay_scrolling(False)
+    except AttributeError:
+        pass
     window.add(swin)
     console = Console(banner="Geany Python Console",
                       use_rlcompleter=False, start_script=start_script)
@@ -629,12 +626,10 @@ if __name__ != '__main__':
 """
 import gi
 
-gi.require_version('Gtk', '3.0')
-gi.require_version('Gdk', '3.0')
-
 from gi.repository import GObject
 from gi.repository import Geany
-from gi.repository import Peasy
+from gi.repository import GeanyScintilla
+# from gi.repository import Peasy
 """
         window = None
         item = None
@@ -722,7 +717,6 @@ from gi.repository import Peasy
             self.item.destroy()
             self.item = None
             self.keys = None
-            print("disable")
 
         def on_dialog_response(self, dialog, resp, radio_btns):
             if (resp == Gtk.ResponseType.OK or resp == Gtk.ResponseType.APPLY):
