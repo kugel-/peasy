@@ -199,22 +199,29 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
 	GError *err = NULL;
 	GITypelib *t;
 
-	geany_plugin_set_data(plugin, peas, g_object_unref);
-	geany_plugin_register_proxy(plugin, extensions);
-
 	peas_engine_enable_loader(peas, "python3");
 	peas_engine_add_search_path(peas, GEANY_PLUGINDIR, plugin->geany_data->app->datadir);
 	peas_engine_add_search_path(peas, plugin->geany_data->prefs->custom_plugin_path, plugin->geany_data->app->datadir);
 
 	if (strncmp(TYPELIBDIR, "/usr/lib", 8))
 		g_irepository_prepend_search_path(TYPELIBDIR);
+
 	t = g_irepository_require(NULL, "Peasy", NULL, 0, &err);
+	if (err)
+	{
+		g_warning("peasy failed to initialize: %s", err->message);
+		g_object_unref(peas);
+		t = NULL;
+	}
+	else
+	{
+		peasy_static_init(plugin);
+		geany_plugin_set_data(plugin, peas, g_object_unref);
+		geany_plugin_register_proxy(plugin, extensions);
+		plugin_module_make_resident(plugin);
+	}
+
 	g_clear_error(&err);
-
-	peasy_static_init(plugin);
-
-	plugin_module_make_resident(plugin);
-
 	return t != NULL;
 }
 
