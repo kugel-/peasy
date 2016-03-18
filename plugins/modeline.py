@@ -79,12 +79,41 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
     item = None
     keys = None
 
-    vim_com = re.compile("(?:vi|vim|ex):\s*(.*:)")
+    #The first form:
+    #       [text]{white}{vi:|vim:|ex:}[white]{options}
+    #
+    # [text]          any text or empty
+    # {white}         at least one blank character (<Space> or <Tab>)
+    # {vi:|vim:|ex:}  the string "vi:", "vim:" or "ex:"
+    # [white]         optional white space
+    # {options}       a list of option settings, separated with white space or ':',
+    #                 where each part between ':' is the argument for a ":set"
+    #                 command (can be empty)
+    #
+    # Example:
+    #    vi:noai:sw=3 ts=6 ~
+    vim_com1 = re.compile("(?:vi|vim|ex):\s*(.*[a-zA-Z0-9])$")
+
+    #      The second form (this is compatible with some versions of Vi):
+    #        [text]{white}{vi:|vim:|ex:}[white]se[t] {options}:[text]
+    #
+    # [text]          any text or empty
+    # {white}         at least one blank character (<Space> or <Tab>)
+    # {vi:|vim:|ex:}  the string "vi:", "vim:" or "ex:"
+    # [white]         optional white space
+    # se[t]           the string "set " or "se " (note the space)
+    # {options}       a list of options, separated with white space, which is the
+    #                 argument for a ":set" command
+    # :               a colon
+    # [text]          any text or empty
+    #
+    # Example:
+    #    /* vim: set ai tw=75: */ ~
+    vim_com2 = re.compile("(?:vi|vim|ex):\s?se[t\s]?\s*(.*):")
     kv_com  = re.compile("([^:\s]*)[:\s]")
 
     # direct property assignment does not work in lambdas
     procs = {
-        'set'        : lambda editor     : None,
         'expandtab'  : lambda editor     : editor.set_property("indent-type", Peasy.IndentType.SPACES),
         'noexpandtab': lambda editor     : editor.set_property("indent-type", Peasy.IndentType.TABS),
         'wrap'       : lambda editor     : editor.set_property("line-wrapping", True),
@@ -92,7 +121,6 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
         'shiftwidth' : lambda editor, val: editor.set_property("indent-width", int(val))
     }
     aliases = {
-        'se'         : 'set',
         'et'         : 'expandtab',
         'sw'         : 'shiftwidth',
         'tabstop'    : 'shiftwidth',
@@ -130,10 +158,14 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
         num_lines = sci.get_line_count()
         for x in range(0, 5):
             line = sci.get_line(x)
-            m = re.search(self.vim_com, line)
+            m = re.search(self.vim_com2, line)
+            if (m is None):
+                m = re.search(self.vim_com1, line)
             if (m is None and num_lines > 5):
                 line = sci.get_line(x + num_lines - 5)
-                m = re.search(self.vim_com, line)
+                m = re.search(self.vim_com2, line)
+                if (m is None):
+                    m = re.search(self.vim_com1, line)
             if (m is not None):
                 # Pass only in comment sections (unless the file is not highlighted at all)
                 # EXCEPT that document-open and document-reload the lexer didn't run yet
