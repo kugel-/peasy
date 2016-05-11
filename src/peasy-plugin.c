@@ -32,98 +32,98 @@
 #include "peasy.h"
 
 typedef struct PluginContext {
-	PeasEngine     *engine;
-	PeasPluginInfo *info;
-	PeasyPlugin    *plugin;
+    PeasEngine     *engine;
+    PeasPluginInfo *info;
+    PeasyPlugin    *plugin;
 }
 PluginContext;
 
 static gchar *
 get_mod_name(const gchar *filename)
 {
-	gchar *basename = g_path_get_basename(filename);
-	/* strip extension */
-	gchar *p = strrchr(basename, '.');
-	*p = 0;
-	if (g_str_has_prefix(basename, "lib"))
-		memmove(basename, basename+3, strlen(basename)-3+1 /* copy NUL too */);
+    gchar *basename = g_path_get_basename(filename);
+    /* strip extension */
+    gchar *p = strrchr(basename, '.');
+    *p = 0;
+    if (g_str_has_prefix(basename, "lib"))
+        memmove(basename, basename+3, strlen(basename)-3+1 /* copy NUL too */);
 
-	return basename;
+    return basename;
 }
 
 
 static gboolean
 peas_proxy_init(GeanyPlugin *plugin, gpointer pdata)
 {
-	PluginContext *ctx = pdata;
-	PeasExtension *obj;
+    PluginContext *ctx = pdata;
+    PeasExtension *obj;
 
-	obj = peas_engine_create_extension(ctx->engine, ctx->info, PEASY_TYPE_PLUGIN_IFACE, NULL);
-	if (PEASY_IS_PLUGIN(obj)) {
-		ctx->plugin = (PeasyPlugin *) obj;
-		ctx->plugin->geany_plugin = plugin;
-		if (peasy_plugin_enable(PEASY_PLUGIN(ctx->plugin)))
-			return TRUE;
+    obj = peas_engine_create_extension(ctx->engine, ctx->info, PEASY_TYPE_PLUGIN_IFACE, NULL);
+    if (PEASY_IS_PLUGIN(obj)) {
+        ctx->plugin = (PeasyPlugin *) obj;
+        ctx->plugin->geany_plugin = plugin;
+        if (peasy_plugin_enable(PEASY_PLUGIN(ctx->plugin)))
+            return TRUE;
 
-		g_object_unref(ctx->plugin);
-		ctx->plugin = NULL;
-	}
-	else if (obj != NULL) {
-		g_warning("Error: Type %s implements PeasyPluginIface but does not inherit from PeasyPlugin",
-		    g_type_name(G_TYPE_FROM_INSTANCE(obj)));
-	}
+        g_object_unref(ctx->plugin);
+        ctx->plugin = NULL;
+    }
+    else if (obj != NULL) {
+        g_warning("Error: Type %s implements PeasyPluginIface but does not inherit from PeasyPlugin",
+            g_type_name(G_TYPE_FROM_INSTANCE(obj)));
+    }
 
-	return FALSE;
+    return FALSE;
 }
 
 
 static GtkWidget *
 peas_proxy_configure(GeanyPlugin *plugin, GtkDialog *dialog, gpointer pdata)
 {
-	PluginContext *ctx = pdata;
+    PluginContext *ctx = pdata;
 
-	return peasy_plugin_configure_configure(PEASY_PLUGIN_CONFIGURE(ctx->plugin), dialog);
+    return peasy_plugin_configure_configure(PEASY_PLUGIN_CONFIGURE(ctx->plugin), dialog);
 }
 
 
 static void
 peas_proxy_help(GeanyPlugin *plugin, gpointer pdata)
 {
-	PluginContext *ctx = pdata;
+    PluginContext *ctx = pdata;
 
-	peasy_plugin_help_help(PEASY_PLUGIN_HELP(ctx->plugin));
+    peasy_plugin_help_help(PEASY_PLUGIN_HELP(ctx->plugin));
 }
 
 
 static void
 peas_proxy_cleanup(GeanyPlugin *plugin, gpointer pdata)
 {
-	PluginContext *ctx = pdata;
+    PluginContext *ctx = pdata;
 
-	peasy_plugin_disable(PEASY_PLUGIN(ctx->plugin));
+    peasy_plugin_disable(PEASY_PLUGIN(ctx->plugin));
 
-	g_object_unref(ctx->plugin);
-	ctx->plugin = NULL;
+    g_object_unref(ctx->plugin);
+    ctx->plugin = NULL;
 }
 
 
 static gint
 peasy_probe(GeanyPlugin *plugin, const gchar *filename, gpointer pdata)
 {
-	gint ret = PROXY_IGNORED;
-	PeasEngine *peas = (PeasEngine *) pdata;
-	gchar *modname = get_mod_name(filename);
-	if (peas_engine_get_plugin_info(peas, modname) != NULL)
-	{
-		/* We only *load* .plugin files, however we are
-		 * responsible for the corresponding code as wel */
-		ret = PROXY_MATCHED;
-		if (!g_strrstr(filename, ".plugin"))
-			ret |= PROXY_NOLOAD;
-	}
-	g_free(modname);
+    gint ret = PROXY_IGNORED;
+    PeasEngine *peas = (PeasEngine *) pdata;
+    gchar *modname = get_mod_name(filename);
+    if (peas_engine_get_plugin_info(peas, modname) != NULL)
+    {
+        /* We only *load* .plugin files, however we are
+         * responsible for the corresponding code as wel */
+        ret = PROXY_MATCHED;
+        if (!g_strrstr(filename, ".plugin"))
+            ret |= PROXY_NOLOAD;
+    }
+    g_free(modname);
 
-	return ret;
+    return ret;
 }
 
 
@@ -131,62 +131,62 @@ static gpointer
 peasy_load(GeanyPlugin *plugin, GeanyPlugin *inferior,
            const gchar *filename, gpointer pdata)
 {
-	PeasEngine *peas = (PeasEngine *) pdata;
-	gchar *modname = get_mod_name(filename);
-	gboolean loaded;
-	PeasPluginInfo *info = peas_engine_get_plugin_info(peas, modname);
-	PeasExtension *obj;
-	g_free(modname);
-	PluginContext *ctx;
+    PeasEngine *peas = (PeasEngine *) pdata;
+    gchar *modname = get_mod_name(filename);
+    gboolean loaded;
+    PeasPluginInfo *info = peas_engine_get_plugin_info(peas, modname);
+    PeasExtension *obj;
+    g_free(modname);
+    PluginContext *ctx;
 
-	if (!info)
-		return NULL;
+    if (!info)
+        return NULL;
 
-	loaded = peas_engine_load_plugin(peas, info);
-	if (!loaded)
-		return NULL;
+    loaded = peas_engine_load_plugin(peas, info);
+    if (!loaded)
+        return NULL;
 
-	if (!peas_engine_provides_extension(peas, info, PEASY_TYPE_PLUGIN_IFACE))
-		goto unload;
+    if (!peas_engine_provides_extension(peas, info, PEASY_TYPE_PLUGIN_IFACE))
+        goto unload;
 
-	inferior->info->name = peas_plugin_info_get_name(info);
-	inferior->info->description = peas_plugin_info_get_description(info);
-	inferior->info->version = peas_plugin_info_get_version(info);
-	inferior->info->author = peas_plugin_info_get_authors(info)[0];
+    inferior->info->name = peas_plugin_info_get_name(info);
+    inferior->info->description = peas_plugin_info_get_description(info);
+    inferior->info->version = peas_plugin_info_get_version(info);
+    inferior->info->author = peas_plugin_info_get_authors(info)[0];
 
-	inferior->funcs->init = peas_proxy_init;
-	inferior->funcs->cleanup = peas_proxy_cleanup;
+    inferior->funcs->init = peas_proxy_init;
+    inferior->funcs->cleanup = peas_proxy_cleanup;
 
-	if (peas_engine_provides_extension(peas, info, PEASY_TYPE_PLUGIN_CONFIGURE))
-		inferior->funcs->configure = peas_proxy_configure;
-	if (peas_engine_provides_extension(peas, info, PEASY_TYPE_PLUGIN_HELP))
-		inferior->funcs->help = peas_proxy_help;
+    if (peas_engine_provides_extension(peas, info, PEASY_TYPE_PLUGIN_CONFIGURE))
+        inferior->funcs->configure = peas_proxy_configure;
+    if (peas_engine_provides_extension(peas, info, PEASY_TYPE_PLUGIN_HELP))
+        inferior->funcs->help = peas_proxy_help;
 
-	ctx = g_new(PluginContext, 1);
-	ctx->info = info;
-	ctx->engine = peas;
+    ctx = g_new(PluginContext, 1);
+    ctx->info = info;
+    ctx->engine = peas;
 
-	/* TODO: perform ABI check */
-	if (GEANY_PLUGIN_REGISTER_FULL(inferior, 224, ctx, g_free))
-	{
-		/* Don't pass g_object_unref because the object needs to be still alive
-		 * in peasy_unload() */
-		return info;
-	}
+    /* TODO: perform ABI check */
+    if (GEANY_PLUGIN_REGISTER_FULL(inferior, 224, ctx, g_free))
+    {
+        /* Don't pass g_object_unref because the object needs to be still alive
+         * in peasy_unload() */
+        return info;
+    }
 
 unload:
-	peas_engine_unload_plugin(peas, info);
-	return NULL;
+    peas_engine_unload_plugin(peas, info);
+    return NULL;
 }
 
 
 static void
 peasy_unload(GeanyPlugin *plugin, GeanyPlugin *inferior, gpointer proxy_data, gpointer pdata)
 {
-	PeasEngine *peas = pdata;
-	PeasPluginInfo *info = proxy_data;
+    PeasEngine *peas = pdata;
+    PeasPluginInfo *info = proxy_data;
 
-	peas_engine_unload_plugin(peas, info);
+    peas_engine_unload_plugin(peas, info);
 }
 
 
@@ -194,35 +194,35 @@ peasy_unload(GeanyPlugin *plugin, GeanyPlugin *inferior, gpointer proxy_data, gp
 static gboolean
 peasy_init(GeanyPlugin *plugin, gpointer pdata)
 {
-	const gchar *extensions[] = { "plugin", "so", NULL };
-	PeasEngine *peas = peas_engine_get_default();
-	GError *err = NULL;
-	GITypelib *t;
+    const gchar *extensions[] = { "plugin", "so", NULL };
+    PeasEngine *peas = peas_engine_get_default();
+    GError *err = NULL;
+    GITypelib *t;
 
-	peas_engine_enable_loader(peas, "python3");
-	peas_engine_add_search_path(peas, GEANY_PLUGINDIR, plugin->geany_data->app->datadir);
-	peas_engine_add_search_path(peas, plugin->geany_data->prefs->custom_plugin_path, plugin->geany_data->app->datadir);
+    peas_engine_enable_loader(peas, "python3");
+    peas_engine_add_search_path(peas, GEANY_PLUGINDIR, plugin->geany_data->app->datadir);
+    peas_engine_add_search_path(peas, plugin->geany_data->prefs->custom_plugin_path, plugin->geany_data->app->datadir);
 
-	if (strncmp(TYPELIBDIR, "/usr/lib", 8))
-		g_irepository_prepend_search_path(TYPELIBDIR);
+    if (strncmp(TYPELIBDIR, "/usr/lib", 8))
+        g_irepository_prepend_search_path(TYPELIBDIR);
 
-	t = g_irepository_require(NULL, "Peasy", NULL, 0, &err);
-	if (err)
-	{
-		g_warning("peasy failed to initialize: %s", err->message);
-		g_object_unref(peas);
-		t = NULL;
-	}
-	else
-	{
-		peasy_static_init(plugin);
-		geany_plugin_set_data(plugin, peas, g_object_unref);
-		geany_plugin_register_proxy(plugin, extensions);
-		plugin_module_make_resident(plugin);
-	}
+    t = g_irepository_require(NULL, "Peasy", NULL, 0, &err);
+    if (err)
+    {
+        g_warning("peasy failed to initialize: %s", err->message);
+        g_object_unref(peas);
+        t = NULL;
+    }
+    else
+    {
+        peasy_static_init(plugin);
+        geany_plugin_set_data(plugin, peas, g_object_unref);
+        geany_plugin_register_proxy(plugin, extensions);
+        plugin_module_make_resident(plugin);
+    }
 
-	g_clear_error(&err);
-	return t != NULL;
+    g_clear_error(&err);
+    return t != NULL;
 }
 
 
@@ -238,17 +238,17 @@ peasy_cleanup(GeanyPlugin *plugin, gpointer pdata)
 G_MODULE_EXPORT void
 geany_load_module(GeanyPlugin *plugin)
 {
-	plugin->info->name = _("Peasy");
-	plugin->info->description = _("Provides libpeas-based plugins");
-	plugin->info->version = "0.1";
-	plugin->info->author = _("Thomas Martitz <kugel@rockbox.org>");
+    plugin->info->name = _("Peasy");
+    plugin->info->description = _("Provides libpeas-based plugins");
+    plugin->info->version = "0.1";
+    plugin->info->author = _("Thomas Martitz <kugel@rockbox.org>");
 
-	plugin->funcs->init = peasy_init;
-	plugin->funcs->cleanup = peasy_cleanup;
+    plugin->funcs->init = peasy_init;
+    plugin->funcs->cleanup = peasy_cleanup;
 
-	plugin->proxy_funcs->probe  = peasy_probe;
-	plugin->proxy_funcs->load   = peasy_load;
-	plugin->proxy_funcs->unload = peasy_unload;
+    plugin->proxy_funcs->probe  = peasy_probe;
+    plugin->proxy_funcs->load   = peasy_load;
+    plugin->proxy_funcs->unload = peasy_unload;
 
-	GEANY_PLUGIN_REGISTER(plugin, 225);
+    GEANY_PLUGIN_REGISTER(plugin, 225);
 }
