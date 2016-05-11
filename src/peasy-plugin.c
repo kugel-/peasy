@@ -198,6 +198,23 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
     PeasEngine *peas = peas_engine_get_default();
     GError *err = NULL;
     GITypelib *t;
+    static gchar pypath[256];
+    const gchar *envp;
+
+    /* Workaround for libpeas < 1.17 which blindly pops sys.path[0] which
+     * happens to be /usr/lib/pythonX.Y containing standard modules. It is
+     * fixed in libpeas 1.18 and later */
+    envp =  g_getenv("PYTHONPATH");
+    if (!envp)
+    {
+        g_strlcpy(pypath, "/__DUMMY_PATH_FOR_WORKAROUND__", sizeof(pypath));
+        g_setenv("PYTHONPATH", pypath, TRUE);
+    }
+    else if (!g_strstr_len(envp, -1, "__DUMMY_PATH_FOR_WORKAROUND__"))
+    {
+        g_snprintf(pypath, sizeof(pypath), "/__DUMMY_PATH_FOR_WORKAROUND__:%s", envp);
+        g_setenv("PYTHONPATH", pypath, TRUE);
+    }
 
     peas_engine_enable_loader(peas, "python3");
     peas_engine_add_search_path(peas, GEANY_PLUGINDIR, plugin->geany_data->app->datadir);
