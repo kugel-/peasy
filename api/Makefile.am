@@ -67,6 +67,8 @@ CLEANFILES             += $(gir_DATA) $(typelib_DATA)
 CLEANFILES             += Geany-1.0-pre.gir GeanyScintilla-1.0-pre.gir
 CLEANFILES             += geany-sciwrappers-gtkdoc-tmp.h
 
+pyoverrides_DATA       += Geany.py
+
 if HAVE_INTROSPECTION
 include $(INTROSPECTION_MAKEFILE)
 endif
