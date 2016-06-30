@@ -181,10 +181,11 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
                     self.on_match(match, doc)
 
     def do_enable(self):
-        self.props.plugin_signals.connect("document-open",   self.parse_doc)
-        self.props.plugin_signals.connect("document-new",    self.parse_doc)
-        self.props.plugin_signals.connect("document-reload", self.parse_doc)
-        self.props.plugin_signals.connect("document-save",   self.parse_doc)
+        o = self.geany_plugin.geany_data.object
+        o.connect("document-open",   self.parse_doc)
+        o.connect("document-new",    self.parse_doc)
+        o.connect("document-reload", self.parse_doc)
+        o.connect("document-save",   self.parse_doc)
         self.hid = 0
         self.prefs = []
         kf = ModelineKeyFile(self.geany_plugin.geany_data.app.configdir)

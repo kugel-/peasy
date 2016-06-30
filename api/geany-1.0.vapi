@@ -102,7 +102,7 @@ namespace Geany {
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_remove_ext_from_filename")]
 		public static string remove_ext_from_filename (string filename);
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_spawn_async")]
-		public static bool spawn_async (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, GLib.Pid? child_pid) throws GLib.Error;
+		public static bool spawn_async (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, GLib.Pid child_pid) throws GLib.Error;
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_spawn_sync")]
 		public static bool spawn_sync (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, out string std_out, out string std_err, out int exit_status) throws GLib.Error;
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_str_casecmp")]
@@ -129,7 +129,7 @@ namespace Geany {
 		public weak string configdir;
 		public bool debug_mode;
 		public weak Geany.Project project;
-		public Geany.TMWorkspace tm_workspace;
+		public weak Geany.TMWorkspace tm_workspace;
 	}
 	[CCode (cheader_filename = "geanyplugin.h")]
 	[Compact]
@@ -139,16 +139,17 @@ namespace Geany {
 		public weak Geany.EditorPrefs editor_prefs;
 		public weak Geany.FilePrefs file_prefs;
 		public weak GLib.GenericArray<Geany.Filetype> filetypes_array;
-		public weak GLib.SList<void*> filetypes_by_title;
+		public weak GLib.SList<Geany.Filetype> filetypes_by_title;
 		public weak Geany.InterfacePrefs interface_prefs;
 		public weak Geany.MainWidgets main_widgets;
+		public weak GLib.Object object;
 		public weak Geany.Prefs prefs;
 		public weak Geany.SearchPrefs search_prefs;
 		public weak Geany.TemplatePrefs template_prefs;
 		public weak Geany.ToolPrefs tool_prefs;
 		public weak Geany.ToolbarPrefs toolbar_prefs;
 	}
-	[CCode (cheader_filename = "geanyplugin.h")]
+	[CCode (cheader_filename = "geanyplugin.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "document_get_type ()")]
 	[Compact]
 	public class Document {
 		public bool changed;
@@ -176,6 +177,8 @@ namespace Geany {
 		[CCode (cname = "document_compare_by_tab_order_reverse")]
 		[Version (since = "0.21")]
 		public static int compare_by_tab_order_reverse (void* a, void* b);
+		[CCode (cname = "document_new_file", has_construct_function = false)]
+		public Document.file (string? utf8_filename, Geany.Filetype? ft, string? text);
 		[CCode (cname = "document_find_by_filename")]
 		public static unowned Geany.Document? find_by_filename (string utf8_filename);
 		[CCode (cname = "document_find_by_id")]
@@ -200,8 +203,6 @@ namespace Geany {
 		[CCode (cname = "document_index")]
 		[Version (since = "0.16")]
 		public static unowned Geany.Document? index (int idx);
-		[CCode (cname = "document_new_file")]
-		public static unowned Geany.Document new_file (string? utf8_filename, Geany.Filetype? ft, string? text);
 		[CCode (cname = "document_open_file")]
 		public static unowned Geany.Document? open_file (string locale_filename, bool readonly, Geany.Filetype? ft, string? forced_enc);
 		[CCode (cname = "document_open_files")]
@@ -225,7 +226,7 @@ namespace Geany {
 		[CCode (cname = "document_set_text_changed")]
 		public void set_text_changed (bool changed);
 	}
-	[CCode (cheader_filename = "geanyplugin.h")]
+	[CCode (cheader_filename = "geanyplugin.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "editor_get_type ()")]
 	[Compact]
 	public class Editor {
 		public bool auto_indent;
@@ -295,7 +296,7 @@ namespace Geany {
 	[Compact]
 	public class FilePrefs {
 	}
-	[CCode (cheader_filename = "geanyplugin.h")]
+	[CCode (cheader_filename = "geanyplugin.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "filetype_get_type ()")]
 	[Compact]
 	public class Filetype {
 		public weak string extension;
@@ -399,13 +400,30 @@ namespace Geany {
 	[Compact]
 	public class MenubuttonActionClass {
 	}
-	[CCode (cheader_filename = "geanyplugin.h")]
-	[Compact]
-	public class Object {
-	}
-	[CCode (cheader_filename = "geanyplugin.h")]
-	[Compact]
-	public class ObjectClass {
+	[CCode (cheader_filename = "geanyplugin.h", type_id = "geany_object_get_type ()")]
+	public class Object : GLib.Object {
+		[CCode (has_construct_function = false)]
+		protected Object ();
+		public signal void build_start ();
+		public signal void document_activate (Geany.Document object);
+		public signal void document_before_save (Geany.Document object);
+		public signal void document_close (Geany.Document object);
+		public signal void document_filetype_set (Geany.Document object, Geany.Filetype p0);
+		public signal void document_new (Geany.Document object);
+		public signal void document_open (Geany.Document object);
+		public signal void document_reload (Geany.Document object);
+		public signal void document_save (Geany.Document object);
+		public signal bool editor_notify (Geany.Editor object, GeanyScintilla.SCNotification p0);
+		public signal void geany_startup_complete ();
+		public signal void load_settings (GLib.KeyFile object);
+		public signal void project_close ();
+		public signal void project_dialog_close (Gtk.Notebook object);
+		public signal void project_dialog_confirmed (Gtk.Notebook object);
+		public signal void project_dialog_open (Gtk.Notebook object);
+		public signal void project_open (GLib.KeyFile object);
+		public signal void project_save (GLib.KeyFile object);
+		public signal void save_settings (GLib.KeyFile object);
+		public signal void update_editor_menu (string object, int p0, Geany.Document p1);
 	}
 	[CCode (cheader_filename = "geanyplugin.h")]
 	[Compact]
@@ -490,12 +508,9 @@ namespace Geany {
 	[CCode (cheader_filename = "geanyplugin.h")]
 	[Compact]
 	public class ProxyFuncs {
+		public Geany.load load;
 		public Geany.probe probe;
 		public Geany.unload unload;
-	}
-	[CCode (cheader_filename = "geanyplugin.h", cname = "SCNotification")]
-	[Compact]
-	public class SCNotification {
 	}
 	[CCode (cheader_filename = "geanyplugin.h")]
 	[Compact]
@@ -553,11 +568,33 @@ namespace Geany {
 	public class TMSourceFile {
 		public weak string file_name;
 		public weak string short_name;
-		public weak GLib.GenericArray<void*> tags_array;
+		public weak GLib.GenericArray<Geany.TMTag> tags_array;
 		[CCode (cname = "tm_source_file_new", has_construct_function = false)]
 		public TMSourceFile (string file_name, string name);
 		[CCode (cname = "tm_source_file_free")]
 		public void free ();
+	}
+	[CCode (cheader_filename = "geanyplugin.h", cname = "TMTag")]
+	[Compact]
+	public class TMTag {
+		public char access;
+		public weak string arglist;
+		public weak Geany.TMSourceFile file;
+		public char impl;
+		public weak string inheritance;
+		public ulong line;
+		public bool local;
+		public weak string name;
+		public weak string scope;
+		public Geany.TMTagType type;
+		public weak string var_type;
+	}
+	[CCode (cheader_filename = "geanyplugin.h", cname = "TMWorkspace")]
+	[Compact]
+	public class TMWorkspace {
+		public weak GLib.GenericArray<Geany.TMTag> global_tags;
+		public weak GLib.GenericArray<Geany.TMSourceFile> source_files;
+		public weak GLib.GenericArray<Geany.TMTag> tags_array;
 	}
 	[CCode (cheader_filename = "geanyplugin.h")]
 	[Compact]
@@ -608,16 +645,6 @@ namespace Geany {
 	[CCode (cheader_filename = "geanyplugin.h", cname = "TMParserType")]
 	[SimpleType]
 	public struct TMParserType : int {
-	}
-	[CCode (cheader_filename = "geanyplugin.h", cname = "TMWorkspace", has_type_id = false)]
-	public struct TMWorkspace {
-		public weak GLib.GenericArray<void*> global_tags;
-		public weak GLib.GenericArray<void*> source_files;
-		public weak GLib.GenericArray<void*> tags_array;
-	}
-	[CCode (cheader_filename = "geanyplugin.h", cname = "tagEntryInfo")]
-	[SimpleType]
-	public struct tagEntryInfo {
 	}
 	[CCode (cheader_filename = "geanyplugin.h", cprefix = "GEANY_AUTOINDENT_", has_type_id = false)]
 	public enum AutoIndent {
@@ -1014,6 +1041,92 @@ namespace Geany {
 		STDOUT_RECURSIVE,
 		STDERR_RECURSIVE,
 		RECURSIVE
+	}
+	[CCode (cheader_filename = "geanyplugin.h", cname = "TMTagAttrType", cprefix = "tm_tag_attr_", has_type_id = false)]
+	public enum TMTagAttrType {
+		[CCode (cname = "tm_tag_attr_none_t")]
+		NONE_T,
+		[CCode (cname = "tm_tag_attr_name_t")]
+		NAME_T,
+		[CCode (cname = "tm_tag_attr_type_t")]
+		TYPE_T,
+		[CCode (cname = "tm_tag_attr_file_t")]
+		FILE_T,
+		[CCode (cname = "tm_tag_attr_line_t")]
+		LINE_T,
+		[CCode (cname = "tm_tag_attr_pos_t")]
+		POS_T,
+		[CCode (cname = "tm_tag_attr_scope_t")]
+		SCOPE_T,
+		[CCode (cname = "tm_tag_attr_inheritance_t")]
+		INHERITANCE_T,
+		[CCode (cname = "tm_tag_attr_arglist_t")]
+		ARGLIST_T,
+		[CCode (cname = "tm_tag_attr_local_t")]
+		LOCAL_T,
+		[CCode (cname = "tm_tag_attr_time_t")]
+		TIME_T,
+		[CCode (cname = "tm_tag_attr_vartype_t")]
+		VARTYPE_T,
+		[CCode (cname = "tm_tag_attr_access_t")]
+		ACCESS_T,
+		[CCode (cname = "tm_tag_attr_impl_t")]
+		IMPL_T,
+		[CCode (cname = "tm_tag_attr_lang_t")]
+		LANG_T,
+		[CCode (cname = "tm_tag_attr_inactive_t")]
+		INACTIVE_T,
+		[CCode (cname = "tm_tag_attr_pointer_t")]
+		POINTER_T,
+		[CCode (cname = "tm_tag_attr_max_t")]
+		MAX_T
+	}
+	[CCode (cheader_filename = "geanyplugin.h", cname = "TMTagType", cprefix = "tm_tag_", has_type_id = false)]
+	public enum TMTagType {
+		[CCode (cname = "tm_tag_undef_t")]
+		UNDEF_T,
+		[CCode (cname = "tm_tag_class_t")]
+		CLASS_T,
+		[CCode (cname = "tm_tag_enum_t")]
+		ENUM_T,
+		[CCode (cname = "tm_tag_enumerator_t")]
+		ENUMERATOR_T,
+		[CCode (cname = "tm_tag_field_t")]
+		FIELD_T,
+		[CCode (cname = "tm_tag_function_t")]
+		FUNCTION_T,
+		[CCode (cname = "tm_tag_interface_t")]
+		INTERFACE_T,
+		[CCode (cname = "tm_tag_member_t")]
+		MEMBER_T,
+		[CCode (cname = "tm_tag_method_t")]
+		METHOD_T,
+		[CCode (cname = "tm_tag_namespace_t")]
+		NAMESPACE_T,
+		[CCode (cname = "tm_tag_package_t")]
+		PACKAGE_T,
+		[CCode (cname = "tm_tag_prototype_t")]
+		PROTOTYPE_T,
+		[CCode (cname = "tm_tag_struct_t")]
+		STRUCT_T,
+		[CCode (cname = "tm_tag_typedef_t")]
+		TYPEDEF_T,
+		[CCode (cname = "tm_tag_union_t")]
+		UNION_T,
+		[CCode (cname = "tm_tag_variable_t")]
+		VARIABLE_T,
+		[CCode (cname = "tm_tag_externvar_t")]
+		EXTERNVAR_T,
+		[CCode (cname = "tm_tag_macro_t")]
+		MACRO_T,
+		[CCode (cname = "tm_tag_macro_with_arg_t")]
+		MACRO_WITH_ARG_T,
+		[CCode (cname = "tm_tag_file_t")]
+		FILE_T,
+		[CCode (cname = "tm_tag_other_t")]
+		OTHER_T,
+		[CCode (cname = "tm_tag_max_t")]
+		MAX_T
 	}
 	[CCode (cheader_filename = "geanyplugin.h", instance_pos = 2.9)]
 	public delegate bool KeyBindingFunc (Geany.KeyBinding key, uint key_id);

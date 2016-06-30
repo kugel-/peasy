@@ -27,3 +27,6 @@ Plugin* struct=false
 *Funcs struct=false
 Project struct=false
 KeyBinding struct=false
+TMSourceFile struct=false
+TMWorkspace struct=false
+TMTag struct=false

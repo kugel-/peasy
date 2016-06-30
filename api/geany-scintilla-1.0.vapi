@@ -2,6 +2,27 @@
 
 [CCode (cprefix = "GeanyScintilla", gir_namespace = "GeanyScintilla", gir_version = "1.0", lower_case_cprefix = "geany_scintilla_")]
 namespace GeanyScintilla {
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCNotification", copy_function = "g_boxed_copy", free_function = "g_boxed_free", lower_case_csuffix = "scnotification", type_id = "scnotification_get_type ()")]
+	[Compact]
+	public class SCNotification {
+		public int ch;
+		public int foldLevelNow;
+		public int foldLevelPrev;
+		public GeanyScintilla.sptr_t lParam;
+		public int listCompletionMethod;
+		public int listType;
+		public int margin;
+		public int message;
+		public int modificationType;
+		public int modifiers;
+		public GeanyScintilla.Sci_NotifyHeader nmhdr;
+		public weak string text;
+		public int token;
+		public int updated;
+		public GeanyScintilla.uptr_t wParam;
+		public int x;
+		public int y;
+	}
 	[CCode (cheader_filename = "geanyplugin.h", cname = "ScintillaObject", type_id = "scintilla_object_get_type ()")]
 	public class ScintillaObject : Gtk.Container, Atk.Implementor, Gtk.Buildable {
 		public void* pscin;
@@ -93,8 +114,6 @@ namespace GeanyScintilla {
 		public void insert_text (int pos, string text);
 		[CCode (cname = "sci_is_marker_set_at_line")]
 		public bool is_marker_set_at_line (int line, int marker);
-		[NoWrapper]
-		public virtual void notify ();
 		[CCode (cname = "sci_replace_sel")]
 		public void replace_sel (string text);
 		[CCode (cname = "sci_scroll_caret")]
@@ -103,7 +122,7 @@ namespace GeanyScintilla {
 		[Version (since = "0.16")]
 		public void send_command (int cmd);
 		[CCode (cname = "scintilla_object_send_message")]
-		public long send_message (uint iMessage, uintptr wParam, intptr lParam);
+		public intptr send_message (uint iMessage, uintptr wParam, intptr lParam);
 		[CCode (cname = "sci_set_current_position")]
 		public void set_current_position (int position, bool scroll_to_caret);
 		[CCode (cname = "sci_set_font")]
@@ -123,28 +142,8 @@ namespace GeanyScintilla {
 		public void set_text (string text);
 		[CCode (cname = "sci_start_undo_action")]
 		public void start_undo_action ();
-		public virtual signal void command (int object, void* p0);
-		public signal void sci_notify (int object, void* p0);
-	}
-	[CCode (cheader_filename = "geanyplugin.h", cname = "SCNotification", has_type_id = false)]
-	public struct SCNotification {
-		public void* nmhdr;
-		public int ch;
-		public int modifiers;
-		public int modificationType;
-		public weak string text;
-		public int message;
-		public GeanyScintilla.uptr_t wParam;
-		public GeanyScintilla.sptr_t lParam;
-		public int foldLevelNow;
-		public int foldLevelPrev;
-		public int margin;
-		public int listType;
-		public int x;
-		public int y;
-		public int token;
-		public int updated;
-		public int listCompletionMethod;
+		public signal void command (int object, Gtk.Widget p0);
+		public signal void sci_notify (int object, GeanyScintilla.SCNotification p0);
 	}
 	[CCode (cheader_filename = "geanyplugin.h", cname = "Sci_CharacterRange", has_type_id = false)]
 	public struct Sci_CharacterRange {
@@ -1867,6 +1866,34 @@ namespace GeanyScintilla {
 	public const int SCE_INNO_STRING_DOUBLE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_INNO_STRING_SINGLE")]
 	public const int SCE_INNO_STRING_SINGLE;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_BLOCKCOMMENT")]
+	public const int SCE_JSON_BLOCKCOMMENT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_COMPACTIRI")]
+	public const int SCE_JSON_COMPACTIRI;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_DEFAULT")]
+	public const int SCE_JSON_DEFAULT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_ERROR")]
+	public const int SCE_JSON_ERROR;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_ESCAPESEQUENCE")]
+	public const int SCE_JSON_ESCAPESEQUENCE;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_KEYWORD")]
+	public const int SCE_JSON_KEYWORD;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_LDKEYWORD")]
+	public const int SCE_JSON_LDKEYWORD;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_LINECOMMENT")]
+	public const int SCE_JSON_LINECOMMENT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_NUMBER")]
+	public const int SCE_JSON_NUMBER;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_OPERATOR")]
+	public const int SCE_JSON_OPERATOR;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_PROPERTYNAME")]
+	public const int SCE_JSON_PROPERTYNAME;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_STRING")]
+	public const int SCE_JSON_STRING;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_STRINGEOL")]
+	public const int SCE_JSON_STRINGEOL;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_JSON_URI")]
+	public const int SCE_JSON_URI;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_KIX_COMMENT")]
 	public const int SCE_KIX_COMMENT;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_KIX_COMMENTSTREAM")]
@@ -5125,6 +5152,8 @@ namespace GeanyScintilla {
 	public const int SCLEX_IHEX;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_INNOSETUP")]
 	public const int SCLEX_INNOSETUP;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_JSON")]
+	public const int SCLEX_JSON;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_KIX")]
 	public const int SCLEX_KIX;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_KVIRC")]
