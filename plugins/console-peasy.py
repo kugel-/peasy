@@ -600,10 +600,14 @@ class Console(ReadLine, code.InteractiveInterpreter):
         completions = sorted(completions.keys())
         return completions
 
-def _make_window(start_script="import geany\n"):
+def _make_window(start_script="import geany\n", plugin = None):
     window = Gtk.Window()
     window.set_title("Python Console")
     swin = Gtk.ScrolledWindow()
+    locals = {}
+    if plugin:
+        locals["__plugin__"] = plugin
+
     try:
         swin.set_policy(Gtk.PolicyType.ALWAYS, Gtk.PolicyType.ALWAYS)
         swin.set_overlay_scrolling(False)
@@ -611,7 +615,8 @@ def _make_window(start_script="import geany\n"):
         pass
     window.add(swin)
     console = Console(banner="Geany Python Console",
-                      use_rlcompleter=False, start_script=start_script)
+                      use_rlcompleter=False, start_script=start_script,
+                      locals = locals)
     swin.add(console)
     window.set_default_size(500, 400)
 
@@ -640,7 +645,7 @@ from gi.repository import GeanyScintilla
 
         def on_item_click(self, item = None):
             if self.window is None:
-                self.window = _make_window(self.start_script)
+                self.window = _make_window(self.start_script, self)
                 self.window.connect("destroy", self.on_window_destroy)
                 self.window.show_all()
             self.window.present()
