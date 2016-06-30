@@ -114,11 +114,11 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
 
     # direct property assignment does not work in lambdas
     procs = {
-        'expandtab'  : lambda editor     : editor.set_property("indent-type", Peasy.IndentType.SPACES),
-        'noexpandtab': lambda editor     : editor.set_property("indent-type", Peasy.IndentType.TABS),
-        'wrap'       : lambda editor     : editor.set_property("line-wrapping", True),
-        'nowrap'     : lambda editor     : editor.set_property("line-wrapping", False),
-        'shiftwidth' : lambda editor, val: editor.set_property("indent-width", int(val))
+        'expandtab'  : lambda editor     : setattr(editor, "indent_type", Geany.IndentType.SPACES),
+        'noexpandtab': lambda editor     : setattr(editor, "indent_type", Geany.IndentType.TABS),
+        'wrap'       : lambda editor     : setattr(editor, "line_wrapping", True),
+        'nowrap'     : lambda editor     : setattr(editor, "line_wrapping", False),
+        'shiftwidth' : lambda editor, val: setattr(editor, "indent_width", int(val))
     }
     aliases = {
         'et'         : 'expandtab',
