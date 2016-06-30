@@ -121,6 +121,7 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
         'shiftwidth' : lambda editor, val: setattr(editor, "indent_width", int(val))
     }
     aliases = {
+        'ne'         : 'noexpandtab',
         'et'         : 'expandtab',
         'sw'         : 'shiftwidth',
         'tabstop'    : 'shiftwidth',
