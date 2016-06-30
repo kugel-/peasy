@@ -10,4 +10,8 @@ libpeasytest_la_LIBADD  = $(PEAS_LIBS) $(GEANY_LIBS) $(top_builddir)/lib/libpeas
 dist_plugin_DATA  += peasytest.plugin \
                      console-peasy.py console-peasy.plugin \
                      modeline.py modeline.plugin \
-                     peasypytest.py peasypytest.plugin
+                     peasypytest.py peasypytest.plugin \
+                     goto.py goto.plugin
+
+plugingotodatadir = $(plugindatadir)/goto
+dist_plugingotodata_DATA = goto.glade
