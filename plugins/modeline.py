@@ -131,7 +131,6 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
     }
 
     def on_match(self, line, doc):
-        print("on_match")
         m = re.findall(self.kv_com, line)
         for x in m:
             kv = x.split("=")
@@ -141,7 +140,6 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
                     if (len(kv) == 2):
                         v = kv[1]
                         self.procs[k](doc.editor, v)
-                        print ("%s=%s" % (k,v))
                     elif (len(kv) == 1):
                         self.procs[k](doc.editor)
                         print (k)
