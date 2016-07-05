@@ -10,7 +10,9 @@ plugindatadir           = $(GEANY_PLUGINDIR)
 plugin_LTLIBRARIES      =
 geany_includedir        = $(GEANY_INCLUDEDIR)/geany
 geany_libdir            = $(GEANY_LIBDIR)
-geany_datadir           = $(GEANY_DATA_DIR)
+geany_datadir           = $(GEANY_DATADIR)
+geany_girdir            = $(GEANY_DATADIR)/gir-1.0
+geany_typelibdir        = $(GEANY_LIBDIR)/girepository-1.0
 
 girdir                  = $(datadir)/gir-1.0
 gir_DATA                =
