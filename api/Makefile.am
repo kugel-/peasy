@@ -29,16 +29,16 @@ GeanyScintilla_1_0_pre_gir_SCANNERFLAGS = $(SCANNERFLAGS)
 VAPIGEN_VAPIS          += geany-1.0.vapi geany-scintilla-1.0.vapi
 
 geany_1_0_vapi_METADATADIRS    = %D%
-geany_1_0_vapi_GIR             = Geany-1.0.gir
+geany_1_0_vapi_GIR             = $(geany_girdir)/Geany-1.0.gir
 geany_1_0_vapi_FILES           = $(geany_1_0_vapi_GIR) Geany-1.0-custom.vala
 geany_1_0_vapi_VAPIDIRS        = $(builddir)/%D%
 
 geany_scintilla_1_0_vapi_METADATADIRS = %D%
-geany_scintilla_1_0_vapi_GIR          = GeanyScintilla-1.0.gir
+geany_scintilla_1_0_vapi_GIR          = $(geany_girdir)/GeanyScintilla-1.0.gir
 geany_scintilla_1_0_vapi_FILES        = $(geany_scintilla_1_0_vapi_GIR)
 
-gir_DATA               += Geany-1.0.gir GeanyScintilla-1.0.gir
-typelib_DATA           += Geany-1.0.typelib GeanyScintilla-1.0.typelib
+# gir_DATA               += Geany-1.0.gir GeanyScintilla-1.0.gir
+# typelib_DATA           += Geany-1.0.typelib GeanyScintilla-1.0.typelib
 dist_vapi_DATA         += geany-1.0.vapi geany-scintilla-1.0.vapi
 vapi_DATA              += geany-1.0.deps geany-scintilla-1.0.deps
 
