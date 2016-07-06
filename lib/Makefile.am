@@ -15,6 +15,7 @@ libpeasy_la_SOURCES      = \
     keygroup_c.c
 
 libpeasy_la_VALAFLAGS    = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintilla-1.0 \
+                           --girdir=$(geany_girdir)                                    \
                            --vapidir $(top_builddir)/api --library libpeasy            \
                            --gir=Peasy-0.1.gir --vapi=libpeasy-0.1.vapi                \
                            --disable-version-header -H peasy.h                         \
@@ -33,7 +34,7 @@ vapi_DATA              += libpeasy-0.1.vapi
 
 BUILT_SOURCES          += $(libpeasy_la_VALASOURCES:.vala=.c)
 
-INTROSPECTION_COMPILER_ARGS += --includedir=$(top_builddir)/api
+INTROSPECTION_COMPILER_ARGS += --includedir=$(geany_girdir)
 
 if HAVE_INTROSPECTION
 include $(INTROSPECTION_MAKEFILE)

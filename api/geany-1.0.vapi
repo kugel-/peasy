@@ -102,7 +102,7 @@ namespace Geany {
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_remove_ext_from_filename")]
 		public static string remove_ext_from_filename (string filename);
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_spawn_async")]
-		public static bool spawn_async (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, GLib.Pid child_pid) throws GLib.Error;
+		public static bool spawn_async (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, out GLib.Pid? child_pid) throws GLib.Error;
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_spawn_sync")]
 		public static bool spawn_sync (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, out string std_out, out string std_err, out int exit_status) throws GLib.Error;
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_str_casecmp")]
@@ -190,8 +190,9 @@ namespace Geany {
 		public string get_basename_for_display (int length);
 		[CCode (cname = "document_get_current")]
 		public static unowned Geany.Document? get_current ();
-		[CCode (cname = "document_get_from_page")]
-		public static unowned Geany.Document? get_from_page (uint page_num);
+		[CCode (cname = "document_get_from_notebook")]
+		[Version (since = "1.26")]
+		public static Geany.Document get_from_notebook (Gtk.Notebook notebook, uint page_num);
 		[CCode (cname = "document_get_notebook_page")]
 		[Version (since = "0.19")]
 		public int get_notebook_page ();
@@ -339,6 +340,7 @@ namespace Geany {
 	public class InterfacePrefs {
 		public bool compiler_tab_autoscroll;
 		public weak string editor_font;
+		public int editor_split;
 		public bool highlighting_invert_all;
 		public bool msgwin_compiler_visible;
 		public weak string msgwin_font;
@@ -384,6 +386,7 @@ namespace Geany {
 		public weak Gtk.Widget editor_menu;
 		public weak Gtk.Widget message_window_notebook;
 		public weak Gtk.Widget notebook;
+		public weak GLib.GenericArray<void*> notebooks;
 		public weak Gtk.Widget progressbar;
 		public weak Gtk.Widget project_menu;
 		public weak Gtk.Widget sidebar_notebook;
@@ -427,6 +430,14 @@ namespace Geany {
 		public signal void project_save (GLib.KeyFile object);
 		public signal void save_settings (GLib.KeyFile object);
 		public signal void update_editor_menu (string object, int p0, Geany.Document p1);
+	}
+	[CCode (cheader_filename = "geanyplugin.h")]
+	[Compact]
+	public class Page {
+	}
+	[CCode (cheader_filename = "geanyplugin.h")]
+	[Compact]
+	public class PageClass {
 	}
 	[CCode (cheader_filename = "geanyplugin.h")]
 	[Compact]
@@ -511,7 +522,6 @@ namespace Geany {
 	[CCode (cheader_filename = "geanyplugin.h")]
 	[Compact]
 	public class ProxyFuncs {
-		public Geany.load load;
 		public Geany.probe probe;
 		public Geany.unload unload;
 	}
@@ -1413,6 +1423,8 @@ namespace Geany {
 	public static void tm_workspace_add_source_files (GLib.GenericArray<Geany.TMSourceFile> source_files);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_find")]
 	public static GLib.GenericArray<weak Geany.TMTag> tm_workspace_find (string name, string? scope, Geany.TMTagType type, Geany.TMTagAttrType attrs, Geany.TMParserType lang);
+	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_find_prefix")]
+	public static GLib.GenericArray<weak Geany.TMTag> tm_workspace_find_prefix (string prefix, Geany.TMParserType lang, uint max_num);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_remove_source_file")]
 	public static void tm_workspace_remove_source_file (Geany.TMSourceFile source_file);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_remove_source_files")]

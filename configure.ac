@@ -56,7 +56,8 @@ AC_DEFINE_UNQUOTED([GEANY_PLUGINDIR],["$GEANY_PLUGINDIR"],[Path to Geany plugin]
 GOBJECT_INTROSPECTION_CHECK([1.30.0])
 VAPIGEN_CHECK([0.31])
 
-AM_PATH_PYTHON([2.7])
+# shipped plugins are written against python3
+AM_PATH_PYTHON([3.0])
 AC_ARG_WITH([pyoverridesdir],
     AS_HELP_STRING([--with-pyoverridesdir=PATH], [Path to install pygobjet override bindings for Geany (auto = Automatically detect) [default=auto]]),
     [pyoverridesdir="$withval"],
