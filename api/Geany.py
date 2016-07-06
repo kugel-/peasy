@@ -12,6 +12,6 @@ Geany.Document.encoding = property(lambda self: self.__encoding,
                                    lambda self, v: self.set_encoding(v))
 Geany.Document.__changed = Geany.Document.changed
 Geany.Document.changed = property(lambda self: self.__changed,
-                                  lambda self, v: self.set_encoding(v))
+                                  lambda self, v: self.set_text_changed(v))
 
 Geany.Document.display_name = lambda self: self.get_basename_for_display(-1)
