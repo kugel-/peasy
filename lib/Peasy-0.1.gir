@@ -109,6 +109,22 @@
 				</array>
 			</return-value>
 		</function>
+		<constructor name="new_file" c:identifier="peasy_document_new_new_file">
+			<return-value transfer-ownership="full">
+				<type name="Peasy.Document" c:type="PeasyDocument*"/>
+			</return-value>
+			<parameters>
+				<parameter name="utf8_filename" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+				<parameter name="ft" transfer-ownership="none" allow-none="1">
+					<type name="Peasy.Filetype" c:type="PeasyFiletype*"/>
+				</parameter>
+				<parameter name="text" transfer-ownership="none" allow-none="1">
+					<type name="utf8" c:type="const gchar*"/>
+				</parameter>
+			</parameters>
+		</constructor>
 		<constructor name="from_file" c:identifier="peasy_document_new_from_file">
 			<return-value transfer-ownership="full">
 				<type name="Peasy.Document" c:type="PeasyDocument*"/>

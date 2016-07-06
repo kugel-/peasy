@@ -79,7 +79,6 @@ namespace Peasy
             editor = new Peasy.Editor.create(this);
         }
 
-#if 0
         public Document.new_file(string? utf8_filename = null,
                                  Peasy.Filetype? ft = null,
                                  string? text = null)
@@ -87,10 +86,9 @@ namespace Peasy
             unowned Geany.Filetype? gft = null;
             if (ft != null)
                 gft = ft.geany_ft;
-            geany_doc = new Geany.Document.file(utf8_filename, gft, text);
+            geany_doc = Geany.Document.new_file(utf8_filename, gft, text);
             editor = new Peasy.Editor.create(this);
         }
-#endif
 
         public Document.from_file(string locale_filename, bool readonly = false,
                                   Filetype? ft = null, string? forced_enc = null)

@@ -225,6 +225,9 @@ namespace Geany {
 		public void set_filetype (Geany.Filetype type);
 		[CCode (cname = "document_set_text_changed")]
 		public void set_text_changed (bool changed);
+		[CCode (cname = "document_show_tab")]
+		[Version (since = "1.28")]
+		public void show_tab ();
 	}
 	[CCode (cheader_filename = "geanyplugin.h", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "editor_get_type ()")]
 	[Compact]
@@ -642,10 +645,6 @@ namespace Geany {
 	[SimpleType]
 	public struct StashWidgetID {
 	}
-	[CCode (cheader_filename = "geanyplugin.h", cname = "TMParserType")]
-	[SimpleType]
-	public struct TMParserType : int {
-	}
 	[CCode (cheader_filename = "geanyplugin.h", cprefix = "GEANY_AUTOINDENT_", has_type_id = false)]
 	public enum AutoIndent {
 		NONE,
@@ -1042,6 +1041,62 @@ namespace Geany {
 		STDERR_RECURSIVE,
 		RECURSIVE
 	}
+	[CCode (cheader_filename = "geanyplugin.h", cname = "TMParserType", cprefix = "TM_PARSER_", has_type_id = false)]
+	public enum TMParserType {
+		NONE,
+		C,
+		CPP,
+		JAVA,
+		MAKEFILE,
+		PASCAL,
+		PERL,
+		PHP,
+		PYTHON,
+		LATEX,
+		ASM,
+		CONF,
+		SQL,
+		DOCBOOK,
+		ERLANG,
+		CSS,
+		RUBY,
+		TCL,
+		SH,
+		D,
+		FORTRAN,
+		FERITE,
+		DIFF,
+		VHDL,
+		LUA,
+		JAVASCRIPT,
+		HASKELL,
+		CSHARP,
+		FREEBASIC,
+		HAXE,
+		REST,
+		HTML,
+		F77,
+		GLSL,
+		MATLAB,
+		VALA,
+		ACTIONSCRIPT,
+		NSIS,
+		MARKDOWN,
+		TXT2TAGS,
+		ABC,
+		VERILOG,
+		R,
+		COBOL,
+		OBJC,
+		ASCIIDOC,
+		ABAQUS,
+		RUST,
+		GO,
+		JSON,
+		ZEPHIR,
+		POWERSHELL,
+		COUNT
+	}
 	[CCode (cheader_filename = "geanyplugin.h", cname = "TMTagAttrType", cprefix = "tm_tag_attr_", has_type_id = false)]
 	public enum TMTagAttrType {
 		[CCode (cname = "tm_tag_attr_none_t")]
@@ -1347,12 +1402,17 @@ namespace Geany {
 	[CCode (cheader_filename = "geanyplugin.h", cname = "symbols_get_context_separator")]
 	[Version (since = "0.19")]
 	public static unowned string symbols_get_context_separator (int ft_id);
+	[CCode (cheader_filename = "geanyplugin.h", cname = "symbols_goto_tag")]
+	[Version (since = "1.28")]
+	public static bool symbols_goto_tag (string name, bool definition);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_get_real_path")]
 	public static string tm_get_real_path (string file_name);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_add_source_file")]
 	public static void tm_workspace_add_source_file (Geany.TMSourceFile source_file);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_add_source_files")]
 	public static void tm_workspace_add_source_files (GLib.GenericArray<Geany.TMSourceFile> source_files);
+	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_find")]
+	public static GLib.GenericArray<weak Geany.TMTag> tm_workspace_find (string name, string? scope, Geany.TMTagType type, Geany.TMTagAttrType attrs, Geany.TMParserType lang);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_remove_source_file")]
 	public static void tm_workspace_remove_source_file (Geany.TMSourceFile source_file);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "tm_workspace_remove_source_files")]

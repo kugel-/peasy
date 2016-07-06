@@ -249,6 +249,8 @@ GType peasy_document_get_type (void) G_GNUC_CONST;
 GType peasy_editor_get_type (void) G_GNUC_CONST;
 GPtrArray* peasy_document_all_documents (void);
 GType peasy_filetype_get_type (void) G_GNUC_CONST;
+PeasyDocument* peasy_document_new_new_file (const gchar* utf8_filename, PeasyFiletype* ft, const gchar* text);
+PeasyDocument* peasy_document_construct_new_file (GType object_type, const gchar* utf8_filename, PeasyFiletype* ft, const gchar* text);
 PeasyDocument* peasy_document_new_from_file (const gchar* locale_filename, gboolean readonly, PeasyFiletype* ft, const gchar* forced_enc);
 PeasyDocument* peasy_document_construct_from_file (GType object_type, const gchar* locale_filename, gboolean readonly, PeasyFiletype* ft, const gchar* forced_enc);
 PeasyDocument* peasy_document_get_current (void);

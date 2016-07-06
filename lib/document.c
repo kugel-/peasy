@@ -130,6 +130,8 @@ PeasyObject* peasy_object_construct (GType object_type);
 PeasyEditor* peasy_editor_new_create (PeasyDocument* doc);
 PeasyEditor* peasy_editor_construct_create (GType object_type, PeasyDocument* doc);
 GType peasy_filetype_get_type (void) G_GNUC_CONST;
+PeasyDocument* peasy_document_new_new_file (const gchar* utf8_filename, PeasyFiletype* ft, const gchar* text);
+PeasyDocument* peasy_document_construct_new_file (GType object_type, const gchar* utf8_filename, PeasyFiletype* ft, const gchar* text);
 PeasyDocument* peasy_document_new_from_file (const gchar* locale_filename, gboolean readonly, PeasyFiletype* ft, const gchar* forced_enc);
 PeasyDocument* peasy_document_construct_from_file (GType object_type, const gchar* locale_filename, gboolean readonly, PeasyFiletype* ft, const gchar* forced_enc);
 PeasyDocument* peasy_document_get_current (void);
@@ -254,6 +256,42 @@ PeasyDocument* peasy_document_construct (GType object_type, GeanyDocument* doc) 
 
 PeasyDocument* peasy_document_new (GeanyDocument* doc) {
 	return peasy_document_construct (PEASY_TYPE_DOCUMENT, doc);
+}
+
+
+PeasyDocument* peasy_document_construct_new_file (GType object_type, const gchar* utf8_filename, PeasyFiletype* ft, const gchar* text) {
+	PeasyDocument * self = NULL;
+	GeanyFiletype* gft = NULL;
+	PeasyFiletype* _tmp0_ = NULL;
+	const gchar* _tmp3_ = NULL;
+	GeanyFiletype* _tmp4_ = NULL;
+	const gchar* _tmp5_ = NULL;
+	GeanyDocument* _tmp6_ = NULL;
+	PeasyEditor* _tmp7_ = NULL;
+	self = (PeasyDocument*) peasy_object_construct (object_type);
+	gft = NULL;
+	_tmp0_ = ft;
+	if (_tmp0_ != NULL) {
+		PeasyFiletype* _tmp1_ = NULL;
+		GeanyFiletype* _tmp2_ = NULL;
+		_tmp1_ = ft;
+		_tmp2_ = _tmp1_->geany_ft;
+		gft = _tmp2_;
+	}
+	_tmp3_ = utf8_filename;
+	_tmp4_ = gft;
+	_tmp5_ = text;
+	_tmp6_ = document_new_file (_tmp3_, _tmp4_, _tmp5_);
+	self->geany_doc = _tmp6_;
+	_tmp7_ = peasy_editor_new_create (self);
+	_g_object_unref0 (self->editor);
+	self->editor = _tmp7_;
+	return self;
+}
+
+
+PeasyDocument* peasy_document_new_new_file (const gchar* utf8_filename, PeasyFiletype* ft, const gchar* text) {
+	return peasy_document_construct_new_file (PEASY_TYPE_DOCUMENT, utf8_filename, ft, text);
 }
 
 
