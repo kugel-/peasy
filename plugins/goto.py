@@ -1,5 +1,6 @@
 import os
 import gi
+import warnings
 
 gi.require_version('Peas', '1.0')
 
@@ -79,7 +80,7 @@ class GotoPlugin(Peasy.Plugin):
                 add_doc(d)
             w.set_image(Gtk.Image.new_from_gicon(docs[0].file_type.icon, Gtk.IconSize.MENU))
             m.show_all()
-            m.popup_for_device(None, None, None, self.pos_func, widget, 0, Gtk.get_current_event_time());
+            m.popup(None, None, self.pos_func, widget, 0, Gtk.get_current_event_time());
             m.connect("destroy", lambda w: self.dlg.close())
 
     def on_def_activate(self, entry):
@@ -98,6 +99,11 @@ class GotoPlugin(Peasy.Plugin):
         self.show_docs(docs, entry)
 
     def do_enable(self):
+        # Gtk.Menu.popup does not work on Gtk2, hence Gtk3 only for now
+        if (gi.repository.Gtk.check_version(3, 0, 0) is not None):
+            warnings.warn("Gtk 2 is not supported by this plugin", RuntimeWarning)
+            return False
+
         self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_EXECUTE, "Goto ...")
         self.item.connect("activate", self.on_item_click)
         self.geany_plugin.geany_data.main_widgets.tools_menu.append(self.item)
