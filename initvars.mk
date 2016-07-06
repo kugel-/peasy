@@ -2,6 +2,7 @@ CLEANFILES              =
 INTROSPECTION_GIRS      =
 INTROSPECTION_COMPILER_ARGS =
 VAPIGEN_VAPIS           =
+VAPIGEN_GIRDIRS         = $(geany_girdir)
 BUILT_SOURCES           =
 
 lib_LTLIBRARIES         =
