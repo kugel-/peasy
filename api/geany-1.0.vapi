@@ -102,7 +102,7 @@ namespace Geany {
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_remove_ext_from_filename")]
 		public static string remove_ext_from_filename (string filename);
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_spawn_async")]
-		public static bool spawn_async (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, GLib.Pid child_pid) throws GLib.Error;
+		public static bool spawn_async (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, out GLib.Pid? child_pid) throws GLib.Error;
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_spawn_sync")]
 		public static bool spawn_sync (string? dir, string argv, string? env, GLib.SpawnFlags flags, [CCode (delegate_target_pos = 5.5)] GLib.SpawnChildSetupFunc child_setup, out string std_out, out string std_err, out int exit_status) throws GLib.Error;
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_str_casecmp")]
