@@ -114,6 +114,8 @@ namespace GeanyScintilla {
 		public void insert_text (int pos, string text);
 		[CCode (cname = "sci_is_marker_set_at_line")]
 		public bool is_marker_set_at_line (int line, int marker);
+		[NoWrapper]
+		public virtual void notify (int id, GeanyScintilla.SCNotification scn);
 		[CCode (cname = "sci_replace_sel")]
 		public void replace_sel (string text);
 		[CCode (cname = "sci_scroll_caret")]
@@ -142,7 +144,7 @@ namespace GeanyScintilla {
 		public void set_text (string text);
 		[CCode (cname = "sci_start_undo_action")]
 		public void start_undo_action ();
-		public signal void command (int object, Gtk.Widget p0);
+		public virtual signal void command (int cmd, Gtk.Widget window);
 		public signal void sci_notify (int object, GeanyScintilla.SCNotification p0);
 	}
 	[CCode (cheader_filename = "geanyplugin.h", cname = "Sci_CharacterRange", has_type_id = false)]
