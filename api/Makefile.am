@@ -48,13 +48,15 @@ geany-sciwrappers-gtkdoc-tmp.h: $(geany_includedir)/gtkdoc/geany-sciwrappers-gtk
 		$< > $@
 
 GeanyScintilla-1.0.gir: GeanyScintilla-1.0-pre.gir
-	$(AM_V_GEN) cat $< \
-		| $(SED) -e 's,scintilla_object__GI__MARK_,sci_,g' \
-		| $(SED) -e 's,_GI__MARK_,,g' > $@
+	$(AM_V_GEN) $(SED) \
+		-e 's,scintilla_object__GI__MARK_,sci_,g' \
+		-e 's,_GI__MARK_,,g' \
+		$< > $@
 
 Geany-1.0.gir: Geany-1.0-pre.gir
-	$(AM_V_GEN) cat $< \
-		| $(SED) -e 's,GeanyScintillaScintillaObject,ScintillaObject,g' > $@
+	$(AM_V_GEN) $(SED) \
+		-e 's,GeanyScintillaScintillaObject,ScintillaObject,g' \
+		$< > $@
 
 Geany-1.0-pre.gir: GeanyScintilla-1.0.gir
 
