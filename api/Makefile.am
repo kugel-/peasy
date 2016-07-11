@@ -12,7 +12,7 @@ Geany_1_0_pre_gir_INCLUDES     = $(GTK_GIR) GLib-2.0 GObject-2.0
 Geany_1_0_pre_gir_CFLAGS       = $(GTK_CFLAGS) -DG_IR_SCANNING $(GEANY_CFLAGS)
 Geany_1_0_pre_gir_CFLAGS      += -DScintillaObject=GeanyScintillaScintillaObject
 Geany_1_0_pre_gir_LIBS         = $(geany_libdir)/libgeany.la
-Geany_1_0_pre_gir_FILES        = $(geany_includedir)/gtkdoc/geany-gtkdoc.h
+Geany_1_0_pre_gir_FILES        = geany-gtkdoc-tmp.h
 Geany_1_0_pre_gir_SCANNERFLAGS = $(SCANNERFLAGS) --include-uninstalled=GeanyScintilla-1.0.gir
 
 GeanyScintilla_1_0_pre_gir_NAMESPACE = GeanyScintilla
@@ -47,6 +47,11 @@ geany-sciwrappers-gtkdoc-tmp.h: $(geany_includedir)/gtkdoc/geany-sciwrappers-gtk
 		-e 's,sci_,scintilla_object__GI__MARK_,g' \
 		$< > $@ || rm -f $@
 
+geany-gtkdoc-tmp.h:  $(geany_includedir)/gtkdoc/geany-gtkdoc.h
+	$(AM_V_GEN) $(SED) \
+		-e 's,\(document_\)new\(_file\),\1_GI__WORKAROUNDNEW_\2,g' \
+		$< > $@ || rm -rf $@
+
 GeanyScintilla-1.0.gir: GeanyScintilla-1.0-pre.gir
 	$(AM_V_GEN) $(SED) \
 		-e 's,scintilla_object__GI__MARK_,sci_,g' \
@@ -56,6 +61,7 @@ GeanyScintilla-1.0.gir: GeanyScintilla-1.0-pre.gir
 Geany-1.0.gir: Geany-1.0-pre.gir
 	$(AM_V_GEN) $(SED) \
 		-e 's,GeanyScintillaScintillaObject,ScintillaObject,g' \
+		-e 's,_GI__WORKAROUNDNEW_,new,g' \
 		$< > $@ || rm -f $@
 
 Geany-1.0-pre.gir: GeanyScintilla-1.0.gir
@@ -67,7 +73,7 @@ all-local: $(gir_DATA) $(typelib_DATA) $(vapi_DATA) $(dist_vapi_DATA)
 
 CLEANFILES             += $(gir_DATA) $(typelib_DATA)
 CLEANFILES             += Geany-1.0-pre.gir GeanyScintilla-1.0-pre.gir
-CLEANFILES             += geany-sciwrappers-gtkdoc-tmp.h
+CLEANFILES             += geany-sciwrappers-gtkdoc-tmp.h geany-gtkdoc-tmp.h
 
 pyoverrides_DATA       += Geany.py
 

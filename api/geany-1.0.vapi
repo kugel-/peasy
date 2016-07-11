@@ -177,8 +177,6 @@ namespace Geany {
 		[CCode (cname = "document_compare_by_tab_order_reverse")]
 		[Version (since = "0.21")]
 		public static int compare_by_tab_order_reverse (void* a, void* b);
-		[CCode (cname = "document_new_file", has_construct_function = false)]
-		public Document.file (string? utf8_filename, Geany.Filetype? ft, string? text);
 		[CCode (cname = "document_find_by_filename")]
 		public static unowned Geany.Document? find_by_filename (string utf8_filename);
 		[CCode (cname = "document_find_by_id")]
@@ -203,6 +201,8 @@ namespace Geany {
 		[CCode (cname = "document_index")]
 		[Version (since = "0.16")]
 		public static unowned Geany.Document? index (int idx);
+		[CCode (cname = "document_new_file")]
+		public static unowned Geany.Document new_file (string? utf8_filename, Geany.Filetype? ft, string? text);
 		[CCode (cname = "document_open_file")]
 		public static unowned Geany.Document? open_file (string locale_filename, bool readonly, Geany.Filetype? ft, string? forced_enc);
 		[CCode (cname = "document_open_files")]
