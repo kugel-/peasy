@@ -45,18 +45,18 @@ vapi_DATA              += geany-1.0.deps geany-scintilla-1.0.deps
 geany-sciwrappers-gtkdoc-tmp.h: $(geany_includedir)/gtkdoc/geany-sciwrappers-gtkdoc.h
 	$(AM_V_GEN)$(SED) \
 		-e 's,sci_,scintilla_object__GI__MARK_,g' \
-		$< > $@
+		$< > $@ || rm -f $@
 
 GeanyScintilla-1.0.gir: GeanyScintilla-1.0-pre.gir
 	$(AM_V_GEN) $(SED) \
 		-e 's,scintilla_object__GI__MARK_,sci_,g' \
 		-e 's,_GI__MARK_,,g' \
-		$< > $@
+		$< > $@ || rm -f $@
 
 Geany-1.0.gir: Geany-1.0-pre.gir
 	$(AM_V_GEN) $(SED) \
 		-e 's,GeanyScintillaScintillaObject,ScintillaObject,g' \
-		$< > $@
+		$< > $@ || rm -f $@
 
 Geany-1.0-pre.gir: GeanyScintilla-1.0.gir
 
