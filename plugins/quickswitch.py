@@ -61,8 +61,8 @@ def get_icon_name(tag):
     else:
         return "classviewer-other"
 
-class GotoPlugin(Peasy.Plugin):
-    __gtype_name__ = 'GotoPlugin'
+class QuickSwitchPlugin(Peasy.Plugin):
+    __gtype_name__ = 'QuickSwitchPlugin'
 
     def pos_func(self, *args):
         alloc = args[3].get_allocation()
@@ -172,7 +172,7 @@ class GotoPlugin(Peasy.Plugin):
         self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_EXECUTE, u"Quick Tab Switch…")
         self.item.connect("activate", self.on_item_click)
         self.geany_plugin.geany_data.main_widgets.tools_menu.append(self.item)
-        self.ui = Gtk.Builder.new_from_file(os.path.join(self.plugin_info.get_module_dir(), "goto", "goto.glade"))
+        self.ui = Gtk.Builder.new_from_file(os.path.join(self.plugin_info.get_module_dir(), "quickswitch", "quickswitch.glade"))
         self.dlg = self.ui.get_object("window")
         self.dlg.set_transient_for(self.geany_plugin.geany_data.main_widgets.window)
         self.item.show_all();

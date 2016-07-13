@@ -11,7 +11,7 @@ dist_plugin_DATA  += peasytest.plugin \
                      console-peasy.py console-peasy.plugin \
                      modeline.py modeline.plugin \
                      peasypytest.py peasypytest.plugin \
-                     goto.py goto.plugin
+                     quickswitch.py quickswitch.plugin
 
-plugingotodatadir = $(plugindatadir)/goto
-dist_plugingotodata_DATA = goto.glade
+pluginquickswitchdatadir = $(plugindatadir)/quickswitch
+dist_pluginquickswitchdata_DATA = quickswitch.glade
