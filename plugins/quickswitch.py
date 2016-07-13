@@ -121,6 +121,7 @@ class QuickSwitchPlugin(Peasy.Plugin):
                 except KeyError:
                     w.set_image(Gtk.Image.new_from_gicon(doc["doc"].file_type.icon, Gtk.IconSize.MENU))
                 w.connect("activate", lambda item, doc: self.switch_doc(doc), doc)
+                w.connect("activate", lambda item: self.dlg.close())
                 m.append(w)
                 return w
             # always select the first item for better keyboard navigation
@@ -135,7 +136,6 @@ class QuickSwitchPlugin(Peasy.Plugin):
             def on_hide(m):
                 self.__m = None
             m.connect("hide", on_hide)
-            m.connect("destroy", lambda m: self.dlg.close())
             m.popup(None, None, self.pos_func, widget, 0, Gtk.get_current_event_time());
 
     def on_def_activate(self, entry):
