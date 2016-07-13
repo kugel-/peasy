@@ -169,7 +169,7 @@ class QuickSwitchPlugin(Peasy.Plugin):
             warnings.warn("Gtk 2 is not supported by this plugin", RuntimeWarning)
             return False
 
-        self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_EXECUTE, u"Quick Tab Switch…")
+        self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_JUMP_TO, u"Quick Tab Switch…")
         self.item.connect("activate", self.on_item_click)
         self.geany_plugin.geany_data.main_widgets.tools_menu.append(self.item)
         self.ui = Gtk.Builder.new_from_file(os.path.join(self.plugin_info.get_module_dir(), "quickswitch", "quickswitch.glade"))
