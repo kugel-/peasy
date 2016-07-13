@@ -140,7 +140,7 @@ class GotoPlugin(Peasy.Plugin):
 
     def on_def_activate(self, entry):
         docs = []
-        tags = Geany.tm_workspace_find_prefix(entry.get_text(), Geany.TMParserType.NONE, 128)
+        tags = Geany.tm_workspace_find_prefix(entry.get_text(), Geany.TMParserType.ANY, 128)
         for tag in tags:
             if (tag.file and (tag.type in (Geany.TMTagType.FUNCTION_T, Geany.TMTagType.METHOD_T))):
                 gd = Geany.Document.find_by_real_path(tag.file.file_name)
@@ -149,7 +149,7 @@ class GotoPlugin(Peasy.Plugin):
 
     def on_decl_activate(self, entry):
         docs = []
-        tags = Geany.tm_workspace_find_prefix(entry.get_text(), Geany.TMParserType.NONE, 128)
+        tags = Geany.tm_workspace_find_prefix(entry.get_text(), Geany.TMParserType.ANY, 128)
         for tag in tags:
             if (tag.file and not (tag.type in (Geany.TMTagType.FUNCTION_T, Geany.TMTagType.METHOD_T))):
                 gd = Geany.Document.find_by_real_path(tag.file.file_name)
