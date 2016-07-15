@@ -6,4 +6,5 @@ plugins/peasytest.c
 plugins/console-peasy.plugin.desktop.in
 plugins/modeline.plugin.desktop.in
 plugins/peasypytest.plugin.desktop.in
+plugins/peasypytest.py
 plugins/quickswitch.plugin.desktop.in

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: peasy 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-15 14:49+0200\n"
+"POT-Creation-Date: 2016-07-16 14:09+0200\n"
 "PO-Revision-Date: 2016-07-14 07:06+0200\n"
 "Last-Translator: Thomas Martitz <kugel@rockbox.org>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -58,9 +58,18 @@ msgid "Peasy Python Tester"
 msgstr ""
 
 #: ../plugins/peasypytest.plugin.desktop.in.h:2
-#, fuzzy
 msgid "Tests whether peasy actually works with python"
-msgstr "Test ob Peasy überhaupt funzt!"
+msgstr "Test ob Peasy überhaupt mit Python funzt!"
+
+#: ../plugins/peasypytest.py:30
+#, python-format
+msgid "Hello from %s!"
+msgstr "Hallo aus %s!"
+
+#: ../plugins/peasypytest.py:36
+#, python-format
+msgid "%s says bye!"
+msgstr ""
 
 #: ../plugins/quickswitch.plugin.desktop.in.h:1
 msgid "Quick Tab Switch"
