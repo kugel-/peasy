@@ -1,9 +1,0 @@
-[Plugin]
-Version=1.25
-Authors=kugel
-Copyright=None
-Module=peasypytest
-Website=http://www.geany.org/Support/Plugins
-Loader=python3
-Name=Peasy Python Tester
-Description=Tests whether peasy actually works with python

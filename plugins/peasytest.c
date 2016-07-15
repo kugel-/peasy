@@ -67,7 +67,7 @@ typedef struct _PeasyTestPrivate
 
 static gboolean peasy_test_enable(PeasyPlugin *self)
 {
-	printf("%s(): Hello from %s!\n", __func__, self->geany_plugin->info->name);
+	printf(_("%s(): Hello from %s!\n"), __func__, self->geany_plugin->info->name);
 
 	return TRUE;
 }
@@ -75,7 +75,7 @@ static gboolean peasy_test_enable(PeasyPlugin *self)
 
 static void peasy_test_disable(PeasyPlugin *self)
 {
-	printf("%s()\n", __func__);
+	printf("%s(): %s says bye!\n", __func__, self->geany_plugin->info->name);
 }
 
 G_DEFINE_TYPE_WITH_CODE (PeasyTest, peasy_test, PEASY_TYPE_PLUGIN,

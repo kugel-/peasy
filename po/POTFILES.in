@@ -1,0 +1,9 @@
+# List of source files which contain translatable strings.
+
+src/peasy-plugin.c
+plugins/peasytest.plugin.desktop.in
+plugins/peasytest.c
+plugins/console-peasy.plugin.desktop.in
+plugins/modeline.plugin.desktop.in
+plugins/peasypytest.plugin.desktop.in
+plugins/quickswitch.plugin.desktop.in

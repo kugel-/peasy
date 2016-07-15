@@ -1,0 +1,7 @@
+[Plugin]
+Module=peasypytest
+Loader=python3
+_Name=Peasy Python Tester
+_Description=Tests whether peasy actually works with python
+Authors=Thomas Maritiz <kugel@rockbox.org>
+Copyright=Copyright © 2015 Thomas Martitz

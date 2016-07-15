@@ -18,6 +18,11 @@ AM_PROG_CC_C_O
 AC_PROG_INSTALL
 AM_PROG_LIBTOOL
 AM_PROG_VALAC([0.30])
+AC_PROG_MKDIR_P
+
+AC_PROG_INTLTOOL
+AC_SUBST([GETTEXT_PACKAGE], ["peasy"])
+AC_DEFINE([GETTEXT_PACKAGE], ["peasy"], [Gettext package.])
 
 GP_CHECK_GTK_VERSION
 
@@ -78,5 +83,6 @@ AC_CONFIG_FILES([
 	api/geany-scintilla-1.0.deps
 	lib/Makefile
 	plugins/Makefile
+	po/Makefile.in
 	src/Makefile])
 AC_OUTPUT

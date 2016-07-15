@@ -251,14 +251,15 @@ peasy_cleanup(GeanyPlugin *plugin, gpointer pdata)
 {
 }
 
-
 G_MODULE_EXPORT void
 geany_load_module(GeanyPlugin *plugin)
 {
-    plugin->info->name = _("Peasy");
-    plugin->info->description = _("Provides libpeas-based plugins");
+    main_locale_init(LOCALEDIR, GETTEXT_PACKAGE);
+
+    plugin->info->name = "Peasy";
+    plugin->info->description = _("Provides libpeas-based plugins.");
     plugin->info->version = "0.1";
-    plugin->info->author = _("Thomas Martitz <kugel@rockbox.org>");
+    plugin->info->author = "Thomas Martitz <kugel@rockbox.org>";
 
     plugin->funcs->init = peasy_init;
     plugin->funcs->cleanup = peasy_cleanup;

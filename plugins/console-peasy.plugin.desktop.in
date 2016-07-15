@@ -1,0 +1,7 @@
+[Plugin]
+Module=console-peasy
+Loader=python3
+_Name=Python Console (Peasy)
+_Description=This plugins opens a console window in which you can explore the Geany APIs and run arbitrary commands. Heavily based on console.py for geanypy.
+Authors=Matthew Brush <codebrainz@codebrainz.ca>, Thomas Martitz <kugel@rockbox.org>
+Copyright=Copyright © 2011 Matthew Brush

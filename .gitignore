@@ -14,8 +14,9 @@ configure
 .libs/
 *.typelib
 *.gir
-api/*.h
-api/*.deps
+/api/*.h
+/api/*.deps
+/plugins/*.plugin
 
 #-----------------------------------------------------------------------
 # / (root)
@@ -40,3 +41,22 @@ api/*.deps
 /stamp-h.in
 /libtool
 
+#-----------------------------------------------------------------------
+# /po/
+#-----------------------------------------------------------------------
+/po/*.gmo
+/po/*.header
+/po/.intltool-merge-cache
+/po/Makefile.in.in
+/po/Makevars
+/po/*.mo
+/po/*.pot
+/po/POTFILES
+/po/POTFILES.ignore
+/po/POTFILES.in.missing
+/po/POTFILES.in.noi18n
+/po/Rules-quot
+/po/*.sed
+/po/*.sin
+/po/stamp-it
+/po/.intlcache
