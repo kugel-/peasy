@@ -1,6 +1,10 @@
 namespace Peasy
 {
 
+/* defined in C because we can't access LOCALEDIR in vala code (can we?) */
+public extern unowned string get_locale_dir();
+public extern unowned string gettext(string msgid);
+
 public interface PluginConfigure
 {
     public abstract Gtk.Widget configure(Gtk.Dialog parent);

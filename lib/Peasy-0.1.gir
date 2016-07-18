@@ -796,6 +796,21 @@
 	<field name="peasy_peasy_signals">
 		<type name="Peasy.Signals" c:type="PeasySignals*"/>
 	</field>
+	<function name="get_locale_dir" c:identifier="peasy_get_locale_dir">
+		<return-value transfer-ownership="none">
+			<type name="utf8" c:type="const gchar*"/>
+		</return-value>
+	</function>
+	<function name="gettext" c:identifier="peasy_gettext">
+		<return-value transfer-ownership="none">
+			<type name="utf8" c:type="const gchar*"/>
+		</return-value>
+		<parameters>
+			<parameter name="msgid" transfer-ownership="none">
+				<type name="utf8" c:type="const gchar*"/>
+			</parameter>
+		</parameters>
+	</function>
 	<function name="static_init" c:identifier="peasy_static_init">
 		<return-value transfer-ownership="full">
 			<type name="none"/>

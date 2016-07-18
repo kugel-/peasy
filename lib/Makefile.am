@@ -12,7 +12,8 @@ libpeasy_la_VALASOURCES  = \
 
 libpeasy_la_SOURCES      = \
     $(libpeasy_la_VALASOURCES) \
-    keygroup_c.c
+    keygroup_c.c           \
+    plugin_c.c
 
 libpeasy_la_VALAFLAGS    = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintilla-1.0 \
                            --vapidir $(top_builddir)/api --library libpeasy            \

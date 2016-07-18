@@ -4,10 +4,10 @@
 
 #include <glib.h>
 #include <glib-object.h>
-#include <gtk/gtk.h>
-#include <geanyplugin.h>
 #include <stdlib.h>
 #include <string.h>
+#include <gtk/gtk.h>
+#include <geanyplugin.h>
 
 
 #define PEASY_TYPE_PLUGIN_CONFIGURE (peasy_plugin_configure_get_type ())
@@ -105,6 +105,8 @@ struct _PeasyPluginClass {
 static gpointer peasy_plugin_parent_class = NULL;
 static PeasyPluginIfaceIface* peasy_plugin_peasy_plugin_iface_parent_iface = NULL;
 
+const gchar* peasy_get_locale_dir (void);
+const gchar* peasy_gettext (const gchar* msgid);
 GType peasy_plugin_configure_get_type (void) G_GNUC_CONST;
 GtkWidget* peasy_plugin_configure_configure (PeasyPluginConfigure* self, GtkDialog* parent);
 GType peasy_plugin_help_get_type (void) G_GNUC_CONST;
