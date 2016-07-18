@@ -20,7 +20,7 @@ AM_PROG_LIBTOOL
 AM_PROG_VALAC([0.30])
 AC_PROG_MKDIR_P
 
-AC_PROG_INTLTOOL
+IT_PROG_INTLTOOL([0.40.0])
 AC_SUBST([GETTEXT_PACKAGE], ["peasy"])
 AC_DEFINE([GETTEXT_PACKAGE], ["peasy"], [Gettext package.])
 
@@ -42,21 +42,12 @@ PKG_CHECK_MODULES([PEAS], [libpeas-1.0 >= 1.12.0])
 AC_SUBST([PEAS_CFLAGS])
 AC_SUBST([PEAS_LIBS])
 
-PKG_CHECK_MODULES([GEANY], [geany >= 1.27])
-AC_SUBST([GEANY_CFLAGS])
-AC_SUBST([GEANY_LIBS])
+GP_CHECK_GEANY([1.28])
 
-GEANY_INCLUDEDIR=`$PKG_CONFIG --variable includedir geany`
-AC_SUBST([GEANY_INCLUDEDIR])
-
-GEANY_DATADIR=`$PKG_CONFIG --variable datadir geany`
-AC_SUBST([GEANY_DATADIR])
-
-GEANY_LIBDIR=`$PKG_CONFIG --variable libdir geany`
-AC_SUBST([GEANY_LIBDIR])
-GEANY_PLUGINDIR="$GEANY_LIBDIR/geany"
-AC_SUBST([GEANY_PLUGINDIR])
-AC_DEFINE_UNQUOTED([GEANY_PLUGINDIR],["$GEANY_PLUGINDIR"],[Path to Geany plugin])
+# double eval since datarootdir is usually defined as ${prefix}/share
+LOCALEDIR=$(eval echo $(eval echo $localedir))
+AC_SUBST([LOCALEDIR])
+AC_DEFINE_UNQUOTED([LOCALEDIR],["$LOCALEDIR"],[Where to install translations])
 
 GOBJECT_INTROSPECTION_CHECK([1.30.0])
 VAPIGEN_CHECK([0.31])
