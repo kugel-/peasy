@@ -91,20 +91,22 @@ class QuickSwitchPlugin(Peasy.Plugin):
 
     def show_docs(self, docs, widget):
         # sort to give stable list (documents_array isn't sorted)
-        docs = sorted(docs, key=lambda doc: doc["doc"].display_name())
+        if (fname is None):
+            fname = doc["doc"].display_name()
+        docs = sorted(docs, key=lambda doc: fname)
         # trivial case: only one doc to show. switch immediately
         if (len(docs) == 1):
             self.switch_doc(docs[0])
             self.dlg.close()
         elif (len(docs) > 1):
-            docs_fn = [doc["doc"].display_name() for doc in docs]
+            docs_fn = [fname for doc in docs]
             if (len(docs_fn) == len(set(docs_fn))):
                 # simple case: multiple docs but unique display names
                 def get_label(doc):
                     try:
-                        return "%s @%s:%d" % (doc["tag"].name, doc["doc"].display_name(), doc["tag"].line)
+                        return "%s @%s:%d" % (doc["tag"].name, fname, doc["tag"].line)
                     except:
-                        return doc["doc"].display_name()
+                        return fname
                 label_fn = get_label
             else:
                 # complex case: multiple docs with, some of which have the same
@@ -139,12 +141,17 @@ class QuickSwitchPlugin(Peasy.Plugin):
             m.popup(None, None, self.pos_func, widget, 0, Gtk.get_current_event_time());
 
     def on_def_activate(self, entry):
-        docs = []
         tags = Geany.tm_workspace_find_prefix(entry.get_text(), Geany.TMParserType.ANY, 128)
+        docs = []
         for tag in tags:
+            if (tag.file):
+                print("xx {} {} ({})".format( tag.file.file_name, tag.type, tag.name ))
             if (tag.file and (tag.type in (Geany.TMTagType.FUNCTION_T, Geany.TMTagType.METHOD_T))):
                 gd = Geany.Document.find_by_real_path(tag.file.file_name)
-                docs.append({"tag" : tag, "doc" : gd})
+                # some plugins (projectmanager) add to the tags without
+                # opening the file so gd can be None
+                if (gd is not None):
+                    docs.append({"tag" : tag, "doc" : gd})
         self.show_docs(docs, entry)
 
     def on_decl_activate(self, entry):
@@ -153,7 +160,10 @@ class QuickSwitchPlugin(Peasy.Plugin):
         for tag in tags:
             if (tag.file and not (tag.type in (Geany.TMTagType.FUNCTION_T, Geany.TMTagType.METHOD_T))):
                 gd = Geany.Document.find_by_real_path(tag.file.file_name)
-                docs.append({"tag" : tag, "doc" : gd})
+                # some plugins (projectmanager) add to the tags without
+                # opening the file so gd can be None
+                if (gd is not None):
+                    docs.append({"tag" : tag, "doc" : gd})
         self.show_docs(docs, entry)
 
     def on_file_activate(self, entry):
