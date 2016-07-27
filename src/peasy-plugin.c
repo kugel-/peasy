@@ -28,6 +28,7 @@
 #include <libpeas/peas-engine.h>
 #include <libpeas/peas-activatable.h>
 #include <libpeas/peas-extension-base.h>
+#include <libpeas/peas-object-module.h>
 
 #include "peasy.h"
 
@@ -51,6 +52,12 @@ get_mod_name(const gchar *filename)
     return basename;
 }
 
+static gboolean is_native_plugin(const gchar *filename)
+{
+    /* It would be slightly more reliable to check against the plugin's
+     * loader but libpeas doesn't provide that */
+    return g_str_has_suffix(filename, "." G_MODULE_SUFFIX);
+}
 
 static gboolean
 peas_proxy_init(GeanyPlugin *plugin, gpointer pdata)
@@ -106,6 +113,153 @@ peas_proxy_cleanup(GeanyPlugin *plugin, gpointer pdata)
     ctx->plugin = NULL;
 }
 
+#define MAKE_OP(op) (op[0] | ((op[1] << 8)))
+#define EQ          ( '='  | ( '='  << 8))
+#define NE          ( '!'  | ( '='  << 8))
+#define GT          ( '>'  | (  0  << 8))
+#define GE          ( '>'  | ( '='  << 8))
+#define LT          ( '<'  | (  0  << 8))
+#define LE          ( '<'  | ( '='  << 8))
+
+#define ENCODE_VERSION(major, minor, micro) \
+    ((major) * 10000000 + (minor) * 1000 + (micro))
+
+static gboolean
+do_check_compatibility(const gchar *requirements)
+{
+    /* We support checking library requirements
+     * via the key X-Peasy-Requires in .plugin files. Currently
+     * only gtk2, gtk3 and glib2 can be checked. */
+    gchar *p, **strv;
+    gint is_compatible = 1;
+    gint i = 0;
+
+    strv = g_strsplit_set(requirements, ",;", -1);
+
+    while ((p = strv[i++]))
+    {
+        gint  any_is_compatible = 0;
+        gchar *q, **or_strv = g_strsplit(p, "|", -1);
+        int j = 0;
+
+        while ((q = or_strv[j++]))
+        {
+            gchar  pkg[32], op[4], version[16];
+            gint   imajor, iminor, imicro, iversion;
+            gint   libversion = 0;
+            gint   result = 0;
+
+            while (g_ascii_isspace(*q))
+                q++;
+
+            /* string is expected to of the form
+             * <pkg-config name> <op> <version>
+             * pkg-config name: one of glib2 or gtk
+             * (more could be added but the library must provide a runtime
+             * version check but we'd probably need to link that lib)
+             * op: one of >, >=, ==, <, <<, !=
+             * version: format major.minor.micro
+             */
+
+            if (sscanf(q, "%31s %3s %15s", &pkg, &op, &version) != 3)
+            {
+                g_warning("malformed requirement string \"%s\"\n", q);
+                break;
+            }
+
+            switch (sscanf(version, "%d.%d.%d", &imajor, &iminor, &imicro))
+            {
+                case 1:
+                    iminor = 0;
+                    /* fall through */
+                case 2:
+                    imicro = 0;
+                    /* fall through */
+                case 3:
+                    break;
+                default:
+                    g_warning("malformed version string \"%s\"\n", version);
+                    continue;
+            }
+            iversion = ENCODE_VERSION(imajor, iminor, imicro);
+
+            if (g_str_equal(pkg, "gtk2") || (g_str_equal(pkg, "gtk3")))
+            {   /* major must match (gtk >= 2.24 must not pass for gtk3). This
+                 * results in "incompatible" even if the op is != which may
+                 * sound illogical but is convinient. */
+                if (gtk_major_version != imajor)
+                    continue;
+
+                libversion = ENCODE_VERSION(gtk_major_version,
+                                            gtk_minor_version,
+                                            gtk_micro_version);
+            }
+            else if (g_str_equal(pkg, "glib2"))
+            {   /* Current glib must match the pkg, same gotcha as for gtk */
+                if (glib_major_version != imajor)
+                    continue;
+                libversion = ENCODE_VERSION(glib_major_version,
+                                            glib_minor_version,
+                                            glib_micro_version);
+            }
+            else
+            {
+                g_warning("unknown pkg \"%s\"\n");
+                continue;
+            }
+            switch (MAKE_OP(op))
+            {
+                case EQ: result = libversion == iversion; break;
+                case NE: result = libversion != iversion; break;
+                case GT: result = libversion  > iversion; break;
+                case GE: result = libversion >= iversion; break;
+                case LT: result = libversion  < iversion; break;
+                case LE: result = libversion <= iversion; break;
+                default:
+                    g_warning("malformed comparison \"%s\"\n", op);
+                    continue;
+            }
+            any_is_compatible = any_is_compatible || result;
+        }
+        is_compatible = is_compatible && any_is_compatible;
+        g_strfreev(or_strv);
+    }
+    g_strfreev(strv);
+
+    return is_compatible;
+}
+
+
+static gboolean
+check_compatibility(PeasPluginInfo *info)
+{
+    const char *s = peas_plugin_info_get_external_data(info, "X-Peasy-Requires");
+    if (EMPTY(s))
+        return TRUE;
+
+    if (!do_check_compatibility(s))
+    {
+        printf("Plugin \"%s\" has unmet requirements! It requires:\n  \"%s\"\n",
+                peas_plugin_info_get_name(info), s);
+        return FALSE;
+    }
+    return TRUE;
+}
+
+
+static gboolean
+check_key_present(PeasPluginInfo *info, const gchar *key)
+{
+    if (!peas_plugin_info_get_external_data(info, key))
+    {
+        g_warning("Plugin \"%s\" is not compatible with Peasy.\n"
+                  "It lacks the %s specification in the .plugin file.\n",
+                  peas_plugin_info_get_name(info), key);
+        return FALSE;
+    }
+    return TRUE;
+}
+
 
 static gint
 peasy_probe(GeanyPlugin *plugin, const gchar *filename, gpointer pdata)
@@ -113,12 +267,27 @@ peasy_probe(GeanyPlugin *plugin, const gchar *filename, gpointer pdata)
     gint ret = PROXY_IGNORED;
     PeasEngine *peas = (PeasEngine *) pdata;
     gchar *modname = get_mod_name(filename);
-    if (peas_engine_get_plugin_info(peas, modname) != NULL)
+    PeasPluginInfo *info = peas_engine_get_plugin_info(peas, modname);
+    if (info != NULL)
     {
         /* We only *load* .plugin files, however we are
-         * responsible for the corresponding code as wel */
+         * responsible for the corresponding code as well (so
+         * we match for any file which has a corresponding .plugin file).
+         *
+         * Additionally, we check some compatibility: The plugin
+         * can specifiy requirements using the X-Peasy-Requires key.
+         * This is optional. We also check against Geany's specific
+         * API version. The X-Peasy-API key is required for all
+         * plugins, and must be lower or equal to Geany's reported API.
+         * The actual API compatibility test is performed by Geany
+         * (along with an ABI check for native plugins).
+         * */
         ret = PROXY_MATCHED;
         if (!g_strrstr(filename, ".plugin"))
+            ret |= PROXY_NOLOAD;
+        else if (!check_compatibility(info))
+            ret |= PROXY_NOLOAD;
+        else if (!check_key_present(info, "X-Peasy-API"))
             ret |= PROXY_NOLOAD;
     }
     g_free(modname);
@@ -138,6 +307,9 @@ peasy_load(GeanyPlugin *plugin, GeanyPlugin *inferior,
     PeasExtension *obj;
     g_free(modname);
     PluginContext *ctx;
+    gint api, abi;
+    const gchar *str;
+    guint64 val;
 
     if (!info)
         return NULL;
@@ -166,15 +338,29 @@ peasy_load(GeanyPlugin *plugin, GeanyPlugin *inferior,
     ctx->info = info;
     ctx->engine = peas;
 
-    /* TODO: perform ABI check */
-    if (GEANY_PLUGIN_REGISTER_FULL(inferior, 224, ctx, g_free))
-    {
-        /* Don't pass g_object_unref because the object needs to be still alive
-         * in peasy_unload() */
-        return info;
+    str = peas_plugin_info_get_external_data(info, "X-Peasy-API");
+    val = g_ascii_strtoull(str, NULL, 10);
+    api = MIN(val, G_MAXINT);
+
+    if (is_native_plugin(filename))
+    {   /* The true ABI must be exposed by calling peasy_check_abi()
+           inside peas_register_types(). */
+        if (!g_hash_table_contains(peasy_native_abis, modname)) {
+            g_warning("Plugin %s not loaded because of unknown ABI!");
+            goto unload;
+        }
+        abi = GPOINTER_TO_INT(g_hash_table_lookup(peasy_native_abis, modname));
     }
+    else
+    {   /* for scripts the abi is not applicable */
+        abi = GEANY_ABI_VERSION;
+    }
+    /* register the plugin using api and abi values provided by inferior */
+    if (geany_plugin_register_full(inferior, GEANY_API_VERSION, api, abi, ctx, g_free))
+        return info;
 
 unload:
+    g_hash_table_remove(peasy_native_abis, modname);
     peas_engine_unload_plugin(peas, info);
     return NULL;
 }
@@ -185,7 +371,9 @@ peasy_unload(GeanyPlugin *plugin, GeanyPlugin *inferior, gpointer proxy_data, gp
 {
     PeasEngine *peas = pdata;
     PeasPluginInfo *info = proxy_data;
+    const gchar *modname = peas_plugin_info_get_module_name(info);
 
+    g_hash_table_remove(peasy_native_abis, modname);
     peas_engine_unload_plugin(peas, info);
 }
 
@@ -239,6 +427,7 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
     }
 
     g_clear_error(&err);
+
     return t != NULL;
 }
 

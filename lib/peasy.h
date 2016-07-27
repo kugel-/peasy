@@ -7,6 +7,7 @@
 #include <glib.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libpeas/peas.h>
 #include <gtk/gtk.h>
 #include <glib-object.h>
 #include <geanyplugin.h>
@@ -236,6 +237,8 @@ struct _PeasyKeyGroupClass {
 
 const gchar* peasy_get_locale_dir (void);
 const gchar* peasy_gettext (const gchar* msgid);
+extern GHashTable* peasy_native_abis;
+gboolean peasy_check_abi (PeasObjectModule* mod, gint abi_ver);
 GType peasy_plugin_configure_get_type (void) G_GNUC_CONST;
 GtkWidget* peasy_plugin_configure_configure (PeasyPluginConfigure* self, GtkDialog* parent);
 GType peasy_plugin_help_get_type (void) G_GNUC_CONST;

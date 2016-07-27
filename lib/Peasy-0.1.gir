@@ -6,6 +6,7 @@
 <include name="GeanyScintilla" version="1.0"/>
 <include name="Gtk" version="3.0"/>
 <include name="Gdk" version="3.0"/>
+<include name="Peas" version="1.0"/>
 <package name="libpeasy"/>
 <c:include name="peasy.h"/>
 <namespace name="Peasy" version="0.1" shared-library="libpeasy.so.0" c:prefix="Peasy">
@@ -790,6 +791,12 @@
 			<type name="GObject.TypeInterface" c:type="GTypeInterface"/>
 		</field>
 	</record>
+	<field name="peasy_native_abis">
+		<type name="GLib.HashTable" c:type="GHashTable*">
+			<type name="utf8" c:type="gchar*"/>
+			<type name="gint" c:type="gint"/>
+		</type>
+	</field>
 	<field name="peasy_peasy_plugin">
 		<type name="Geany.Plugin" c:type="GeanyPlugin*"/>
 	</field>
@@ -808,6 +815,19 @@
 		<parameters>
 			<parameter name="msgid" transfer-ownership="none">
 				<type name="utf8" c:type="const gchar*"/>
+			</parameter>
+		</parameters>
+	</function>
+	<function name="check_abi" c:identifier="peasy_check_abi">
+		<return-value transfer-ownership="full">
+			<type name="gboolean" c:type="gboolean"/>
+		</return-value>
+		<parameters>
+			<parameter name="mod" transfer-ownership="none">
+				<type name="Peas.ObjectModule" c:type="PeasObjectModule*"/>
+			</parameter>
+			<parameter name="abi_ver" transfer-ownership="none">
+				<type name="gint" c:type="gint"/>
 			</parameter>
 		</parameters>
 	</function>

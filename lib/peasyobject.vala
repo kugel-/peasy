@@ -13,9 +13,10 @@ public void static_init(Geany.Plugin p)
 {
     if (peasy_plugin == null)
     {
-        peasy_plugin = p;
         peasy_signals = new Signals();
+        Peasy.native_abis = new GLib.HashTable<string, int>(GLib.str_hash, GLib.str_equal);
     }
+    peasy_plugin = p;
 }
 
 public class Object : GLib.Object

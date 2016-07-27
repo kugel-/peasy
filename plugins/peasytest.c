@@ -117,5 +117,8 @@ peasy_test_new ()
 G_MODULE_EXPORT
 void peas_register_types(PeasObjectModule *mod)
 {
+	if (!peasy_check_abi(mod, GEANY_ABI_VERSION))
+		return;
+
 	peas_object_module_register_extension_type(mod, PEASY_TYPE_PLUGIN_IFACE, PEASY_TYPE_TEST);
 }

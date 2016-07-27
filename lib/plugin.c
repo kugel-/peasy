@@ -6,9 +6,11 @@
 #include <glib-object.h>
 #include <stdlib.h>
 #include <string.h>
+#include <libpeas/peas.h>
 #include <gtk/gtk.h>
 #include <geanyplugin.h>
 
+#define _g_free0(var) (var = (g_free (var), NULL))
 
 #define PEASY_TYPE_PLUGIN_CONFIGURE (peasy_plugin_configure_get_type ())
 #define PEASY_PLUGIN_CONFIGURE(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_PLUGIN_CONFIGURE, PeasyPluginConfigure))
@@ -102,11 +104,15 @@ struct _PeasyPluginClass {
 };
 
 
+extern GHashTable* peasy_native_abis;
+GHashTable* peasy_native_abis = NULL;
 static gpointer peasy_plugin_parent_class = NULL;
 static PeasyPluginIfaceIface* peasy_plugin_peasy_plugin_iface_parent_iface = NULL;
 
 const gchar* peasy_get_locale_dir (void);
 const gchar* peasy_gettext (const gchar* msgid);
+gboolean peasy_do_check_abi (gint abi);
+gboolean peasy_check_abi (PeasObjectModule* mod, gint abi_ver);
 GType peasy_plugin_configure_get_type (void) G_GNUC_CONST;
 GtkWidget* peasy_plugin_configure_configure (PeasyPluginConfigure* self, GtkDialog* parent);
 GType peasy_plugin_help_get_type (void) G_GNUC_CONST;
@@ -129,6 +135,49 @@ PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* secti
 PeasyKeyGroup* peasy_key_group_new_from_geany (GeanyKeyGroup* kb_group);
 PeasyKeyGroup* peasy_key_group_construct_from_geany (GType object_type, GeanyKeyGroup* kb_group);
 static void peasy_plugin_finalize (GObject* obj);
+
+
+/**
+ * Function that native plugins must call in their peas_register_types().
+ *
+ * @param mod The ObjectModule passed to peas_register_types() by libpeas
+ * @param abi_ver The ABI version the plugin was compiled against,
+ *                 simple pass GEANY_API_VERSION.
+ *
+ * @return true if the ABI check has passed, false otherwise. Do not
+ *          proceed calling peas_object_module_register_extension_type()
+ *          on false.
+ */
+gboolean peasy_check_abi (PeasObjectModule* mod, gint abi_ver) {
+	gboolean result = FALSE;
+	gint _tmp0_ = 0;
+	gboolean _tmp1_ = FALSE;
+	g_return_val_if_fail (mod != NULL, FALSE);
+	_tmp0_ = abi_ver;
+	_tmp1_ = peasy_do_check_abi (_tmp0_);
+	if (!_tmp1_) {
+		GHashTable* _tmp2_ = NULL;
+		PeasObjectModule* _tmp3_ = NULL;
+		gchar* _tmp4_ = NULL;
+		gchar* _tmp5_ = NULL;
+		gchar* _tmp6_ = NULL;
+		gchar* _tmp7_ = NULL;
+		gint _tmp8_ = 0;
+		_tmp2_ = peasy_native_abis;
+		_tmp3_ = mod;
+		g_object_get (_tmp3_, "module-name", &_tmp4_, NULL);
+		_tmp5_ = _tmp4_;
+		_tmp6_ = _tmp5_;
+		_tmp7_ = g_strdup (_tmp6_);
+		_tmp8_ = abi_ver;
+		g_hash_table_replace (_tmp2_, _tmp7_, (gpointer) ((gintptr) _tmp8_));
+		_g_free0 (_tmp6_);
+		result = FALSE;
+		return result;
+	}
+	result = TRUE;
+	return result;
+}
 
 
 GtkWidget* peasy_plugin_configure_configure (PeasyPluginConfigure* self, GtkDialog* parent) {

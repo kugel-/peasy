@@ -29,6 +29,7 @@ typedef struct _PeasyObjectClass PeasyObjectClass;
 typedef struct _PeasySignals PeasySignals;
 typedef struct _PeasySignalsClass PeasySignalsClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
+#define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
 typedef struct _PeasyObjectPrivate PeasyObjectPrivate;
 typedef struct _PeasySignalsPrivate PeasySignalsPrivate;
 
@@ -79,6 +80,7 @@ extern GeanyPlugin* peasy_peasy_plugin;
 GeanyPlugin* peasy_peasy_plugin = NULL;
 extern PeasySignals* peasy_peasy_signals;
 PeasySignals* peasy_peasy_signals = NULL;
+extern GHashTable* peasy_native_abis;
 static gpointer peasy_object_parent_class = NULL;
 static gpointer peasy_signals_parent_class = NULL;
 
@@ -88,6 +90,7 @@ GType peasy_signals_get_type (void) G_GNUC_CONST;
 void peasy_static_init (GeanyPlugin* p);
 PeasySignals* peasy_signals_new (void);
 PeasySignals* peasy_signals_construct (GType object_type);
+static void _g_free0_ (gpointer var);
 #define PEASY_OBJECT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_OBJECT, PeasyObjectPrivate))
 enum  {
 	PEASY_OBJECT_DUMMY_PROPERTY,
@@ -122,19 +125,32 @@ PeasyFiletype* peasy_filetype_construct (GType object_type, GeanyFiletype* ft);
 static void g_cclosure_user_marshal_VOID__OBJECT_OBJECT (GClosure * closure, GValue * return_value, guint n_param_values, const GValue * param_values, gpointer invocation_hint, gpointer marshal_data);
 
 
+static void _g_free0_ (gpointer var) {
+	var = (g_free (var), NULL);
+}
+
+
 void peasy_static_init (GeanyPlugin* p) {
 	GeanyPlugin* _tmp0_ = NULL;
+	GeanyPlugin* _tmp5_ = NULL;
 	g_return_if_fail (p != NULL);
 	_tmp0_ = peasy_peasy_plugin;
 	if (_tmp0_ == NULL) {
-		GeanyPlugin* _tmp1_ = NULL;
-		PeasySignals* _tmp2_ = NULL;
-		_tmp1_ = p;
-		peasy_peasy_plugin = _tmp1_;
-		_tmp2_ = peasy_signals_new ();
+		PeasySignals* _tmp1_ = NULL;
+		GHashFunc _tmp2_ = NULL;
+		GEqualFunc _tmp3_ = NULL;
+		GHashTable* _tmp4_ = NULL;
+		_tmp1_ = peasy_signals_new ();
 		_g_object_unref0 (peasy_peasy_signals);
-		peasy_peasy_signals = _tmp2_;
+		peasy_peasy_signals = _tmp1_;
+		_tmp2_ = g_str_hash;
+		_tmp3_ = g_str_equal;
+		_tmp4_ = g_hash_table_new_full (_tmp2_, _tmp3_, _g_free0_, NULL);
+		_g_hash_table_unref0 (peasy_native_abis);
+		peasy_native_abis = _tmp4_;
 	}
+	_tmp5_ = p;
+	peasy_peasy_plugin = _tmp5_;
 }
 
 
