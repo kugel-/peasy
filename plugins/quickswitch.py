@@ -64,6 +64,16 @@ def get_icon_name(tag):
 class QuickSwitchPlugin(Peasy.Plugin):
     __gtype_name__ = 'QuickSwitchPlugin'
 
+    def search_tags(self, prefix):
+        if (hasattr(Geany, "tm_workspace_find_prefix")):
+            return Geany.tm_workspace_find_prefix(prefix, Geany.TMParserType.ANY, 128)
+        else:
+            ret = []
+            for tag in self.geany_plugin.geany_data.app.tm_workspace.tags_array:
+                if (tag.name.startswith(prefix)):
+                    ret.append(tag)
+            return ret
+
     def pos_func(self, *args):
         alloc = args[3].get_allocation()
         win = args[3].get_window()
@@ -91,18 +101,17 @@ class QuickSwitchPlugin(Peasy.Plugin):
 
     def show_docs(self, docs, widget):
         # sort to give stable list (documents_array isn't sorted)
-        if (fname is None):
-            fname = doc["doc"].display_name()
-        docs = sorted(docs, key=lambda doc: fname)
+        docs = sorted(docs, key=lambda doc: doc["doc"].display_name())
         # trivial case: only one doc to show. switch immediately
         if (len(docs) == 1):
             self.switch_doc(docs[0])
             self.dlg.close()
         elif (len(docs) > 1):
-            docs_fn = [fname for doc in docs]
+            docs_fn = [doc["doc"].display_name() for doc in docs]
             if (len(docs_fn) == len(set(docs_fn))):
                 # simple case: multiple docs but unique display names
                 def get_label(doc):
+                    fname = doc["doc"].display_name()
                     try:
                         return "%s @%s:%d" % (doc["tag"].name, fname, doc["tag"].line)
                     except:
@@ -141,11 +150,9 @@ class QuickSwitchPlugin(Peasy.Plugin):
             m.popup(None, None, self.pos_func, widget, 0, Gtk.get_current_event_time());
 
     def on_def_activate(self, entry):
-        tags = Geany.tm_workspace_find_prefix(entry.get_text(), Geany.TMParserType.ANY, 128)
+        tags = self.search_tags(entry.get_text())
         docs = []
         for tag in tags:
-            if (tag.file):
-                print("xx {} {} ({})".format( tag.file.file_name, tag.type, tag.name ))
             if (tag.file and (tag.type in (Geany.TMTagType.FUNCTION_T, Geany.TMTagType.METHOD_T))):
                 gd = Geany.Document.find_by_real_path(tag.file.file_name)
                 # some plugins (projectmanager) add to the tags without
@@ -156,7 +163,7 @@ class QuickSwitchPlugin(Peasy.Plugin):
 
     def on_decl_activate(self, entry):
         docs = []
-        tags = Geany.tm_workspace_find_prefix(entry.get_text(), Geany.TMParserType.ANY, 128)
+        tags = self.search_tags(entry.get_text())
         for tag in tags:
             if (tag.file and not (tag.type in (Geany.TMTagType.FUNCTION_T, Geany.TMTagType.METHOD_T))):
                 gd = Geany.Document.find_by_real_path(tag.file.file_name)
