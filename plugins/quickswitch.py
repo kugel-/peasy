@@ -72,6 +72,11 @@ class QuickSwitchPlugin(Peasy.Plugin):
             for tag in self.geany_plugin.geany_data.app.tm_workspace.tags_array:
                 if (tag.name.startswith(prefix)):
                     ret.append(tag)
+            # tags for function declarations land in the global_tags when
+            # projectmanager is used
+            for tag in self.geany_plugin.geany_data.app.tm_workspace.global_tags:
+                if (tag.name.startswith(prefix)):
+                    ret.append(tag)
             return ret
 
     def pos_func(self, *args):
