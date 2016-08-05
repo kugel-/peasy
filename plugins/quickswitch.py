@@ -24,15 +24,22 @@ def get_prefix_and_substring(paths):
     prefix = os.path.commonprefix(paths)
     if not (prefix.endswith("/")):
         prefix = os.path.join("/", *(prefix.split("/")[:-1])) + "/"
-    substr = long_substr([path[len(prefix):] for path in paths])
-    if (substr.find("/") != -1):
-        if not (substr.endswith("/")):
-            substr = os.path.join(*(substr.split("/")[:-1]))
-        else:
-            # remove trailing /
-            substr = substr[:-1]
+    if (prefix == os.path.sep)
+        prefix = ""
     else:
+        for i in range(0, len(paths)):
+            paths[i] = paths[i].replace(prefix, "", 1)
+    substr = long_substr(paths)
+    # first make sure substr begins on a new path component
+    i = substr.find("/")
+    if (i < 0):
+        # longest substring is just a file, don't use that
         substr = ""
+    else:
+        # if there is a trailing slash, everything is a dir, use that as
+        # substr. Otherwise the last component is a file which is not wanted
+        # as part of the substr. Luckily os.path.split() does exactly that
+        substr = os.path.split(substr[i+1:])[0]
     return (prefix, substr)
 
 
@@ -61,23 +68,53 @@ def get_icon_name(tag):
     else:
         return "classviewer-other"
 
+# copied from mainline cpython, modified to bisect a TMTag array with a
+# x being string
+def tag_bisect_left(a, x, lo=0, hi=None):
+    """Return the index where to insert item x in list a, assuming a is sorted.
+
+    The return value i is such that all e in a[:i] have e < x, and all e in
+    a[i:] have e >= x.  So if x already appears in the list, a.insert(x) will
+    insert just before the leftmost x already there.
+
+    Optional args lo (default 0) and hi (default len(a)) bound the
+    slice of a to be searched.
+    """
+
+    if lo < 0:
+        raise ValueError('lo must be non-negative')
+    if hi is None:
+        hi = len(a)
+    while lo < hi:
+        mid = (lo+hi)//2
+        if a[mid].name < x: lo = mid+1
+        else: hi = mid
+    return lo
+
 class QuickSwitchPlugin(Peasy.Plugin):
     __gtype_name__ = 'QuickSwitchPlugin'
 
     def search_tags(self, prefix):
-        if (hasattr(Geany, "tm_workspace_find_prefix")):
-            return Geany.tm_workspace_find_prefix(prefix, Geany.TMParserType.ANY, 128)
-        else:
-            ret = []
-            for tag in self.geany_plugin.geany_data.app.tm_workspace.tags_array:
-                if (tag.name.startswith(prefix)):
-                    ret.append(tag)
-            # tags for function declarations land in the global_tags when
-            # projectmanager is used
-            for tag in self.geany_plugin.geany_data.app.tm_workspace.global_tags:
-                if (tag.name.startswith(prefix)):
-                    ret.append(tag)
-            return ret
+        ret = []
+        # This is super slow with lots of tags. pygobject seems to call getattr()
+        # for all elements on the first use, regardless of how it used
+        array = self.geany_plugin.geany_data.app.tm_workspace.tags_array
+        n = tag_bisect_left(array, prefix)
+        for tag in array[n:]:
+            if (tag.name.startswith(prefix)):
+                ret.append(tag)
+            else:
+                break
+        # tags for function declarations land in the global_tags when
+        # projectmanager is used
+        array = self.geany_plugin.geany_data.app.tm_workspace.global_tags
+        n = tag_bisect_left(array, prefix)
+        for tag in array[n:]:
+            if (tag.name.startswith(prefix)):
+                ret.append(tag)
+            else:
+                break
+        return ret
 
     def pos_func(self, *args):
         alloc = args[3].get_allocation()
@@ -89,7 +126,7 @@ class QuickSwitchPlugin(Peasy.Plugin):
         tag = doc.get("tag")
         s = doc["doc"].file_name[len(self.prefix):]
         if (len(self.substr) > 2):
-            return s.replace(self.substr, u"…")
+            s = s.replace(self.substr, u"…")
 
         if (tag is not None):
             s = "%s @%s:%d" % (tag.name, s, tag.line)
