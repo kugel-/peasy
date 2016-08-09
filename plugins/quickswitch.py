@@ -9,6 +9,8 @@ from gi.repository import Peasy
 from gi.repository import Gtk
 from gi.repository import Peas
 
+_ = Peasy.gettext
+
 # http://stackoverflow.com/a/2894073
 def long_substr(data):
     substr = ''
@@ -223,15 +225,12 @@ class QuickSwitchPlugin(Peasy.Plugin):
         self.show_docs(docs, entry)
 
     def do_enable(self):
-        # Gtk.Menu.popup does not work on Gtk2, hence Gtk3 only for now
-        if (Gtk.check_version(3, 0, 0) is not None):
-            warnings.warn("Gtk 2 is not supported by this plugin", RuntimeWarning)
-            return False
-
-        self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_JUMP_TO, u"Quick Tab Switch…")
+        self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_JUMP_TO, _(u"Quick Tab Switch")+"…")
         self.item.connect("activate", self.on_item_click)
         self.geany_plugin.geany_data.main_widgets.tools_menu.append(self.item)
-        self.ui = Gtk.Builder.new_from_file(os.path.join(self.plugin_info.get_module_dir(), "quickswitch", "quickswitch.glade"))
+        self.ui = Gtk.Builder.new()
+        self.ui.set_translation_domain("peasy")
+        self.ui.add_from_file(os.path.join(self.plugin_info.get_module_dir(), "quickswitch", "quickswitch.glade"))
         self.dlg = self.ui.get_object("window")
         self.dlg.set_transient_for(self.geany_plugin.geany_data.main_widgets.window)
         self.item.show_all();
@@ -240,11 +239,11 @@ class QuickSwitchPlugin(Peasy.Plugin):
         self.ui.get_object("txt_decl").connect("activate", self.on_decl_activate)
 
         self.keys = self.add_key_group("quicktabswitch", 3)
-        self.keys.add_keybinding("switch_by_file", "Switch by file",
+        self.keys.add_keybinding("switch_by_file", _("Switch to file"),
                 self.item, 0, 0).connect("activate", lambda key, id: self.on_item_click(self.item, "txt_file"))
-        self.keys.add_keybinding("switch_by_def", "Switch by symbol definition",
+        self.keys.add_keybinding("switch_by_def", _("Switch to function"),
                 None, 0, 0).connect("activate", lambda key, id: self.on_item_click(self.item, "txt_def"))
-        self.keys.add_keybinding("switch_by_decl", "Switch by symbol declaration",
+        self.keys.add_keybinding("switch_by_decl", _("Switch to symbol declaration"),
                 None, 0, 0).connect("activate", lambda key, id: self.on_item_click(self.item, "txt_decl"))
         return True
 

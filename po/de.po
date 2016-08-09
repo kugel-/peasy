@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: peasy 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-07-16 14:09+0200\n"
+"POT-Creation-Date: 2016-08-08 10:14+0200\n"
 "PO-Revision-Date: 2016-07-14 07:06+0200\n"
 "Last-Translator: Thomas Martitz <kugel@rockbox.org>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/peasy-plugin.c:260
+#: ../src/peasy-plugin.c:449
 msgid "Provides libpeas-based plugins."
 msgstr "Bietet Unterstützung für Plugins basierend auf libpeas."
 
@@ -71,12 +71,39 @@ msgstr "Hallo aus %s!"
 msgid "%s says bye!"
 msgstr ""
 
-#: ../plugins/quickswitch.plugin.desktop.in.h:1
+#: ../plugins/quickswitch.plugin.desktop.in.h:1 ../plugins/quickswitch.py:228
+#: ../plugins/quickswitch.glade.h:1
 msgid "Quick Tab Switch"
-msgstr ""
+msgstr "Schneller Tabwechsel"
 
 #: ../plugins/quickswitch.plugin.desktop.in.h:2
-msgid ""
-"Adds a dialog that allows to directly switch to tabs, by file name or code "
-"symbols."
+msgid "Adds a dialog that allows to quckly switch tabs."
 msgstr ""
+"Fügt einen Dialog hinzu, der es erlaubt schnell zu anderen Tabs zu wechseln."
+
+#: ../plugins/quickswitch.py:240
+msgid "Switch to file"
+msgstr "Wechsle Datei"
+
+#: ../plugins/quickswitch.py:242
+msgid "Switch to function"
+msgstr "Gehe zu Funktion"
+
+#: ../plugins/quickswitch.py:244
+msgid "Switch to symbol declaration"
+msgstr "Gehe zu Symboldeklaration"
+
+#: ../plugins/quickswitch.glade.h:2
+msgid "Function"
+msgstr "Funktion"
+
+#: ../plugins/quickswitch.glade.h:3
+msgid "Symbol"
+msgstr "Symbol"
+
+#: ../plugins/quickswitch.glade.h:4
+msgid "File"
+msgstr "Datei"
+
+#~ msgid "Quick Tab Switch…"
+#~ msgstr "Schneller Tabwechsel…"

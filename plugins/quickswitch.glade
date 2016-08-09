@@ -45,7 +45,7 @@
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Symbol (def)</property>
+                <property name="label" translatable="yes">Function</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
@@ -56,7 +56,7 @@
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Symbol (decl)</property>
+                <property name="label" translatable="yes">Symbol</property>
               </object>
               <packing>
                 <property name="left_attach">0</property>
