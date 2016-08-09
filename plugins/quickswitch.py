@@ -237,6 +237,7 @@ class QuickSwitchPlugin(Peasy.Plugin):
         self.ui.get_object("txt_file").connect("activate", self.on_file_activate)
         self.ui.get_object("txt_def").connect("activate", self.on_def_activate)
         self.ui.get_object("txt_decl").connect("activate", self.on_decl_activate)
+        self.ui.get_object("btn_close").connect("clicked", lambda btn: self.dlg.hide())
 
         self.keys = self.add_key_group("quicktabswitch", 3)
         self.keys.add_keybinding("switch_by_file", _("Switch to file"),
