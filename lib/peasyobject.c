@@ -132,25 +132,25 @@ static void _g_free0_ (gpointer var) {
 
 void peasy_static_init (GeanyPlugin* p) {
 	GeanyPlugin* _tmp0_ = NULL;
-	GeanyPlugin* _tmp5_ = NULL;
 	g_return_if_fail (p != NULL);
 	_tmp0_ = peasy_peasy_plugin;
 	if (_tmp0_ == NULL) {
-		PeasySignals* _tmp1_ = NULL;
-		GHashFunc _tmp2_ = NULL;
-		GEqualFunc _tmp3_ = NULL;
-		GHashTable* _tmp4_ = NULL;
-		_tmp1_ = peasy_signals_new ();
+		GeanyPlugin* _tmp1_ = NULL;
+		PeasySignals* _tmp2_ = NULL;
+		GHashFunc _tmp3_ = NULL;
+		GEqualFunc _tmp4_ = NULL;
+		GHashTable* _tmp5_ = NULL;
+		_tmp1_ = p;
+		peasy_peasy_plugin = _tmp1_;
+		_tmp2_ = peasy_signals_new ();
 		_g_object_unref0 (peasy_peasy_signals);
-		peasy_peasy_signals = _tmp1_;
-		_tmp2_ = g_str_hash;
-		_tmp3_ = g_str_equal;
-		_tmp4_ = g_hash_table_new_full (_tmp2_, _tmp3_, _g_free0_, NULL);
+		peasy_peasy_signals = _tmp2_;
+		_tmp3_ = g_str_hash;
+		_tmp4_ = g_str_equal;
+		_tmp5_ = g_hash_table_new_full (_tmp3_, _tmp4_, _g_free0_, NULL);
 		_g_hash_table_unref0 (peasy_native_abis);
-		peasy_native_abis = _tmp4_;
+		peasy_native_abis = _tmp5_;
 	}
-	_tmp5_ = p;
-	peasy_peasy_plugin = _tmp5_;
 }
 
 
