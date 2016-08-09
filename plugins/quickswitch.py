@@ -24,7 +24,7 @@ def get_prefix_and_substring(paths):
     prefix = os.path.commonprefix(paths)
     if not (prefix.endswith("/")):
         prefix = os.path.join("/", *(prefix.split("/")[:-1])) + "/"
-    if (prefix == os.path.sep)
+    if (prefix == os.path.sep):
         prefix = ""
     else:
         for i in range(0, len(paths)):
