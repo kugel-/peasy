@@ -41,10 +41,13 @@
           <object class="GtkGrid" id="gr_grid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="row_spacing">4</property>
+            <property name="column_spacing">4</property>
             <child>
               <object class="GtkLabel" id="label1">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">start</property>
                 <property name="label" translatable="yes">Function</property>
               </object>
               <packing>
@@ -56,6 +59,7 @@
               <object class="GtkLabel" id="label2">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">start</property>
                 <property name="label" translatable="yes">Symbol</property>
               </object>
               <packing>
@@ -67,6 +71,7 @@
               <object class="GtkLabel" id="label3">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">start</property>
                 <property name="label" translatable="yes">File</property>
               </object>
               <packing>
