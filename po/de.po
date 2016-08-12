@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: peasy 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-08 10:14+0200\n"
+"POT-Creation-Date: 2016-08-12 07:05+0200\n"
 "PO-Revision-Date: 2016-07-14 07:06+0200\n"
 "Last-Translator: Thomas Martitz <kugel@rockbox.org>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -23,10 +23,6 @@ msgid "Provides libpeas-based plugins."
 msgstr "Bietet Unterstützung für Plugins basierend auf libpeas."
 
 #: ../plugins/peasytest.plugin.desktop.in.h:1
-msgid "Peasy Tester"
-msgstr ""
-
-#: ../plugins/peasytest.plugin.desktop.in.h:2
 msgid "Tests whether peasy actually works"
 msgstr "Test ob Peasy überhaupt funzt!"
 
@@ -37,27 +33,44 @@ msgstr "%s(): Hallo aus %s!\n"
 
 #: ../plugins/console-peasy.plugin.desktop.in.h:1
 msgid "Python Console (Peasy)"
-msgstr ""
+msgstr "Python-Kommandozeile (Peasy)"
 
 #: ../plugins/console-peasy.plugin.desktop.in.h:2
 msgid ""
 "This plugins opens a console window in which you can explore the Geany APIs "
-"and run arbitrary commands. Heavily based on console.py for geanypy."
+"and run arbitrary python code. Heavily based on console.py for GeanyPy."
 msgstr ""
+"Öffnet ein Kommandozeilenfenster, in welchem man Geanys und Peasys APIs "
+"endtecken und beliebigen Pythoncode ausführen kann. Basiert auf console.py "
+"aus GeanyPy."
 
 #: ../plugins/modeline.plugin.desktop.in.h:1
 msgid "Vim modeline parser"
-msgstr ""
+msgstr "Vim Modeline Parser"
 
 #: ../plugins/modeline.plugin.desktop.in.h:2
 msgid "Parses vim modeline and applies them to Geany on a per-file basis."
+msgstr "Parst vim modelines und wendet die Einstellungen auf"
+
+#: ../plugins/modeline.py:165
+#, python-format
+msgid "Key %s is not supported!"
+msgstr "Schlüssel %s wird nicht unterstützt!"
+
+#: ../plugins/modeline.py:226
+msgid "Follow Geany's settings for detecting indentation from the file"
+msgstr "Folge Geanys Einstellungen zum Auslesen der Einrückung aus der Datei"
+
+#: ../plugins/modeline.py:227
+msgid ""
+"If enabled, indent type  and width from modeline only apply if Geany is set "
+"to detect these settings from the file. Other modeline settings apply always."
 msgstr ""
+"Wenn aktiviert, dann werden die Einstellungen zu Einrückungstyp und -weite "
+"nur dann angewendet, wenn Geany so eingestellt ist, dass diese aus der Datei "
+"gelesen werden. Andere modeline-Einstellungen sind davon unberührt."
 
 #: ../plugins/peasypytest.plugin.desktop.in.h:1
-msgid "Peasy Python Tester"
-msgstr ""
-
-#: ../plugins/peasypytest.plugin.desktop.in.h:2
 msgid "Tests whether peasy actually works with python"
 msgstr "Test ob Peasy überhaupt mit Python funzt!"
 
@@ -69,7 +82,7 @@ msgstr "Hallo aus %s!"
 #: ../plugins/peasypytest.py:36
 #, python-format
 msgid "%s says bye!"
-msgstr ""
+msgstr "%s sagt Tschüss!"
 
 #: ../plugins/quickswitch.plugin.desktop.in.h:1 ../plugins/quickswitch.py:228
 #: ../plugins/quickswitch.glade.h:1
@@ -81,15 +94,15 @@ msgid "Adds a dialog that allows to quckly switch tabs."
 msgstr ""
 "Fügt einen Dialog hinzu, der es erlaubt schnell zu anderen Tabs zu wechseln."
 
-#: ../plugins/quickswitch.py:240
+#: ../plugins/quickswitch.py:243
 msgid "Switch to file"
 msgstr "Wechsle Datei"
 
-#: ../plugins/quickswitch.py:242
+#: ../plugins/quickswitch.py:245
 msgid "Switch to function"
 msgstr "Gehe zu Funktion"
 
-#: ../plugins/quickswitch.py:244
+#: ../plugins/quickswitch.py:247
 msgid "Switch to symbol declaration"
 msgstr "Gehe zu Symboldeklaration"
 

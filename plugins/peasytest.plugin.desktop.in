@@ -4,6 +4,6 @@ Authors=kugel
 Copyright=None
 Module=peasytest
 Website=http://www.geany.org/Support/Plugins
-_Name=Peasy Tester
+Name=Peasy Tester
 _Description=Tests whether peasy actually works
 X-Peasy-API=228
