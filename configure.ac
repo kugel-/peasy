@@ -25,6 +25,7 @@ AC_SUBST([GETTEXT_PACKAGE], ["peasy"])
 AC_DEFINE([GETTEXT_PACKAGE], ["peasy"], [Gettext package.])
 
 GP_CHECK_GTK_VERSION
+CHECK_MINGW
 
 gtk_modules="$GP_GTK_PACKAGE >= $GP_GTK_VERSION"
 PKG_CHECK_MODULES([GTK], [$gtk_modules])

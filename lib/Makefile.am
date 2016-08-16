@@ -1,5 +1,11 @@
 include $(top_srcdir)/initvars.mk
 
+if MINGW
+SHLIB                    = libpeasy-0.dll
+else
+SHLIB                    = libpeasy.so.0
+endif
+
 lib_LTLIBRARIES         += libpeasy.la
 
 libpeasy_la_VALASOURCES  = \
@@ -19,7 +25,7 @@ libpeasy_la_VALAFLAGS    = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintil
                            --vapidir $(top_builddir)/api --library libpeasy            \
                            --gir=Peasy-0.1.gir --vapi=libpeasy-0.1.vapi                \
                            --disable-version-header -H peasy.h                         \
-                           --shared-library=libpeasy.so.0
+                           --shared-library=$(SHLIB)
 libpeasy_la_CFLAGS       = $(GTK_CFLAGS) $(PEAS_CFLAGS) $(GEANY_CFLAGS)
 libpeasy_la_LDFLAGS      = -no-undefined -version 0:0:0
 
