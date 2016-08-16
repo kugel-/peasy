@@ -19,23 +19,25 @@ GeanyScintilla_1_0_tmp_gir_NAMESPACE = GeanyScintilla
 GeanyScintilla_1_0_tmp_gir_VERSION   = 1.0
 GeanyScintilla_1_0_tmp_gir_INCLUDES  = $(GTK_GIR) GLib-2.0 GObject-2.0
 GeanyScintilla_1_0_tmp_gir_CFLAGS    = $(GTK_CFLAGS) -DG_IR_SCANNING $(GEANY_CFLAGS) -include gtk/gtk.h
+GeanyScintilla_1_0_tmp_gir_CFLAGS   += -Dsptr_t=gintptr -Duptr_t=guintptr
 GeanyScintilla_1_0_tmp_gir_LIBS      = $(geany_libdir)/libgeany.la
-GeanyScintilla_1_0_tmp_gir_FILES     = $(geany_includedir)/scintilla/Scintilla.h \
+GeanyScintilla_1_0_tmp_gir_FILES     = $(geany_includedir)/scintilla/Sci_Position.h \
+									   $(geany_includedir)/scintilla/Scintilla.h \
 									   $(geany_includedir)/scintilla/ScintillaWidget.h \
 									   $(geany_includedir)/scintilla/SciLexer.h \
 									   geany-sciwrappers-gtkdoc-tmp.h
 GeanyScintilla_1_0_tmp_gir_SCANNERFLAGS = $(SCANNERFLAGS)
 
-VAPIGEN_VAPIS          += geany-1.0.vapi geany-scintilla-1.0.vapi
+VAPIGEN_VAPIS          += geany-1.0.vapi geany-scintilla-tmp-1.0.vapi
 
 geany_1_0_vapi_METADATADIRS    = %D%
 geany_1_0_vapi_GIR             = Geany-1.0.gir
 geany_1_0_vapi_FILES           = $(geany_1_0_vapi_GIR) Geany-1.0-custom.vala
 geany_1_0_vapi_VAPIDIRS        = $(builddir)/%D%
 
-geany_scintilla_1_0_vapi_METADATADIRS = %D%
-geany_scintilla_1_0_vapi_GIR          = GeanyScintilla-1.0.gir
-geany_scintilla_1_0_vapi_FILES        = $(geany_scintilla_1_0_vapi_GIR)
+geany_scintilla_tmp_1_0_vapi_METADATADIRS = %D%
+geany_scintilla_tmp_1_0_vapi_GIR          = GeanyScintilla-1.0.gir
+geany_scintilla_tmp_1_0_vapi_FILES        = $(geany_scintilla_tmp_1_0_vapi_GIR)
 
 gir_DATA               += Geany-1.0.gir GeanyScintilla-1.0.gir
 typelib_DATA           += Geany-1.0.typelib GeanyScintilla-1.0.typelib
@@ -64,6 +66,12 @@ Geany-1.0.gir: Geany-1.0-tmp.gir
 		-e 's,_GI__WORKAROUNDNEW_,new,g' \
 		$< > $@ || rm -f $@
 
+geany-scintilla-1.0.deps: geany-scintilla-tmp-1.0.deps
+	$(AM_V_at)cp $+ $@
+
+geany-scintilla-1.0.vapi: gintptr.vapi geany-scintilla-tmp-1.0.vapi
+	$(AM_V_GEN)cat gintptr.vapi geany-scintilla-tmp-1.0.vapi > $@ || rm -f $@
+
 Geany-1.0-tmp.gir: GeanyScintilla-1.0.gir
 
 geany-scintilla-1.0.vapi: geany-scintilla-1.0.deps
@@ -74,6 +82,7 @@ all-local: $(gir_DATA) $(typelib_DATA) $(vapi_DATA) $(dist_vapi_DATA)
 CLEANFILES             += $(gir_DATA) $(typelib_DATA)
 CLEANFILES             += Geany-1.0-tmp.gir GeanyScintilla-1.0-tmp.gir
 CLEANFILES             += geany-sciwrappers-gtkdoc-tmp.h geany-gtkdoc-tmp.h
+CLEANFILES             += geany-scintilla-1.0.deps geany-scintilla-1.0.vapi
 
 pyoverrides_DATA       += Geany.py
 

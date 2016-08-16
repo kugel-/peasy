@@ -16,6 +16,7 @@ configure
 *.gir
 /api/*.h
 /api/*.deps
+/api/geany-scintilla-1.0.vapi
 /plugins/*.plugin
 
 #-----------------------------------------------------------------------

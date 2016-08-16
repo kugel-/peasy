@@ -51,7 +51,7 @@ AC_SUBST([LOCALEDIR])
 AC_DEFINE_UNQUOTED([LOCALEDIR],["$LOCALEDIR"],[Where to install translations])
 
 GOBJECT_INTROSPECTION_CHECK([1.30.0])
-VAPIGEN_CHECK([0.31])
+VAPIGEN_CHECK([0.32])
 
 AM_PATH_PYTHON([2.7])
 AC_ARG_WITH([pyoverridesdir],
@@ -72,7 +72,7 @@ AC_CONFIG_FILES([
 	Makefile
 	api/Makefile
 	api/geany-1.0.deps
-	api/geany-scintilla-1.0.deps
+	api/geany-scintilla-tmp-1.0.deps
 	lib/Makefile
 	plugins/Makefile
 	po/Makefile.in
