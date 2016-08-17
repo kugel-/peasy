@@ -46,3 +46,7 @@ INTROSPECTION_COMPILER_ARGS += --includedir=$(top_builddir)/api
 if HAVE_INTROSPECTION
 include $(INTROSPECTION_MAKEFILE)
 endif
+
+valaclean:
+	$(MAKE) clean
+	rm -f $(BUILT_SOURCES) *_vala.stamp
