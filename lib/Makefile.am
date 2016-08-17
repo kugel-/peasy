@@ -28,6 +28,7 @@ libpeasy_la_VALAFLAGS    = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintil
                            --shared-library=$(SHLIB)
 libpeasy_la_CFLAGS       = $(GTK_CFLAGS) $(PEAS_CFLAGS) $(GEANY_CFLAGS)
 libpeasy_la_LDFLAGS      = -no-undefined -version 0:0:0
+libpeasy_la_LIBADD       = $(GTK_LIBS) $(GEANY_LIBS)
 
 libpeasy_la_vala.stamp: $(top_srcdir)/api/geany-1.0.vapi $(top_srcdir)/api/geany-1.0.deps
 libpeasy_la_vala.stamp: $(top_srcdir)/api/geany-scintilla-1.0.vapi $(top_srcdir)/api/geany-scintilla-1.0.deps
