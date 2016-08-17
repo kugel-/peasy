@@ -382,7 +382,7 @@ peasy_unload(GeanyPlugin *plugin, GeanyPlugin *inferior, gpointer proxy_data, gp
 static gboolean
 peasy_init(GeanyPlugin *plugin, gpointer pdata)
 {
-    const gchar *extensions[] = { "plugin", "so", NULL };
+    const gchar *extensions[] = { "plugin", G_MODULE_SUFFIX, NULL };
     PeasEngine *peas = peas_engine_get_default();
     GError *err = NULL;
     GITypelib *t;
@@ -405,7 +405,18 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
     }
 
     peas_engine_enable_loader(peas, "python3");
+#ifdef G_OS_WIN32
+    {
+        /* TODO: export and use utils_resource_dir() */
+        gchar *prefix = g_win32_get_package_installation_directory_of_module(NULL);
+        gchar *plugindir = g_build_filename(prefix, "lib", "geany", NULL);
+        peas_engine_add_search_path(peas, plugindir, plugin->geany_data->app->datadir);
+        g_free(prefix);
+        g_free(plugindir);
+    }
+#else
     peas_engine_add_search_path(peas, GEANY_PLUGINDIR, plugin->geany_data->app->datadir);
+#endif
     peas_engine_add_search_path(peas, plugin->geany_data->prefs->custom_plugin_path, plugin->geany_data->app->datadir);
 
     if (strncmp(TYPELIBDIR, "/usr/lib", 8))
