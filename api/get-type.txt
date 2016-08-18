@@ -1,4 +1,0 @@
-get-type:stash_group_get_type
-get-type:tm_source_file_get_type
-get-type:tm_tag_get_type
-get-type:scintilla_object_get_type

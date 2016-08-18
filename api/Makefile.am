@@ -1,8 +1,10 @@
 include $(top_srcdir)/initvars.mk
 
 INTROSPECTION_GIRS     += Geany-1.0-tmp.gir GeanyScintilla-1.0-tmp.gir
-SCANNERFLAGS            = --accept-unprefixed --c-include=geanyplugin.h
-SCANNERFLAGS           += --program-arg=--introspection-dump=$(srcdir)/get-type.txt,$(builddir)/get-type.out
+SCANNERFLAGS            = --accept-unprefixed
+SCANNERFLAGS           += --c-include=geanyplugin.h
+# external seems to be necessary on msys2 but it ain't wrong anyway
+SCANNERFLAGS           += --external
 
 GTK_GIR = Gtk-@GP_GTK_VERSION_MAJOR@.0
 
