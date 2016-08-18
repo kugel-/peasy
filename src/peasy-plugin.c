@@ -458,7 +458,7 @@ geany_load_module(GeanyPlugin *plugin)
 
     plugin->info->name = "Peasy";
     plugin->info->description = _("Provides libpeas-based plugins.");
-    plugin->info->version = "0.2";
+    plugin->info->version = VERSION;
     plugin->info->author = "Thomas Martitz <kugel@rockbox.org>";
 
     plugin->funcs->init = peasy_init;
