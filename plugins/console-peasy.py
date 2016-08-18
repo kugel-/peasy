@@ -54,19 +54,7 @@ from gi.repository import Pango
 from gi.repository import Geany
 from gi.repository import Peasy
 
-# commonprefix() from posixpath
-def _commonprefix(m):
-    "Given a list of pathnames, returns the longest common leading component"
-    if not m: return ''
-    prefix = m[0]
-    for item in m:
-        for i in range(len(prefix)):
-            if prefix[:i+1] != item[:i+1]:
-                prefix = prefix[:i]
-                if i == 0:
-                    return ''
-                break
-    return prefix
+_ = Peasy.gettext
 
 class ReadLine(Gtk.TextView):
 
@@ -412,7 +400,7 @@ class ReadLine(Gtk.TextView):
         completions = self.complete(word)
 
         if completions:
-            prefix = _commonprefix(completions)
+            prefix = os.path.commonprefix(completions)
             if prefix != word:
                 start_iter = self.__get_start()
                 start_iter.forward_chars(len(start))
@@ -602,7 +590,7 @@ class Console(ReadLine, code.InteractiveInterpreter):
 
 def _make_window(start_script="import geany\n", plugin = None):
     window = Gtk.Window()
-    window.set_title("Python Console")
+    window.set_title(_("Python Console"))
     swin = Gtk.ScrolledWindow()
     locals = {}
     if plugin:
@@ -614,7 +602,7 @@ def _make_window(start_script="import geany\n", plugin = None):
     except AttributeError:
         pass
     window.add(swin)
-    console = Console(banner="Geany Python Console",
+    console = Console(banner=_("Python Console"),
                       use_rlcompleter=False, start_script=start_script,
                       locals = locals)
     swin.add(console)
@@ -659,13 +647,13 @@ from gi.repository import GeanyScintilla
         def do_enable(self):
             data = self.geany_plugin.geany_data
             self.window = None
-            self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_EXECUTE, "Open python console")
+            self.item = Geany.ui_image_menu_item_new(Gtk.STOCK_EXECUTE, _("Open Python Console"))
             self.item.connect("activate", self.on_item_click)
             data.main_widgets.tools_menu.append(self.item)
             self.item.show_all()
 
             self.keys = self.add_key_group("python_console", 1)
-            self.keys.add_keybinding("open_console", "Open Console Window", self.item, 0, 0)
+            self.keys.add_keybinding("open_console", _("Open Python Console"), self.item, 0, 0)
 
             self.configfn = os.path.join(data.app.configdir, "plugins", "console-peasy.conf")
             self.keyfile = GLib.KeyFile.new()
@@ -685,24 +673,24 @@ from gi.repository import GeanyScintilla
         def do_configure(self, dialog):
             frame = Gtk.Frame()
             label = Gtk.Label()
-            label.set_markup("<b>Start-up behavior</b>")
+            label.set_markup("<b>%s</b>" % _("Start-up behavior"))
             frame.set_label_widget(label)
             frame.set_shadow_type(Gtk.ShadowType.NONE)
-            align = Gtk.Alignment.new(0, 0, 1, 1)
+            align = Gtk.Alignment.new(0, 0, 1, 0)
             align.props.left_padding = 12
-            box = Gtk.VBox(2)
+            box = Gtk.VBox(4)
             box.props.homogeneous = False
-            btn = Gtk.RadioButton.new_with_label_from_widget(None, "Restore console if it was opened before")
+            btn = Gtk.RadioButton.new_with_label_from_widget(None, _("Restore last state"))
             btn.props.name = "last"
             if ("last" == self.get_string_pref("preferences", "startup")):
                 btn.set_active(True)
             box.add(btn)
-            btn = Gtk.RadioButton.new_with_label_from_widget(btn, "Always open the console on start")
+            btn = Gtk.RadioButton.new_with_label_from_widget(btn, _("Always open the console on start"))
             btn.props.name = "shown"
             if ("shown" == self.get_string_pref("preferences", "startup")):
                 btn.set_active(True)
             box.add(btn)
-            btn = Gtk.RadioButton.new_with_label_from_widget(btn, "Always hide the console on start")
+            btn = Gtk.RadioButton.new_with_label_from_widget(btn, _("Always hide the console on start"))
             btn.props.name = "hidden"
             if ("hidden" == self.get_string_pref("preferences", "startup")):
                 btn.set_active(True)

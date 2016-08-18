@@ -3,6 +3,7 @@
 src/peasy-plugin.c
 plugins/peasytest.plugin.desktop.in
 plugins/peasytest.c
+plugins/console-peasy.py
 plugins/console-peasy.plugin.desktop.in
 plugins/modeline.plugin.desktop.in
 plugins/modeline.py

@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: peasy 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-12 07:05+0200\n"
+"POT-Creation-Date: 2016-08-18 23:36+0200\n"
 "PO-Revision-Date: 2016-07-14 07:06+0200\n"
 "Last-Translator: Thomas Martitz <kugel@rockbox.org>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/peasy-plugin.c:449
+#: ../src/peasy-plugin.c:460
 msgid "Provides libpeas-based plugins."
 msgstr "Bietet Unterstützung für Plugins basierend auf libpeas."
 
@@ -30,6 +30,30 @@ msgstr "Test ob Peasy überhaupt funzt!"
 #, c-format
 msgid "%s(): Hello from %s!\n"
 msgstr "%s(): Hallo aus %s!\n"
+
+#: ../plugins/console-peasy.py:593 ../plugins/console-peasy.py:605
+msgid "Python Console"
+msgstr "Python-Kommandozeile"
+
+#: ../plugins/console-peasy.py:650 ../plugins/console-peasy.py:656
+msgid "Open Python Console"
+msgstr "Öffne Python-Kommandozeile"
+
+#: ../plugins/console-peasy.py:676
+msgid "Start-up behavior"
+msgstr "Startverhalten"
+
+#: ../plugins/console-peasy.py:683
+msgid "Restore last state"
+msgstr "Letzte Einstellung wiederherstellen"
+
+#: ../plugins/console-peasy.py:688
+msgid "Always open the console on start"
+msgstr "Kommandozeile beim Start öffnen"
+
+#: ../plugins/console-peasy.py:693
+msgid "Always hide the console on start"
+msgstr "Kommandozeile beim Start nicht öffnen"
 
 #: ../plugins/console-peasy.plugin.desktop.in.h:1
 msgid "Python Console (Peasy)"
@@ -52,16 +76,16 @@ msgstr "Vim Modeline Parser"
 msgid "Parses vim modeline and applies them to Geany on a per-file basis."
 msgstr "Parst vim modelines und wendet die Einstellungen auf"
 
-#: ../plugins/modeline.py:165
+#: ../plugins/modeline.py:167
 #, python-format
 msgid "Key %s is not supported!"
 msgstr "Schlüssel %s wird nicht unterstützt!"
 
-#: ../plugins/modeline.py:226
+#: ../plugins/modeline.py:228
 msgid "Follow Geany's settings for detecting indentation from the file"
 msgstr "Folge Geanys Einstellungen zum Auslesen der Einrückung aus der Datei"
 
-#: ../plugins/modeline.py:227
+#: ../plugins/modeline.py:229
 msgid ""
 "If enabled, indent type  and width from modeline only apply if Geany is set "
 "to detect these settings from the file. Other modeline settings apply always."
