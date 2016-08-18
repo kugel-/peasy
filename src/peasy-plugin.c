@@ -161,7 +161,7 @@ do_check_compatibility(const gchar *requirements)
              * version: format major.minor.micro
              */
 
-            if (sscanf(q, "%31s %3s %15s", &pkg, &op, &version) != 3)
+            if (sscanf(q, "%31s %3s %15s", pkg, op, version) != 3)
             {
                 g_warning("malformed requirement string \"%s\"\n", q);
                 break;
@@ -204,7 +204,7 @@ do_check_compatibility(const gchar *requirements)
             }
             else
             {
-                g_warning("unknown pkg \"%s\"\n");
+                g_warning("unknown pkg \"%s\"\n", pkg);
                 continue;
             }
             switch (MAKE_OP(op))
@@ -346,7 +346,7 @@ peasy_load(GeanyPlugin *plugin, GeanyPlugin *inferior,
     {   /* The true ABI must be exposed by calling peasy_check_abi()
            inside peas_register_types(). */
         if (!g_hash_table_contains(peasy_native_abis, modname)) {
-            g_warning("Plugin %s not loaded because of unknown ABI!");
+            g_warning("Plugin \"%s\" not loaded because of unknown ABI!", inferior->info->name);
             goto unload;
         }
         abi = GPOINTER_TO_INT(g_hash_table_lookup(peasy_native_abis, modname));
