@@ -11,6 +11,8 @@ from gi.repository import Geany
 from gi.repository import GeanyScintilla
 from gi.repository import Peasy
 
+_ = Peasy.gettext
+
 #The first form:
 #       [text]{white}{vi:|vim:|ex:}[white]{options}
 #
@@ -211,10 +213,8 @@ class Modeline(Peasy.Plugin, Peasy.PluginConfigure):
             kf = ModelineKeyFile(self.geany_plugin.geany_data.app.configdir)
             kf.load()
             self.use_setting.value = widgets[0].get_active()
-            self.test.value = widgets[1].get_active()
             for pref in self.prefs:
                 pref.store(kf.kf)
-            
             kf.save()
 
     def gen_pref(self, k, v):
