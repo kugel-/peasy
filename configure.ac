@@ -45,10 +45,7 @@ AC_SUBST([PEAS_LIBS])
 
 GP_CHECK_GEANY([1.28])
 
-# double eval since datarootdir is usually defined as ${prefix}/share
-LOCALEDIR=$(eval echo $(eval echo $localedir))
-AC_SUBST([LOCALEDIR])
-AC_DEFINE_UNQUOTED([LOCALEDIR],["$LOCALEDIR"],[Where to install translations])
+AM_GLIB_DEFINE_LOCALEDIR([LOCALEDIR])
 
 GOBJECT_INTROSPECTION_CHECK([1.30.0])
 VAPIGEN_CHECK([0.32])
