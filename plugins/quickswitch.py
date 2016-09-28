@@ -96,20 +96,19 @@ def tag_bisect_left(a, x, lo=0, hi=None):
 class QuickSwitchPlugin(Peasy.Plugin):
     __gtype_name__ = 'QuickSwitchPlugin'
 
+    def search_tags2(self, prefix):
+        ws = self.geany_plugin.geany_data.app.tm_workspace
+        q = Geany.TMQuery.new(ws, Geany.TMQuerySource.SESSION_TAGS);
+        q.add_name(prefix, len(prefix))
+        return q.exec(None, None)
+
     def search_tags(self, prefix):
+        if (hasattr(Geany, "TMQuery")):
+            return self.search_tags2(prefix)
         ret = []
         # This is super slow with lots of tags. pygobject seems to call getattr()
         # for all elements on the first use, regardless of how it used
         array = self.geany_plugin.geany_data.app.tm_workspace.tags_array
-        n = tag_bisect_left(array, prefix)
-        for tag in array[n:]:
-            if (tag.name.startswith(prefix)):
-                ret.append(tag)
-            else:
-                break
-        # tags for function declarations land in the global_tags when
-        # projectmanager is used
-        array = self.geany_plugin.geany_data.app.tm_workspace.global_tags
         n = tag_bisect_left(array, prefix)
         for tag in array[n:]:
             if (tag.name.startswith(prefix)):
