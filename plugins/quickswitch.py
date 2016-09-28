@@ -130,7 +130,7 @@ class QuickSwitchPlugin(Peasy.Plugin):
             s = s.replace(self.substr, u"…")
 
         if (tag is not None):
-            s = "%s @%s:%d" % (tag.name, s, tag.line)
+            s = "%s @ <i>%s:%d</i>" % (tag.name, s, tag.line)
 
         return s
 
@@ -170,6 +170,7 @@ class QuickSwitchPlugin(Peasy.Plugin):
             m = Gtk.Menu.new()
             def add_doc(doc):
                 w = Gtk.ImageMenuItem.new_with_label(label_fn(doc))
+                w.get_child().props.use_markup = True
                 try:
                     w.set_image(Gtk.Image.new_from_icon_name(get_icon_name(doc["tag"]), Gtk.IconSize.MENU))
                 except KeyError:
