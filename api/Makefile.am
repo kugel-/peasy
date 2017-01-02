@@ -34,7 +34,7 @@ VAPIGEN_VAPIS          += geany-1.0.vapi geany-scintilla-tmp-1.0.vapi
 
 geany_1_0_vapi_METADATADIRS    = %D%
 geany_1_0_vapi_GIR             = Geany-1.0.gir
-geany_1_0_vapi_FILES           = $(geany_1_0_vapi_GIR) Geany-1.0-custom.vala
+geany_1_0_vapi_FILES           = $(geany_1_0_vapi_GIR) $(srcdir)/Geany-1.0-custom.vala
 geany_1_0_vapi_VAPIDIRS        = $(builddir)/%D%
 
 geany_scintilla_tmp_1_0_vapi_METADATADIRS = %D%
@@ -45,6 +45,9 @@ gir_DATA               += Geany-1.0.gir GeanyScintilla-1.0.gir
 typelib_DATA           += Geany-1.0.typelib GeanyScintilla-1.0.typelib
 dist_vapi_DATA         += geany-1.0.vapi geany-scintilla-1.0.vapi
 vapi_DATA              += geany-1.0.deps geany-scintilla-1.0.deps
+
+EXTRA_DIST             += gintptr.vapi Geany-1.0-custom.vala $(VAPIGEN_VAPIS)
+EXTRA_DIST             += Geany.py
 
 geany-sciwrappers-gtkdoc-tmp.h: $(geany_includedir)/gtkdoc/geany-sciwrappers-gtkdoc.h
 	$(AM_V_GEN)$(SED) \
@@ -72,11 +75,11 @@ geany-scintilla-1.0.deps: geany-scintilla-tmp-1.0.deps
 	$(AM_V_at)cp $+ $@
 
 geany-scintilla-1.0.vapi: gintptr.vapi geany-scintilla-tmp-1.0.vapi
-	$(AM_V_GEN)cat gintptr.vapi geany-scintilla-tmp-1.0.vapi > $@ || rm -f $@
+	$(AM_V_GEN)cat $^ > $@ || rm -f $@
 
 Geany-1.0-tmp.gir: GeanyScintilla-1.0.gir
 
-geany-scintilla-1.0.vapi: geany-scintilla-1.0.deps
+geany-scintilla-tmp-1.0.vapi: geany-scintilla-1.0.deps
 geany-1.0.vapi: geany-scintilla-1.0.vapi geany-1.0.deps
 
 all-local: $(gir_DATA) $(typelib_DATA) $(vapi_DATA) $(dist_vapi_DATA)
@@ -85,6 +88,10 @@ CLEANFILES             += $(gir_DATA) $(typelib_DATA)
 CLEANFILES             += Geany-1.0-tmp.gir GeanyScintilla-1.0-tmp.gir
 CLEANFILES             += geany-sciwrappers-gtkdoc-tmp.h geany-gtkdoc-tmp.h
 CLEANFILES             += geany-scintilla-1.0.deps geany-scintilla-1.0.vapi
+if ENABLE_VAPIGEN
+# clean if the shipped files ones aren't used
+CLEANFILES             += geany-1.0.vapi geany-scintilla-tmp-1.0.vapi
+endif
 
 pyoverrides_DATA       += Geany.py
 

@@ -39,7 +39,9 @@ gir_DATA               += Peasy-0.1.gir
 typelib_DATA           += Peasy-0.1.typelib
 vapi_DATA              += libpeasy-0.1.vapi
 
+EXTRA_DIST             += Peasy-0.1.gir libpeasy-0.1.vapi
 BUILT_SOURCES          += $(libpeasy_la_VALASOURCES:.vala=.c)
+CLEANFILES             += $(gir_DATA) $(typelib_DATA)
 
 INTROSPECTION_COMPILER_ARGS += --includedir=$(top_builddir)/api
 
@@ -49,4 +51,4 @@ endif
 
 valaclean:
 	$(MAKE) clean
-	rm -f $(BUILT_SOURCES) *_vala.stamp
+	(cd $(srcdir); rm -f $(BUILT_SOURCES) *_vala.stamp)
