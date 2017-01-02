@@ -273,6 +273,10 @@ namespace GeanyScintilla {
 	public const int INDIC_MAX;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "INDIC_PLAIN")]
 	public const int INDIC_PLAIN;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "INDIC_POINT")]
+	public const int INDIC_POINT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "INDIC_POINTCHARACTER")]
+	public const int INDIC_POINTCHARACTER;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "INDIC_ROUNDBOX")]
 	public const int INDIC_ROUNDBOX;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "INDIC_SQUIGGLE")]
@@ -1201,6 +1205,24 @@ namespace GeanyScintilla {
 	public const int SCE_ECL_WORD4;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_ECL_WORD5")]
 	public const int SCE_ECL_WORD5;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_BADSEGMENT")]
+	public const int SCE_EDI_BADSEGMENT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_DEFAULT")]
+	public const int SCE_EDI_DEFAULT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_SEGMENTEND")]
+	public const int SCE_EDI_SEGMENTEND;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_SEGMENTSTART")]
+	public const int SCE_EDI_SEGMENTSTART;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_SEP_COMPOSITE")]
+	public const int SCE_EDI_SEP_COMPOSITE;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_SEP_ELEMENT")]
+	public const int SCE_EDI_SEP_ELEMENT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_SEP_RELEASE")]
+	public const int SCE_EDI_SEP_RELEASE;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_UNA")]
+	public const int SCE_EDI_UNA;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EDI_UNH")]
+	public const int SCE_EDI_UNH;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EIFFEL_CHARACTER")]
 	public const int SCE_EIFFEL_CHARACTER;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_EIFFEL_COMMENTLINE")]
@@ -3923,6 +3945,8 @@ namespace GeanyScintilla {
 	public const int SCI_FOLDALL;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_FOLDCHILDREN")]
 	public const int SCI_FOLDCHILDREN;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_FOLDDISPLAYTEXTSETSTYLE")]
+	public const int SCI_FOLDDISPLAYTEXTSETSTYLE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_FOLDLINE")]
 	public const int SCI_FOLDLINE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_FORMATRANGE")]
@@ -4217,6 +4241,8 @@ namespace GeanyScintilla {
 	public const int SCI_GETSUBSTYLESLENGTH;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETSUBSTYLESSTART")]
 	public const int SCI_GETSUBSTYLESSTART;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETTABDRAWMODE")]
+	public const int SCI_GETTABDRAWMODE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETTABINDENTS")]
 	public const int SCI_GETTABINDENTS;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETTABWIDTH")]
@@ -4241,8 +4267,6 @@ namespace GeanyScintilla {
 	public const int SCI_GETTWOPHASEDRAW;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETUNDOCOLLECTION")]
 	public const int SCI_GETUNDOCOLLECTION;
-	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETUSEPALETTE")]
-	public const int SCI_GETUSEPALETTE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETUSETABS")]
 	public const int SCI_GETUSETABS;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETVIEWEOL")]
@@ -4811,6 +4835,8 @@ namespace GeanyScintilla {
 	public const int SCI_SETSTYLING;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETSTYLINGEX")]
 	public const int SCI_SETSTYLINGEX;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETTABDRAWMODE")]
+	public const int SCI_SETTABDRAWMODE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETTABINDENTS")]
 	public const int SCI_SETTABINDENTS;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETTABWIDTH")]
@@ -4829,8 +4855,6 @@ namespace GeanyScintilla {
 	public const int SCI_SETTWOPHASEDRAW;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETUNDOCOLLECTION")]
 	public const int SCI_SETUNDOCOLLECTION;
-	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETUSEPALETTE")]
-	public const int SCI_SETUSEPALETTE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETUSETABS")]
 	public const int SCI_SETUSETABS;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETVIEWEOL")]
@@ -4971,6 +4995,8 @@ namespace GeanyScintilla {
 	public const int SCI_TOGGLECARETSTICKY;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_TOGGLEFOLD")]
 	public const int SCI_TOGGLEFOLD;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_TOGGLEFOLDSHOWTEXT")]
+	public const int SCI_TOGGLEFOLDSHOWTEXT;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_UNDO")]
 	public const int SCI_UNDO;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_UPPERCASE")]
@@ -5141,6 +5167,8 @@ namespace GeanyScintilla {
 	public const int SCLEX_DMIS;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_ECL")]
 	public const int SCLEX_ECL;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_EDIFACT")]
+	public const int SCLEX_EDIFACT;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_EIFFEL")]
 	public const int SCLEX_EIFFEL;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_EIFFELKW")]
@@ -5361,6 +5389,8 @@ namespace GeanyScintilla {
 	public const int SCN_MACRORECORD;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCN_MARGINCLICK")]
 	public const int SCN_MARGINCLICK;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCN_MARGINRIGHTCLICK")]
+	public const int SCN_MARGINRIGHTCLICK;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCN_MODIFIED")]
 	public const int SCN_MODIFIED;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCN_MODIFYATTEMPTRO")]
@@ -5383,6 +5413,10 @@ namespace GeanyScintilla {
 	public const int SCN_USERLISTSELECTION;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCN_ZOOM")]
 	public const int SCN_ZOOM;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCTD_LONGARROW")]
+	public const int SCTD_LONGARROW;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCTD_STRIKEOUT")]
+	public const int SCTD_STRIKEOUT;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCVS_NONE")]
 	public const int SCVS_NONE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCVS_NOWRAPLINESTART")]
@@ -5491,8 +5525,6 @@ namespace GeanyScintilla {
 	public const int SC_CHARSET_TURKISH;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_CHARSET_VIETNAMESE")]
 	public const int SC_CHARSET_VIETNAMESE;
-	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_CP_DBCS")]
-	public const int SC_CP_DBCS;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_CP_UTF8")]
 	public const int SC_CP_UTF8;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_CURSORARROW")]
@@ -5525,6 +5557,12 @@ namespace GeanyScintilla {
 	public const int SC_FOLDACTION_EXPAND;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_FOLDACTION_TOGGLE")]
 	public const int SC_FOLDACTION_TOGGLE;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_FOLDDISPLAYTEXT_BOXED")]
+	public const int SC_FOLDDISPLAYTEXT_BOXED;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_FOLDDISPLAYTEXT_HIDDEN")]
+	public const int SC_FOLDDISPLAYTEXT_HIDDEN;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_FOLDDISPLAYTEXT_STANDARD")]
+	public const int SC_FOLDDISPLAYTEXT_STANDARD;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_FOLDFLAG_LEVELNUMBERS")]
 	public const int SC_FOLDFLAG_LEVELNUMBERS;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_FOLDFLAG_LINEAFTER_CONTRACTED")]
@@ -5743,6 +5781,12 @@ namespace GeanyScintilla {
 	public const int SC_PHASES_ONE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_PHASES_TWO")]
 	public const int SC_PHASES_TWO;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_POPUP_ALL")]
+	public const int SC_POPUP_ALL;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_POPUP_NEVER")]
+	public const int SC_POPUP_NEVER;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_POPUP_TEXT")]
+	public const int SC_POPUP_TEXT;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_PRINT_BLACKONWHITE")]
 	public const int SC_PRINT_BLACKONWHITE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_PRINT_COLOURONWHITE")]
@@ -5841,6 +5885,8 @@ namespace GeanyScintilla {
 	public const int STYLE_CONTROLCHAR;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "STYLE_DEFAULT")]
 	public const int STYLE_DEFAULT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "STYLE_FOLDDISPLAYTEXT")]
+	public const int STYLE_FOLDDISPLAYTEXT;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "STYLE_INDENTGUIDE")]
 	public const int STYLE_INDENTGUIDE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "STYLE_LASTPREDEFINED")]

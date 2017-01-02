@@ -191,8 +191,9 @@ namespace Geany {
 		public string get_basename_for_display (int length);
 		[CCode (cname = "document_get_current")]
 		public static unowned Geany.Document? get_current ();
-		[CCode (cname = "document_get_from_page")]
-		public static unowned Geany.Document? get_from_page (uint page_num);
+		[CCode (cname = "document_get_from_notebook")]
+		[Version (since = "1.26")]
+		public static Geany.Document get_from_notebook (Gtk.Notebook notebook, uint page_num);
 		[CCode (cname = "document_get_notebook_page")]
 		[Version (since = "0.19")]
 		public int get_notebook_page ();
@@ -337,6 +338,7 @@ namespace Geany {
 	public class InterfacePrefs {
 		public bool compiler_tab_autoscroll;
 		public weak string editor_font;
+		public int editor_split;
 		public bool highlighting_invert_all;
 		public bool msgwin_compiler_visible;
 		public weak string msgwin_font;
@@ -382,6 +384,7 @@ namespace Geany {
 		public weak Gtk.Widget editor_menu;
 		public weak Gtk.Widget message_window_notebook;
 		public weak Gtk.Widget notebook;
+		public weak GLib.GenericArray<void*> notebooks;
 		public weak Gtk.Widget progressbar;
 		public weak Gtk.Widget project_menu;
 		public weak Gtk.Widget sidebar_notebook;
@@ -426,6 +429,14 @@ namespace Geany {
 		public signal void project_save (GLib.KeyFile object);
 		public signal void save_settings (GLib.KeyFile object);
 		public signal void update_editor_menu (string object, int p0, Geany.Document p1);
+	}
+	[CCode (cheader_filename = "geanyplugin.h", has_type_id = false)]
+	[Compact]
+	public class Page {
+	}
+	[CCode (cheader_filename = "geanyplugin.h", has_type_id = false)]
+	[Compact]
+	public class PageClass {
 	}
 	[CCode (cheader_filename = "geanyplugin.h", has_type_id = false)]
 	[Compact]
@@ -1026,20 +1037,11 @@ namespace Geany {
 		BLACK,
 		BLUE
 	}
-	[CCode (cheader_filename = "geanyplugin.h", cprefix = "", has_type_id = false)]
+	[CCode (cheader_filename = "geanyplugin.h", cprefix = "GEANY_PROXY_", has_type_id = false)]
 	public enum ProxyProbeResults {
-		[CCode (cname = "PROXY_IGNORED")]
-		ROXY_IGNORED,
-		[CCode (cname = "PROXY_MATCHED")]
-		ROXY_MATCHED,
-		[CCode (cname = "PROXY_NOLOAD")]
-		ROXY_NOLOAD,
-		[CCode (cname = "GEANY_PROXY_IGNORE")]
-		EANY_PROXY_IGNORE,
-		[CCode (cname = "GEANY_PROXY_MATCH")]
-		EANY_PROXY_MATCH,
-		[CCode (cname = "GEANY_PROXY_RELATED")]
-		EANY_PROXY_RELATED
+		IGNORE,
+		MATCH,
+		RELATED
 	}
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SpawnFlags", cprefix = "SPAWN_", has_type_id = false)]
 	public enum SpawnFlags {

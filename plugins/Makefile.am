@@ -7,18 +7,20 @@ libpeasytest_la_CFLAGS  = $(PEAS_CFLAGS) $(GEANY_CFLAGS) -I$(top_srcdir)/lib
 libpeasytest_la_LDFLAGS = -module -avoid-version -no-undefined
 libpeasytest_la_LIBADD  = $(PEAS_LIBS) $(GEANY_LIBS) $(top_builddir)/lib/libpeasy.la
 
-PLUGIN_INFO = \
-        peasytest.plugin \
-        console-peasy.plugin \
-        modeline.plugin \
-        peasypytest.plugin \
-        quickswitch.plugin
+PLUGIN_INFO      = peasytest.plugin \
+                   console-peasy.plugin \
+                   modeline.plugin \
+                   peasypytest.plugin \
+                   quickswitch.plugin
 
-dist_plugin_DATA  += $(PLUGIN_INFO) \
-                     console-peasy.py  \
-                     modeline.py  \
-                     peasypytest.py  \
-                     quickswitch.py
+plugin_DATA      = $(PLUGIN_INFO)
+
+dist_plugin_DATA = console-peasy.py  \
+                   modeline.py  \
+                   peasypytest.py  \
+                   quickswitch.py
+
+EXTRA_DIST += ${PLUGIN_INFO:.plugin=.plugin.desktop.in}
 
 pluginquickswitchdatadir = $(plugindatadir)/quickswitch
 dist_pluginquickswitchdata_DATA = quickswitch.glade

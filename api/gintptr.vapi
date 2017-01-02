@@ -1,4 +1,4 @@
-#if VALA_0_30 && !VALA_0_32
+#if VALA_0_30 && !VALA_0_32 && !VALA_0_34
 /* Temporary g(u)intptr definition until vapigen-0.32 is common enough */
 [SimpleType]
 [GIR (name = "gulong")]

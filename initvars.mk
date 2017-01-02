@@ -24,5 +24,6 @@ dist_vapi_DATA          =
 typelibdir              = $(libdir)/girepository-1.0
 typelib_DATA            =
 dist_typelib_DATA       =
+plugin_DATA             =
 dist_plugin_DATA        =
 pyoverrides_DATA        =
