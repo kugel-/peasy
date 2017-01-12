@@ -1,0 +1,20 @@
+Source: peasy
+Section: devel
+Priority: optional
+Maintainer: Thomas Martitz <kugel@rockbox.org>
+Uploaders: Thomas Martitz <kugel@rockbox.org>
+Homepage: https://github.com/kugel-/peasy
+Vcs-Git: https://github.com/kugel-/peasy.git
+Vcs-Browser: https://github.com/kugel-/peasy
+Build-Depends: debhelper (>= 9), libgtk-3-dev, geany, libglib2.0-dev, intltool, dh-autoreconf, gobject-introspection, valac
+Standards-Version: 3.9.8
+
+Package: peasy
+Architecture: any
+Depends: libglib2.0-0, geany (>= ${source:Version})
+Description: Geany plugins written many languages
+ Peasy is a plugin that provides support for Geany plugins written in
+ languages other than C/C++. It is based on libpeas, therefore language
+ support depends on that library.
+ .
+ Currently only python is supported, but lua is coming up next.
