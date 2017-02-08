@@ -1,7 +1,6 @@
-This plugin provides Geany plugins that are based
-on libpeas, which includes such written in Python
-and Java script.
+This plugin provides the ability two develop Geany plugins in languages
+supported by libpeas, which includes Python and Lua at the moment. Ruby is
+support is under construction.
 
-See COPYING for license information and INSTALL
-for installation help. See AUTHORS for contact
-information.
+See COPYING for license information and INSTALL for installation help. See
+AUTHORS for contact information.
