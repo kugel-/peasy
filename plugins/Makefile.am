@@ -10,13 +10,15 @@ libpeasytest_la_LIBADD  = $(PEAS_LIBS) $(GEANY_LIBS) $(top_builddir)/lib/libpeas
 PLUGIN_INFO      = peasytest.plugin \
                    console-peasy.plugin \
                    modeline.plugin \
+                   peasyluatest.plugin \
                    peasypytest.plugin \
                    quickswitch.plugin
 
-plugin_DATA      = $(PLUGIN_INFO)
+plugin_DATA     += $(PLUGIN_INFO)
 
-dist_plugin_DATA = console-peasy.py  \
+dist_plugin_DATA+= console-peasy.py  \
                    modeline.py  \
+                   peasyluatest.lua  \
                    peasypytest.py  \
                    quickswitch.py
 

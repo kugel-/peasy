@@ -405,6 +405,7 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
     }
 
     peas_engine_enable_loader(peas, "python3");
+    peas_engine_enable_loader(peas, "lua5.1");
 #ifdef G_OS_WIN32
     {
         /* TODO: export and use utils_resource_dir() */

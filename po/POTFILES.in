@@ -9,6 +9,8 @@ plugins/modeline.plugin.desktop.in
 plugins/modeline.py
 plugins/peasypytest.plugin.desktop.in
 plugins/peasypytest.py
+plugins/peasyluatest.plugin.desktop.in
+plugins/peasyluatest.lua
 plugins/quickswitch.plugin.desktop.in
 plugins/quickswitch.py
 [type: gettext/glade]plugins/quickswitch.glade
