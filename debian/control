@@ -7,7 +7,7 @@ Homepage: https://github.com/kugel-/peasy
 Vcs-Git: https://github.com/kugel-/peasy.git
 Vcs-Browser: https://github.com/kugel-/peasy
 Build-Depends: debhelper (>= 9), libgtk-3-dev, geany, libglib2.0-dev, intltool, dh-autoreconf, gobject-introspection, valac, libpeas-dev, python3-minimal
-Standards-Version: 3.9.8
+Standards-Version: 3.9.7
 
 Package: peasy
 Architecture: any
