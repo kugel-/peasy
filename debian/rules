@@ -10,7 +10,7 @@ override_dh_autoreconf:
 	dh_autoreconf ./autogen.sh
 
 override_dh_auto_configure:
-	dh_auto_configure
+	dh_auto_configure -- PYTHON=python3
 	sed -i -r 's,^sys_lib_dlsearch_path_spec="(.*)$$,sys_lib_dlsearch_path_spec="/usr/lib /lib \1,' $(CURDIR)/libtool
 
 override_dh_auto_install:
