@@ -14,7 +14,8 @@ libpeasy_la_VALASOURCES  = \
     editor.vala            \
     peasyobject.vala       \
     filetype.vala          \
-    keygroup.vala
+    keygroup.vala          \
+    tags.vala
 
 libpeasy_la_SOURCES      = \
     $(libpeasy_la_VALASOURCES) \
@@ -22,6 +23,7 @@ libpeasy_la_SOURCES      = \
     plugin_c.c
 
 libpeasy_la_VALAFLAGS    = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintilla-1.0 \
+                           --pkg posix                                                 \
                            --vapidir $(top_builddir)/api --girdir $(top_builddir)/api  \
                            --library libpeasy                                          \
                            --gir=Peasy-0.1.gir --vapi=libpeasy-0.1.vapi                \
