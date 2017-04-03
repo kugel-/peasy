@@ -2821,6 +2821,14 @@ namespace GeanyScintilla {
 	public const int SCE_P_DEFAULT;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_P_DEFNAME")]
 	public const int SCE_P_DEFNAME;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_P_FCHARACTER")]
+	public const int SCE_P_FCHARACTER;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_P_FSTRING")]
+	public const int SCE_P_FSTRING;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_P_FTRIPLE")]
+	public const int SCE_P_FTRIPLE;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_P_FTRIPLEDOUBLE")]
+	public const int SCE_P_FTRIPLEDOUBLE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_P_IDENTIFIER")]
 	public const int SCE_P_IDENTIFIER;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCE_P_NUMBER")]
@@ -3955,6 +3963,8 @@ namespace GeanyScintilla {
 	public const int SCI_FORMFEED;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_FREESUBSTYLES")]
 	public const int SCI_FREESUBSTYLES;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETACCESSIBILITY")]
+	public const int SCI_GETACCESSIBILITY;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETADDITIONALCARETFORE")]
 	public const int SCI_GETADDITIONALCARETFORE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETADDITIONALCARETSBLINK")]
@@ -4591,6 +4601,8 @@ namespace GeanyScintilla {
 	public const int SCI_SELECTIONDUPLICATE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SELECTIONISRECTANGLE")]
 	public const int SCI_SELECTIONISRECTANGLE;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETACCESSIBILITY")]
+	public const int SCI_SETACCESSIBILITY;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETADDITIONALCARETFORE")]
 	public const int SCI_SETADDITIONALCARETFORE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETADDITIONALCARETSBLINK")]
@@ -5199,6 +5211,8 @@ namespace GeanyScintilla {
 	public const int SCLEX_HTML;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_IHEX")]
 	public const int SCLEX_IHEX;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_INDENT")]
+	public const int SCLEX_INDENT;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_INNOSETUP")]
 	public const int SCLEX_INNOSETUP;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCLEX_JSON")]
@@ -5433,6 +5447,10 @@ namespace GeanyScintilla {
 	public const int SCWS_VISIBLEALWAYS;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCWS_VISIBLEONLYININDENT")]
 	public const int SCWS_VISIBLEONLYININDENT;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_ACCESSIBILITY_DISABLED")]
+	public const int SC_ACCESSIBILITY_DISABLED;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_ACCESSIBILITY_ENABLED")]
+	public const int SC_ACCESSIBILITY_ENABLED;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_AC_COMMAND")]
 	public const int SC_AC_COMMAND;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SC_AC_DOUBLECLICK")]

@@ -121,6 +121,9 @@ namespace Geany {
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_string_replace_first")]
 		[Version (since = "0.16")]
 		public static uint string_replace_first (GLib.StringBuilder haystack, string needle, string replace);
+		[CCode (array_length = false, array_null_terminated = true, cheader_filename = "geanyplugin.h", cname = "utils_strv_shorten_file_list")]
+		[Version (since = "1.31")]
+		public static string[] strv_shorten_file_list ([CCode (array_length_cname = "num", array_length_pos = 1.1, array_length_type = "gsize")] string[] file_names);
 		[CCode (cheader_filename = "geanyplugin.h", cname = "utils_write_file")]
 		public static int write_file (string filename, string text);
 	}
@@ -1166,6 +1169,9 @@ namespace Geany {
 	public delegate int probe (Geany.Plugin proxy, string filename, void* pdata);
 	[CCode (cheader_filename = "geanyplugin.h")]
 	public delegate void unload (Geany.Plugin proxy, Geany.Plugin inferior, void* proxy_data, void* pdata);
+	[CCode (cheader_filename = "geanyplugin.h")]
+	[Version (since = "1.30")]
+	public static int api_version ();
 	[CCode (cheader_filename = "geanyplugin.h", cname = "dialogs_show_input")]
 	[Version (since = "0.20.")]
 	public static string? dialogs_show_input (string title, Gtk.Window? parent, string? label_text, string? default_text);
