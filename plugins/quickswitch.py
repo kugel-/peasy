@@ -70,52 +70,13 @@ def get_icon_name(tag):
     else:
         return "classviewer-other"
 
-# copied from mainline cpython, modified to bisect a TMTag array with a
-# x being string
-def tag_bisect_left(a, x, lo=0, hi=None):
-    """Return the index where to insert item x in list a, assuming a is sorted.
-
-    The return value i is such that all e in a[:i] have e < x, and all e in
-    a[i:] have e >= x.  So if x already appears in the list, a.insert(x) will
-    insert just before the leftmost x already there.
-
-    Optional args lo (default 0) and hi (default len(a)) bound the
-    slice of a to be searched.
-    """
-
-    if lo < 0:
-        raise ValueError('lo must be non-negative')
-    if hi is None:
-        hi = len(a)
-    while lo < hi:
-        mid = (lo+hi)//2
-        if a[mid].name < x: lo = mid+1
-        else: hi = mid
-    return lo
-
 class QuickSwitchPlugin(Peasy.Plugin):
     __gtype_name__ = 'QuickSwitchPlugin'
 
-    def search_tags2(self, prefix):
-        ws = self.geany_plugin.geany_data.app.tm_workspace
-        q = Geany.TMQuery.new(ws, Geany.TMQuerySource.SESSION_TAGS);
-        q.add_name(prefix, len(prefix))
-        return q.exec(None, None)
-
     def search_tags(self, prefix):
-        if (hasattr(Geany, "TMQuery")):
-            return self.search_tags2(prefix)
-        ret = []
-        # This is super slow with lots of tags. pygobject seems to call getattr()
-        # for all elements on the first use, regardless of how it used
-        array = self.geany_plugin.geany_data.app.tm_workspace.tags_array
-        n = tag_bisect_left(array, prefix)
-        for tag in array[n:]:
-            if (tag.name.startswith(prefix)):
-                ret.append(tag)
-            else:
-                break
-        return ret
+        q = Peasy.TagQuery.with_source(Peasy.TagQuerySource.SESSION_TAGS)
+        q.match_name(prefix, len(prefix))
+        return q.exec()
 
     def pos_func(self, *args):
         alloc = args[3].get_allocation()
