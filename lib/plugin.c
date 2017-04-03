@@ -233,8 +233,9 @@ GType peasy_plugin_help_get_type (void) {
 
 
 static gboolean peasy_plugin_real_enable (PeasyPlugin* self) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `peasy_plugin_enable'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -287,8 +288,8 @@ PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* secti
 
 static void peasy_plugin_class_init (PeasyPluginClass * klass) {
 	peasy_plugin_parent_class = g_type_class_peek_parent (klass);
-	((PeasyPluginClass *) klass)->enable = peasy_plugin_real_enable;
-	((PeasyPluginClass *) klass)->disable = peasy_plugin_real_disable;
+	((PeasyPluginClass *) klass)->enable = (gboolean (*)(PeasyPlugin*)) peasy_plugin_real_enable;
+	((PeasyPluginClass *) klass)->disable = (void (*)(PeasyPlugin*)) peasy_plugin_real_disable;
 	G_OBJECT_CLASS (klass)->finalize = peasy_plugin_finalize;
 }
 

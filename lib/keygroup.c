@@ -217,7 +217,7 @@ PeasyKeyBinding* peasy_key_binding_new_from_geany (PeasyKeyGroup* kb_group, Gean
 static void peasy_key_binding_class_init (PeasyKeyBindingClass * klass) {
 	peasy_key_binding_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (PeasyKeyBindingPrivate));
-	((PeasyKeyBindingClass *) klass)->default_handler = peasy_key_binding_real_default_handler;
+	((PeasyKeyBindingClass *) klass)->default_handler = (gboolean (*)(PeasyKeyBinding*, gint)) peasy_key_binding_real_default_handler;
 	G_OBJECT_CLASS (klass)->finalize = peasy_key_binding_finalize;
 	peasy_key_binding_setup_signal_activate ();
 }
@@ -366,7 +366,7 @@ PeasyKeyGroup* peasy_key_group_new (void) {
 static void peasy_key_group_class_init (PeasyKeyGroupClass * klass) {
 	peasy_key_group_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (PeasyKeyGroupPrivate));
-	((PeasyKeyGroupClass *) klass)->default_handler = peasy_key_group_real_default_handler;
+	((PeasyKeyGroupClass *) klass)->default_handler = (gboolean (*)(PeasyKeyGroup*, gint)) peasy_key_group_real_default_handler;
 	G_OBJECT_CLASS (klass)->finalize = peasy_key_group_finalize;
 	peasy_key_group_setup_signal_activate ();
 }
