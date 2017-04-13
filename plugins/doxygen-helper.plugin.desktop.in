@@ -1,0 +1,9 @@
+[Plugin]
+Module=doxygen-helper
+Loader=python3
+_Name=Doxygen Support
+_Description=Adds useful features for Doxygen-based documention.
+Authors=Thomas Maritiz <kugel@rockbox.org>
+Copyright=Copyright © 2017 Thomas Martitz
+X-Peasy-API=230
+
