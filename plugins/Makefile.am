@@ -9,6 +9,7 @@ libpeasytest_la_LIBADD  = $(PEAS_LIBS) $(GEANY_LIBS) $(top_builddir)/lib/libpeas
 
 PLUGIN_INFO      = peasytest.plugin \
                    console-peasy.plugin \
+                   doxygen-helper.plugin \
                    modeline.plugin \
                    peasyluatest.plugin \
                    peasypytest.plugin \
@@ -17,6 +18,7 @@ PLUGIN_INFO      = peasytest.plugin \
 plugin_DATA     += $(PLUGIN_INFO)
 
 dist_plugin_DATA+= console-peasy.py  \
+                   doxygen-helper.py  \
                    modeline.py  \
                    peasyluatest.lua  \
                    peasypytest.py  \
