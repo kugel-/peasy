@@ -8,7 +8,8 @@ from gi.repository import GeanyScintilla
 
 _ = Peasy.gettext
 
-INDIC_MARK = "xxx"
+INDIC_MARK = "%cursor%"
+INDIC_TOKEN = 10
 
 class BackendBase:
     def probe(self, line, style):
@@ -16,7 +17,7 @@ class BackendBase:
 
     def make_doc(self, tag):
         #~ s = self.docstart + "\n"
-        s = "\n%s\n" % (self.doccont)
+        s = "%s\n%s\n" % (INDIC_MARK, self.doccont)
         args = self.get_args(tag)
         if (args):
             for arg in args:
@@ -28,12 +29,14 @@ class BackendBase:
 
         # calculate jump locations
         ret = list()
+        # index and offset are in char points
+        # but we want to return byte offsets for scintilla
         offset = 0
         while True:
             index = s[offset:].find(INDIC_MARK)
             if (index < 0):
                 break
-            ret.append(offset + index)
+            ret.append(len(s[0:offset+index].encode()))
             offset += index + len(INDIC_MARK)
         return (s, ret)
 
@@ -89,36 +92,71 @@ class DoxygenHelper(Peasy.Plugin):
         y = sci.send_message(GeanyScintilla.SCI_POINTYFROMPOSITION, 0, pos)
         return (wx + alloc.x + x, wy + alloc.y + y, True)
 
-    def insert_doc(self, sci):
-        pos = sci.get_current_position()
-        buf, jump_locs = self.back.make_doc(self.tag)
-        buflen = len(buf)
-        # TODO use editor_insert_text_block
-        sci.insert_text(pos, buf)
-        sci.set_current_position(pos, False)
-        print(str(jump_locs))
+    def next_jump_loc(self, sci, pos):
+        val = sci.send_message(GeanyScintilla.SCI_INDICATORVALUEAT, INDIC_TOKEN, pos)
+        # check if we're within a jump loc, and move out if necessary
+        if (val):
+            start = sci.send_message(GeanyScintilla.SCI_INDICATOREND, INDIC_TOKEN, pos)
+            end = sci.send_message(GeanyScintilla.SCI_INDICATOREND, INDIC_TOKEN, start)
+        else:
+            end = sci.send_message(GeanyScintilla.SCI_INDICATOREND, INDIC_TOKEN, pos)
 
-    def on_key(self, widget, ev, sci):
+        if (end == sci.get_length()):
+            end = 0
+        return end
+
+    def insert_doc_snippet(self, editor, text):
+        sci = editor.sci
+        pos = sci.get_current_position()
+        editor.insert_snippet(pos, text.replace("\n ", "\n"))
+
+    def insert_doc(self, editor):
+        sci = editor.sci
+        buf, jump_locs = self.back.make_doc(self.tag)
+        # Eventually we'll just make use of Geany's snippet support
+        if (False):
+            self.insert_doc_snippet(editor, buf)
+            return
+
+        placeholder = u"…"
+        length_diff = len(INDIC_MARK.encode()) - len(placeholder.encode())
+        for loc in range(0, len(jump_locs)):
+            buf = buf.replace(INDIC_MARK, placeholder, 1)
+            for loc_ in range(loc+1, len(jump_locs)):
+                jump_locs[loc_] -= length_diff
+
+        # Insert fixed text
+        editor.insert_text_block(buf, sci.get_current_position(), 0, 0, 0)
+        sci.send_message(GeanyScintilla.SCI_INDICSETSTYLE, INDIC_TOKEN, GeanyScintilla.INDIC_DOTBOX)
+        sci.send_message(GeanyScintilla.SCI_SETINDICATORVALUE, 1, 0)
+        sci.send_message(GeanyScintilla.SCI_SETINDICATORCURRENT, INDIC_TOKEN, 0)
+
+        # Set an indicator for each jump location
+        pos = sci.get_current_position()
+        for i in jump_locs:
+            sci.send_message(GeanyScintilla.SCI_INDICATORFILLRANGE, pos+i, len(placeholder.encode()))
+
+    def on_key(self, widget, ev, editor):
+        sci = editor.sci
         if (ev.keyval == Gdk.KEY_Return):
             sci.event(ev)
-            self.insert_doc(sci)
+            self.insert_doc(editor)
             widget.popdown()
             return True
         if (ev.keyval == Gdk.KEY_space):
             sci.event(ev)
-            self.insert_doc(sci)
+            self.insert_doc(editor)
             widget.popdown()
             return True
         return False
 
-    def create_popup(self, sci):
-        print("new mneu");
+    def create_popup(self, editor):
         m = Gtk.Menu.new()
         w = Gtk.ImageMenuItem.new_with_label(_("Create Doxygen comment for %s" % self.tag.name))
         m.append(w)
-        m.connect("key-press-event", self.on_key, sci)
+        m.connect("key-press-event", self.on_key, editor)
         m.show_all()
-        m.popup(None, None, self.pos_func, sci, 0, Gtk.get_current_event_time())
+        m.popup(None, None, self.pos_func, editor.sci, 0, Gtk.get_current_event_time())
 
     def on_editor_notify(self, object, editor, notif):
         sci = editor.sci
@@ -161,13 +199,30 @@ class DoxygenHelper(Peasy.Plugin):
                 if empty_comment:
                     if self.tag:
                         self.back = back
-                        self.create_popup(sci)
+                        self.create_popup(editor)
 
         return False
+
+    def on_item_click(self):
+        pos = 0
+        doc = Geany.Document.get_current()
+        sci = doc.editor.sci
+        pos = self.next_jump_loc(sci, sci.get_current_position())
+        if (pos <= 0):
+            return False
+        sci.set_selection_start(pos);
+        sci.set_selection_end(pos + len(u"…".encode()));
+        return True
 
     def do_enable(self):
         o = self.geany_plugin.geany_data.object
         o.connect("editor-notify", self.on_editor_notify)
+        # Eventually we'll just make use of Geany's snippet support
+        # then we need no separate keybinding
+        if (True):
+            self.keys = self.add_key_group("doxygen-helper", 3)
+            self.keys.add_keybinding("next jump loc", _("Go to next cursor position"),
+                None, 0, 0).connect("activate", lambda key, id: self.on_item_click())
         return True
 
     def do_disable(self):
