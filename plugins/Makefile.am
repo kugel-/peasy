@@ -29,6 +29,9 @@ EXTRA_DIST += ${PLUGIN_INFO:.plugin=.plugin.desktop.in}
 pluginquickswitchdatadir = $(plugindatadir)/quickswitch
 dist_pluginquickswitchdata_DATA = quickswitch.glade
 
+doxyhelperdatadir = $(plugindatadir)/doxygen-helper
+dist_doxyhelperdata_DATA = doxygen-helper.glade
+
 SUFFIXES = .plugin .plugin.desktop.in
 # TODO: wildcard dependency on *.po in a portable fashion
 $(PLUGIN_INFO): $(INTLTOOL_MERGE) $(top_srcdir)/po/de.po
