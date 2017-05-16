@@ -13,44 +13,71 @@ _ = Peasy.gettext
 INDIC_MARK = "%cursor%"
 INDIC_TOKEN = 10
 
+def SSM(sci, opcode, arg0, arg1):
+    sci.send_message(opcode, arg0, arg1)
+
+##
+# Mimics a TMTag such that we can generate the preview from
+#
+class ExampleTag:
+    def __init__(self, arglist, var_type, decl_fmt):
+        self.arglist = arglist
+        self.var_type = var_type
+        self.decl = decl_fmt.format(var_type, arglist)
+
 class BackendBase:
+    template = """
+$params
+
+$return
+"""
+
     def probe(self, line, style):
         return style == self._style and line.startswith(self.docstart)
 
-    def make_doc(self, tag):
-        #~ s = self.docstart + "\n"
-        s = "%s\n%s\n" % (INDIC_MARK, self.doccont)
-        args = self.get_args(tag)
-        if (args):
-            for arg in args:
-                s += "%s @param %s %s\n" % (self.doccont, arg, INDIC_MARK)
-        retval = self.get_return(tag)
-        if (retval):
-            s += "%s @return \n" % (self.doccont)
-        s += self.docend
+    def make_preview(self):
+        docs = self.make_doc(self._example).replace("%cursor%", u"…")
+        return self.docstart + docs +"\n"+ self._example.decl
 
-        # calculate jump locations
-        ret = list()
-        # index and offset are in char points
-        # but we want to return byte offsets for scintilla
-        offset = 0
-        while True:
-            index = s[offset:].find(INDIC_MARK)
-            if (index < 0):
-                break
-            ret.append(len(s[0:offset+index].encode()))
-            offset += index + len(INDIC_MARK)
-        return (s, ret)
+    def make_doc(self, tag):
+        template = self.template
+        # replace tokens in the template with doxygen commands
+        # special case for $params which must be duplicated for each arg
+        args = self.get_args(tag)
+        lines = template.split("\n")
+        doc = [" "]
+        mark = " " + INDIC_MARK
+        for line in lines:
+            if (line.find("$params") >= 0):
+                for arg in args:
+                    new = line.replace("$params", self.prefix + "param " + arg + mark)
+                    doc.append(self.doccont + " " + new)
+            elif (line.find("$retval") >= 0):
+                new = line.replace("$retval", self.prefix + "retval" + mark)
+                doc.append(self.doccont + " " + new)
+                doc.append(self.doccont + " " + new)
+            else:
+                new = line.replace("$return", self.prefix + "return" + mark)
+                new = new.replace("$brief", self.prefix + "brief" + mark)
+                new = new.replace("$detail", self.prefix + "detail" + mark)
+                if len(new) > 0:
+                    doc.append(self.doccont + " " + new)
+                else:
+                    doc.append(self.doccont)
+        doc.append(self.docend)
+        return ("\n".join(doc))
 
 class BackendC(BackendBase):
     # attributes starting with _ are read-only (cannot be overridden through
     # backends.conf
     _name     = "C/C++"
+    _ft       = "C++"
     _lexer    = GeanyScintilla.SCLEX_CPP
     _style    = GeanyScintilla.SCE_C_COMMENTDOC
+    _example  = ExampleTag("(int arg1, char *arg2)", "int", "{0} example{1};")
     prefix    = "@"
     docstart  = "/**"
-    doccont   = " *"
+    doccont   = " **"
     docend    = " **/"
 
     def get_args(self, tag):
@@ -73,8 +100,10 @@ class BackendPython(BackendBase):
     # attributes starting with _ are read-only (cannot be overridden through
     # backends.conf
     _name     = "Python"
+    _ft       = "Python"
     _lexer    = GeanyScintilla.SCLEX_PYTHON
     _style    = GeanyScintilla.SCE_P_COMMENTBLOCK
+    _example  = ExampleTag("(arg1, arg2 = 1, *args)", "", "def example{1}:\n  pass")
     prefix    = "@"
     docstart  = "##"
     doccont   = "#"
@@ -173,45 +202,57 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         pos = sci.get_current_position()
         editor.insert_snippet(pos, text.replace("\n ", "\n"))
 
-    def insert_doc(self, editor):
+    def insert_doc(self, editor, initial_nl):
         sci = editor.sci
-        buf, jump_locs = self.back.make_doc(self.tag)
+        buf = ""
+        initial_cursor = 0
+        if initial_nl:
+            buf += "\n"+self.back.doccont
+            initial_cursor = len(self.back.doccont)
+        buf += self.back.make_doc(self.tag)
         # Eventually we'll just make use of Geany's snippet support
         if (False):
             self.insert_doc_snippet(editor, buf)
             return
 
         placeholder = u"…"
-        length_diff = len(INDIC_MARK.encode()) - len(placeholder.encode())
-        for loc in range(0, len(jump_locs)):
+        placeholder_nbytes = len(placeholder.encode())
+        byte_loc = 0
+        start = 0
+        jump_locs = list()
+        while (True):
+            off = buf.find(INDIC_MARK, start)
+            if (off == -1):
+                break
             buf = buf.replace(INDIC_MARK, placeholder, 1)
-            for loc_ in range(loc+1, len(jump_locs)):
-                jump_locs[loc_] -= length_diff
+            # Scintilla indicates must be specified in bytes
+            byte_loc += len(buf[start:off].encode())
+            jump_locs.append(byte_loc)
+            start = off
 
         # Insert fixed text
-        editor.insert_text_block(buf, sci.get_current_position(), 0, 0, 0)
+        editor.insert_text_block(buf, sci.get_current_position(), initial_cursor, 0, 0)
         sci.send_message(GeanyScintilla.SCI_INDICSETSTYLE, INDIC_TOKEN, GeanyScintilla.INDIC_DOTBOX)
         sci.indicator_set(INDIC_TOKEN)
 
         # Set an indicator for each jump location
-        pos = sci.get_current_position()
+        pos = sci.get_current_position() - initial_cursor
         for i in jump_locs:
             if i == 0:
                 sci.set_selection_start(pos+i)
-                sci.set_selection_end(pos+i+len(placeholder.encode()))
+                sci.set_selection_end(pos+i+placeholder_nbytes)
             else:
-                sci.send_message(GeanyScintilla.SCI_INDICATORFILLRANGE, pos+i, len(placeholder.encode()))
+                sci.send_message(GeanyScintilla.SCI_INDICATORFILLRANGE, pos+i, placeholder_nbytes)
 
     def on_key(self, widget, ev, editor):
         sci = editor.sci
         if (ev.keyval == Gdk.KEY_Return):
-            sci.event(ev)
-            self.insert_doc(editor)
+            self.insert_doc(editor, True)
             widget.popdown()
             return True
         if (ev.keyval == Gdk.KEY_space):
             sci.event(ev)
-            self.insert_doc(editor)
+            self.insert_doc(editor, False)
             widget.popdown()
             return True
         return False
@@ -301,6 +342,11 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         entry.set_text(back.docend)
         entry = self.ui.get_object("txt_prefix")
         entry.set_text(back.prefix)
+        Geany.highlighting_set_styles(self.sci_preview, Geany.filetypes_lookup_by_name(back._ft))
+        self.sci_preview.send_message(GeanyScintilla.SCI_SETREADONLY, 0, 0)
+        self.sci_preview.set_text(back.make_preview())
+        self.sci_preview.send_message(GeanyScintilla.SCI_SETREADONLY, 1, 0)
+        self.sci_edit.set_text(back.template)
 
     def setup_templates_dialog(self):
         dlg = self.ui.get_object("dlg_templates")
@@ -310,22 +356,26 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         self.ui.get_object("b_templates_ok").connect("clicked", lambda btn: dlg.response(Gtk.ResponseType.OK))
         self.ui.get_object("b_templates_apply").connect("clicked", lambda btn: dlg.response(Gtk.ResponseType.APPLY))
         # Scintilla for the edit pane
-        sci_edit = GeanyScintilla.ScintillaObject.new()
+        self.sci_edit = GeanyScintilla.ScintillaObject.new()
         for style in range(0, GeanyScintilla.STYLE_MAX):
-            sci_edit.set_font(style, self.geany_plugin.geany_data.interface_prefs.editor_font, 9)
-        self.ui.get_object("al_edit").add(sci_edit)
+            self.sci_edit.set_font(style, self.geany_plugin.geany_data.interface_prefs.editor_font, 9)
+        self.ui.get_object("al_edit").add(self.sci_edit)
         # Scintilla for the preview pane
-        sci_preview = GeanyScintilla.ScintillaObject.new()
+        self.sci_preview = GeanyScintilla.ScintillaObject.new()
+        self.sci_preview.send_message(GeanyScintilla.SCI_SETCODEPAGE, GeanyScintilla.SC_CP_UTF8, 0)
+        font_name, size = self.geany_plugin.geany_data.interface_prefs.editor_font.split()
         for style in range(0, GeanyScintilla.STYLE_MAX):
-            sci_preview.set_font(style, self.geany_plugin.geany_data.interface_prefs.editor_font, 9)
-        self.ui.get_object("al_preview").add(sci_preview)
+            self.sci_preview.set_font(style, "!" + font_name, int(size))
+        self.ui.get_object("al_preview").add(self.sci_preview)
         self.ui.get_object("cb_lang").connect("changed", self.on_lang_changed)
+        
 
     def populate_templates_dialog(self):
         cb_lang = self.ui.get_object("cb_lang")
         for back in self.backends:
             cb_lang.append_text(back._name)
         cb_lang.set_active(0)
+        self.on_lang_changed(cb_lang)
 
     def do_configure(self, dialog):
         widget = self.ui.get_object("b_configure")
