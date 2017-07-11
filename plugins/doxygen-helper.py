@@ -1,5 +1,6 @@
 import os
 import traceback
+import copy
 
 from gi.repository import Gdk
 from gi.repository import Gtk
@@ -72,6 +73,7 @@ class BackendC(BackendBase):
     # backends.conf
     _name     = "C/C++"
     _ft       = "C++"
+    _grp      = "C"
     _lexer    = GeanyScintilla.SCLEX_CPP
     _style    = GeanyScintilla.SCE_C_COMMENTDOC
     _example  = ExampleTag("(int arg1, char *arg2)", "int", "{0} example{1};")
@@ -101,6 +103,7 @@ class BackendPython(BackendBase):
     # backends.conf
     _name     = "Python"
     _ft       = "Python"
+    _grp      = "Python"
     _lexer    = GeanyScintilla.SCLEX_PYTHON
     _style    = GeanyScintilla.SCE_P_COMMENTBLOCK
     _example  = ExampleTag("(arg1, arg2 = 1, *args)", "", "def example{1}:\n  pass")
@@ -155,13 +158,44 @@ def load_backends(key_file_name):
             raise e
     return all_backends
 
+
+def store_backend(key_file, back):
+    group = back._grp
+    changed = 0
+    if (group == "C"):
+        cls = BackendC
+    elif (group == "Python"):
+        cls = BackendPython
+    for attrib in ("prefix", "docstart", "doccont", "docend", "template"):
+        try:
+            old = key_file.get_string(group, attrib)
+        except GLib.Error as e:
+            if (e.domain != "g-key-file-error-quark"):
+                raise e
+            old = getattr(cls, attrib)
+        if (getattr(back, attrib) != old):
+            key_file.set_string(group, attrib, getattr(back, attrib))
+            changed += 1
+    return changed
+
+def save_backends(key_file_name, all_backends):
+    key_file = GLib.KeyFile.new()
+    key_file.load_from_file(key_file_name, GLib.KeyFileFlags.NONE)
+    changed = 0
+    for back in all_backends:
+        changed += store_backend(key_file, back)
+    if (changed > 0):
+        key_file.save_to_file(key_file_name);
+
 class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
 
     def __init__(self):
         self.cnt = 0
+        self.timeout_handle = 0
         self.doc_added = False
         self.back = None
         self.tag = None
+        self.key_file = None
 
     def get_next_tag(self, doc, line):
         if (not doc.has_tags):
@@ -207,7 +241,7 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         buf = ""
         initial_cursor = 0
         if initial_nl:
-            buf += "\n"+self.back.doccont
+            buf += "\n" + self.back.doccont
             initial_cursor = len(self.back.doccont)
         buf += self.back.make_doc(self.tag)
         # Eventually we'll just make use of Geany's snippet support
@@ -326,10 +360,16 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
     def on_edit_templates_activate(self):
         dlg = self.ui.get_object("dlg_templates")
         dlg.set_transient_for(self.geany_plugin.geany_data.main_widgets.window)
-        self.ui.get_object("dlg_templates").show_all()
+        self.populate_templates_dialog()
+        dlg.show_all()
 
     def on_edit_templates_clicked(self, btn):
         self.on_edit_templates_activate()
+
+    def update_preview(self, back):
+        self.sci_preview.send_message(GeanyScintilla.SCI_SETREADONLY, 0, 0)
+        self.sci_preview.set_text(back.make_preview())
+        self.sci_preview.send_message(GeanyScintilla.SCI_SETREADONLY, 1, 0)
 
     def on_lang_changed(self, cb_lang):
         lang = cb_lang.get_active()
@@ -343,32 +383,66 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         entry = self.ui.get_object("txt_prefix")
         entry.set_text(back.prefix)
         Geany.highlighting_set_styles(self.sci_preview, Geany.filetypes_lookup_by_name(back._ft))
-        self.sci_preview.send_message(GeanyScintilla.SCI_SETREADONLY, 0, 0)
-        self.sci_preview.set_text(back.make_preview())
-        self.sci_preview.send_message(GeanyScintilla.SCI_SETREADONLY, 1, 0)
         self.sci_edit.set_text(back.template)
+        self.update_preview(back)
+
+
+    def on_refresh_preview_timeout(self):
+        cb_lang = self.ui.get_object("cb_lang")
+        #~ back = copy.copy(self.backends[cb_lang.get_active()])
+        back = copy.copy(self.backends[cb_lang.get_active()])
+        back.template = self.sci_edit.get_contents(-1)
+        self.update_preview(back)
+        self.timeout_handle = 0
+        return False
+
+    def on_sci_edit_notify(self, sci, scn, notif):
+        code = notif.nmhdr.code
+        if (code == GeanyScintilla.SCN_CHARADDED
+                or code == GeanyScintilla.SCN_MODIFIED):
+            if (self.timeout_handle != 0):
+                GLib.source_remove(self.timeout_handle)
+            self.timeout_handle = GLib.timeout_add(50, self.on_refresh_preview_timeout)
+
+    def on_response(self, dlg, response_id):
+        if (response_id in (Gtk.ResponseType.OK, Gtk.ResponseType.APPLY)):
+            cb_lang = self.ui.get_object("cb_lang")
+            lang = cb_lang.get_active()
+            back = self.backends[lang]
+            back.docstart = self.ui.get_object("txt_start").get_text()
+            back.doccont = self.ui.get_object("txt_cont").get_text()
+            back.docend = self.ui.get_object("txt_end").get_text()
+            back.prefix = self.ui.get_object("txt_prefix").get_text()
+            back.template = self.sci_edit.get_contents(-1)
+            save_backends(self.key_file, self.backends)
+            if (response_id == Gtk.ResponseType.OK):
+                dlg.hide()
+        elif (response_id in (Gtk.ResponseType.CANCEL, Gtk.ResponseType.DELETE_EVENT)):
+            dlg.hide()
 
     def setup_templates_dialog(self):
         dlg = self.ui.get_object("dlg_templates")
-        dlg.connect("response", lambda dlg, response_id: print(str(response_id)))
+        # never delete, hide in on_response()
+        dlg.connect("delete-event", lambda dlg, ev: True)
+        dlg.connect("response", self.on_response)
         dlg.set_transient_for(self.geany_plugin.geany_data.main_widgets.window)
         self.ui.get_object("b_templates_cancel").connect("clicked", lambda btn: dlg.response(Gtk.ResponseType.CANCEL))
         self.ui.get_object("b_templates_ok").connect("clicked", lambda btn: dlg.response(Gtk.ResponseType.OK))
         self.ui.get_object("b_templates_apply").connect("clicked", lambda btn: dlg.response(Gtk.ResponseType.APPLY))
+        self.ui.get_object("cb_lang").connect("changed", self.on_lang_changed)
         # Scintilla for the edit pane
         self.sci_edit = GeanyScintilla.ScintillaObject.new()
-        for style in range(0, GeanyScintilla.STYLE_MAX):
-            self.sci_edit.set_font(style, self.geany_plugin.geany_data.interface_prefs.editor_font, 9)
         self.ui.get_object("al_edit").add(self.sci_edit)
+        self.sci_edit.connect("sci-notify", self.on_sci_edit_notify)
         # Scintilla for the preview pane
         self.sci_preview = GeanyScintilla.ScintillaObject.new()
-        self.sci_preview.send_message(GeanyScintilla.SCI_SETCODEPAGE, GeanyScintilla.SC_CP_UTF8, 0)
-        font_name, size = self.geany_plugin.geany_data.interface_prefs.editor_font.split()
-        for style in range(0, GeanyScintilla.STYLE_MAX):
-            self.sci_preview.set_font(style, "!" + font_name, int(size))
         self.ui.get_object("al_preview").add(self.sci_preview)
-        self.ui.get_object("cb_lang").connect("changed", self.on_lang_changed)
-        
+        # Setup Scintilla widgets
+        font_name, size = self.geany_plugin.geany_data.interface_prefs.editor_font.split()
+        for sci in (self.sci_edit, self.sci_preview):
+            sci.send_message(GeanyScintilla.SCI_SETCODEPAGE, GeanyScintilla.SC_CP_UTF8, 0)
+            for style in range(0, GeanyScintilla.STYLE_MAX):
+                sci.set_font(style, "!" + font_name, int(size))
 
     def populate_templates_dialog(self):
         cb_lang = self.ui.get_object("cb_lang")
@@ -399,6 +473,7 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
                 None, 0, 0).connect("activate", lambda key, id: self.on_edit_templates_activate())
         datapath = self.geany_plugin.geany_data.app.configdir
         kf_dir = os.path.join(datapath, "plugins", "doxygen-helper")
+        self.key_file = os.path.join(kf_dir, "backends.conf")
         try:
             os.makedirs(kf_dir)
         except OSError as e:
@@ -406,8 +481,7 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
                 return False
 
         try:
-            self.backends = load_backends(os.path.join(kf_dir, "backends.conf"))
-            self.populate_templates_dialog()
+            self.backends = load_backends(self.key_file)
             o.connect("editor-notify", self.on_editor_notify)
         except Exception as e:
             print("Python exception: " + str(e))

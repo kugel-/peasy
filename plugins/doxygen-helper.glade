@@ -74,13 +74,15 @@
     </child>
   </object>
   <object class="GtkDialog" id="dlg_templates">
+    <property name="width_request">500</property>
+    <property name="height_request">400</property>
     <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
     <child internal-child="vbox">
       <object class="GtkBox">
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
+        <property name="spacing">4</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox">
             <property name="can_focus">False</property>
@@ -138,8 +140,8 @@
           <object class="GtkGrid">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="row_spacing">2</property>
-            <property name="column_spacing">2</property>
+            <property name="row_spacing">4</property>
+            <property name="column_spacing">4</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -310,12 +312,16 @@
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="hexpand">True</property>
                     <child>
                       <object class="GtkLabel" id="f_format">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="halign">start</property>
                         <property name="label" translatable="yes">Format</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -324,21 +330,20 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLinkButton" id="l_edit_geany">
+                      <object class="GtkButton">
                         <property name="label" translatable="yes">button</property>
                         <property name="visible">True</property>
                         <property name="can_focus">True</property>
                         <property name="receives_default">True</property>
-                        <property name="halign">end</property>
-                        <property name="relief">none</property>
-                        <property name="uri">http://glade.gnome.org</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
                         <property name="fill">True</property>
-                        <property name="pack_type">end</property>
-                        <property name="position">1</property>
+                        <property name="position">3</property>
                       </packing>
+                    </child>
+                    <child type="center">
+                      <placeholder/>
                     </child>
                   </object>
                 </child>
@@ -366,14 +371,14 @@
           <object class="GtkFrame">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="vexpand">True</property>
             <property name="label_xalign">0</property>
-            <property name="shadow_type">none</property>
+            <property name="shadow_type">in</property>
             <child>
               <object class="GtkAlignment" id="al_preview">
                 <property name="height_request">200</property>
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
                 <property name="left_padding">12</property>
                 <child>
                   <placeholder/>
@@ -385,6 +390,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Preview</property>
+                <attributes>
+                  <attribute name="weight" value="bold"/>
+                </attributes>
               </object>
             </child>
           </object>
