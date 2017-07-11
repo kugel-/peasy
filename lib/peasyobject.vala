@@ -88,7 +88,7 @@ public class Signals : Object
         sig.document_filetype_set(new Document(geany_doc), ft_);
     }
 
-    protected Signals()
+    public Signals()
     {
         signal_connect(null, "document-new", false,
             (GLib.Callback) Peasy.Signals.emit_new, this);

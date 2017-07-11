@@ -104,7 +104,7 @@ PeasyIndentType peasy_editor_get_indent_type (PeasyEditor* self);
 void peasy_editor_set_indent_type (PeasyEditor* self, PeasyIndentType value);
 gint peasy_editor_get_indent_width (PeasyEditor* self);
 void peasy_editor_set_indent_width (PeasyEditor* self, gint value);
-static void peasy_editor_finalize (GObject* obj);
+static void peasy_editor_finalize (GObject * obj);
 static void _vala_peasy_editor_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void _vala_peasy_editor_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 
@@ -128,12 +128,12 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 PeasyEditor* peasy_editor_construct_create (GType object_type, PeasyDocument* doc) {
 	PeasyEditor * self = NULL;
-	PeasyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	GeanyEditor* _tmp2_ = NULL;
-	GeanyEditor* _tmp3_ = NULL;
-	ScintillaObject* _tmp4_ = NULL;
-	ScintillaObject* _tmp5_ = NULL;
+	PeasyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	GeanyEditor* _tmp2_;
+	GeanyEditor* _tmp3_;
+	ScintillaObject* _tmp4_;
+	ScintillaObject* _tmp5_;
 	g_return_val_if_fail (doc != NULL, NULL);
 	self = (PeasyEditor*) g_object_new (object_type, NULL);
 	_tmp0_ = doc;
@@ -156,10 +156,10 @@ PeasyEditor* peasy_editor_new_create (PeasyDocument* doc) {
 
 gchar* peasy_editor_get_word_at (PeasyEditor* self, gint pos, const gchar* wordchars) {
 	gchar* result = NULL;
-	GeanyEditor* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
-	const gchar* _tmp2_ = NULL;
-	gchar* _tmp3_ = NULL;
+	GeanyEditor* _tmp0_;
+	gint _tmp1_;
+	const gchar* _tmp2_;
+	gchar* _tmp3_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->geany_editor;
 	_tmp1_ = pos;
@@ -172,10 +172,10 @@ gchar* peasy_editor_get_word_at (PeasyEditor* self, gint pos, const gchar* wordc
 
 gboolean peasy_editor_goto (PeasyEditor* self, gint pos, gboolean mark) {
 	gboolean result = FALSE;
-	GeanyEditor* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
-	gboolean _tmp2_ = FALSE;
-	gboolean _tmp3_ = FALSE;
+	GeanyEditor* _tmp0_;
+	gint _tmp1_;
+	gboolean _tmp2_;
+	gboolean _tmp3_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->geany_editor;
 	_tmp1_ = pos;
@@ -200,9 +200,9 @@ PeasyEditor* peasy_editor_new (void) {
 
 PeasyIndentType peasy_editor_get_indent_type (PeasyEditor* self) {
 	PeasyIndentType result;
-	GeanyEditor* _tmp0_ = NULL;
-	GeanyIndentPrefs* _tmp1_ = NULL;
-	GeanyIndentType _tmp2_ = 0;
+	GeanyEditor* _tmp0_;
+	GeanyIndentPrefs* _tmp1_;
+	GeanyIndentType _tmp2_;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->geany_editor;
 	_tmp1_ = editor_get_indent_prefs (_tmp0_);
@@ -213,8 +213,8 @@ PeasyIndentType peasy_editor_get_indent_type (PeasyEditor* self) {
 
 
 void peasy_editor_set_indent_type (PeasyEditor* self, PeasyIndentType value) {
-	GeanyEditor* _tmp0_ = NULL;
-	PeasyIndentType _tmp1_ = 0;
+	GeanyEditor* _tmp0_;
+	PeasyIndentType _tmp1_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->geany_editor;
 	_tmp1_ = value;
@@ -225,9 +225,9 @@ void peasy_editor_set_indent_type (PeasyEditor* self, PeasyIndentType value) {
 
 gint peasy_editor_get_indent_width (PeasyEditor* self) {
 	gint result;
-	GeanyEditor* _tmp0_ = NULL;
-	GeanyIndentPrefs* _tmp1_ = NULL;
-	gint _tmp2_ = 0;
+	GeanyEditor* _tmp0_;
+	GeanyIndentPrefs* _tmp1_;
+	gint _tmp2_;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->geany_editor;
 	_tmp1_ = editor_get_indent_prefs (_tmp0_);
@@ -238,8 +238,8 @@ gint peasy_editor_get_indent_width (PeasyEditor* self) {
 
 
 void peasy_editor_set_indent_width (PeasyEditor* self, gint value) {
-	GeanyEditor* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
+	GeanyEditor* _tmp0_;
+	gint _tmp1_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->geany_editor;
 	_tmp1_ = value;
@@ -262,7 +262,7 @@ static void peasy_editor_instance_init (PeasyEditor * self) {
 }
 
 
-static void peasy_editor_finalize (GObject* obj) {
+static void peasy_editor_finalize (GObject * obj) {
 	PeasyEditor * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_EDITOR, PeasyEditor);
 	_g_object_unref0 (self->sci);

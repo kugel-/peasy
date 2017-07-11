@@ -66,7 +66,7 @@ static GPtrArray* peasy_tag_query_get_all_tags (PeasyTagQuery* self);
 GPtrArray* peasy_tag_query_exec (PeasyTagQuery* self);
 PeasyTagQuery* peasy_tag_query_new (void);
 PeasyTagQuery* peasy_tag_query_construct (GType object_type);
-static void peasy_tag_query_finalize (GObject* obj);
+static void peasy_tag_query_finalize (GObject * obj);
 
 
 GType peasy_tag_query_source_get_type (void) {
@@ -94,7 +94,7 @@ static void _g_list_free__g_string_free0_ (GList* self) {
 
 PeasyTagQuery* peasy_tag_query_construct_with_source (GType object_type, PeasyTagQuerySource source) {
 	PeasyTagQuery * self = NULL;
-	PeasyTagQuerySource _tmp0_ = 0;
+	PeasyTagQuerySource _tmp0_;
 	self = (PeasyTagQuery*) g_object_new (object_type, NULL);
 	_tmp0_ = source;
 	self->priv->data_sources = (gint) _tmp0_;
@@ -110,11 +110,11 @@ PeasyTagQuery* peasy_tag_query_new_with_source (PeasyTagQuerySource source) {
 gint peasy_tag_query_match_name (PeasyTagQuery* self, const gchar* name, gint len) {
 	gint result = 0;
 	GString* gstr = NULL;
-	GString* _tmp0_ = NULL;
-	GString* _tmp1_ = NULL;
-	const gchar* _tmp2_ = NULL;
-	gint _tmp3_ = 0;
-	GString* _tmp4_ = NULL;
+	GString* _tmp0_;
+	GString* _tmp1_;
+	const gchar* _tmp2_;
+	gint _tmp3_;
+	GString* _tmp4_;
 	g_return_val_if_fail (self != NULL, 0);
 	g_return_val_if_fail (name != NULL, 0);
 	_tmp0_ = g_string_new ("");
@@ -135,13 +135,13 @@ gint peasy_tag_query_match_name (PeasyTagQuery* self, const gchar* name, gint le
 static gint peasy_tag_query_compare_fn (void* _key, void* _tag) {
 	gint result = 0;
 	GString* key = NULL;
-	void* _tmp0_ = NULL;
+	void* _tmp0_;
 	TMTag* tag = NULL;
-	void* _tmp1_ = NULL;
-	const gchar* _tmp2_ = NULL;
-	const gchar* _tmp3_ = NULL;
-	gssize _tmp4_ = 0L;
-	gint _tmp5_ = 0;
+	void* _tmp1_;
+	const gchar* _tmp2_;
+	const gchar* _tmp3_;
+	gssize _tmp4_;
+	gint _tmp5_;
 	_tmp0_ = _key;
 	key = (GString*) _tmp0_;
 	_tmp1_ = _tag;
@@ -162,7 +162,7 @@ static gpointer _g_ptr_array_ref0 (gpointer self) {
 
 static gint g_ptr_array_get_length (GPtrArray* self) {
 	gint result;
-	guint _tmp0_ = 0U;
+	guint _tmp0_;
 	g_return_val_if_fail (self != NULL, 0);
 	_tmp0_ = self->len;
 	result = (gint) _tmp0_;
@@ -171,7 +171,7 @@ static gint g_ptr_array_get_length (GPtrArray* self) {
 
 
 static void g_ptr_array_set_length (GPtrArray* self, gint value) {
-	gint _tmp0_ = 0;
+	gint _tmp0_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = value;
 	g_ptr_array_set_size (self, _tmp0_);
@@ -188,32 +188,32 @@ static gint _peasy_tag_query_compare_fn___compar_fn_t (void* key1, void* key2) {
 static GPtrArray* peasy_tag_query_get_tags_by_name (PeasyTagQuery* self) {
 	GPtrArray* result = NULL;
 	GPtrArray* ret = NULL;
-	GPtrArray* _tmp0_ = NULL;
+	GPtrArray* _tmp0_;
 	GString* key = NULL;
 	GPtrArray* tags = NULL;
-	GeanyPlugin* _tmp1_ = NULL;
-	GeanyData* _tmp2_ = NULL;
-	GeanyApp* _tmp3_ = NULL;
-	TMWorkspace* _tmp4_ = NULL;
-	GPtrArray* _tmp5_ = NULL;
-	GPtrArray* _tmp6_ = NULL;
+	GeanyPlugin* _tmp1_;
+	GeanyData* _tmp2_;
+	GeanyApp* _tmp3_;
+	TMWorkspace* _tmp4_;
+	GPtrArray* _tmp5_;
+	GPtrArray* _tmp6_;
 	TMTag** match = NULL;
 	TMTag** first = NULL;
 	TMTag** last = NULL;
 	TMTag* tag = NULL;
-	GList* _tmp7_ = NULL;
-	gconstpointer _tmp8_ = NULL;
-	GString* _tmp9_ = NULL;
-	GPtrArray* _tmp10_ = NULL;
-	gpointer* _tmp11_ = NULL;
-	gint _tmp11__length1 = 0;
-	GPtrArray* _tmp12_ = NULL;
-	gint _tmp13_ = 0;
-	gint _tmp14_ = 0;
-	void* _tmp15_ = NULL;
-	TMTag** _tmp16_ = NULL;
-	TMTag** _tmp17_ = NULL;
-	TMTag** _tmp31_ = NULL;
+	GList* _tmp7_;
+	gconstpointer _tmp8_;
+	GString* _tmp9_;
+	GPtrArray* _tmp10_;
+	gpointer* _tmp11_;
+	gint _tmp11__length1;
+	GPtrArray* _tmp12_;
+	gint _tmp13_;
+	gint _tmp14_;
+	void* _tmp15_;
+	TMTag** _tmp16_;
+	TMTag** _tmp17_;
+	TMTag** _tmp31_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = g_ptr_array_new_full ((guint) 0, NULL);
 	ret = _tmp0_;
@@ -245,20 +245,20 @@ static GPtrArray* peasy_tag_query_get_tags_by_name (PeasyTagQuery* self) {
 	_tmp17_ = match;
 	first = _tmp17_;
 	while (TRUE) {
-		TMTag** _tmp18_ = NULL;
-		GPtrArray* _tmp19_ = NULL;
-		gpointer* _tmp20_ = NULL;
-		gint _tmp20__length1 = 0;
-		gconstpointer _tmp21_ = NULL;
-		TMTag** _tmp22_ = NULL;
-		GString* _tmp23_ = NULL;
-		const gchar* _tmp24_ = NULL;
-		TMTag* _tmp25_ = NULL;
-		const gchar* _tmp26_ = NULL;
-		GString* _tmp27_ = NULL;
-		gssize _tmp28_ = 0L;
-		gint _tmp29_ = 0;
-		TMTag** _tmp30_ = NULL;
+		TMTag** _tmp18_;
+		GPtrArray* _tmp19_;
+		gpointer* _tmp20_;
+		gint _tmp20__length1;
+		gconstpointer _tmp21_;
+		TMTag** _tmp22_;
+		GString* _tmp23_;
+		const gchar* _tmp24_;
+		TMTag* _tmp25_;
+		const gchar* _tmp26_;
+		GString* _tmp27_;
+		gssize _tmp28_;
+		gint _tmp29_;
+		TMTag** _tmp30_;
 		_tmp18_ = first;
 		_tmp19_ = tags;
 		_tmp20_ = _tmp19_->pdata;
@@ -285,23 +285,23 @@ static GPtrArray* peasy_tag_query_get_tags_by_name (PeasyTagQuery* self) {
 	_tmp31_ = match;
 	last = _tmp31_;
 	while (TRUE) {
-		TMTag** _tmp32_ = NULL;
-		GPtrArray* _tmp33_ = NULL;
-		gpointer* _tmp34_ = NULL;
-		gint _tmp34__length1 = 0;
-		GPtrArray* _tmp35_ = NULL;
-		gint _tmp36_ = 0;
-		gint _tmp37_ = 0;
-		gconstpointer _tmp38_ = NULL;
-		TMTag** _tmp39_ = NULL;
-		GString* _tmp40_ = NULL;
-		const gchar* _tmp41_ = NULL;
-		TMTag* _tmp42_ = NULL;
-		const gchar* _tmp43_ = NULL;
-		GString* _tmp44_ = NULL;
-		gssize _tmp45_ = 0L;
-		gint _tmp46_ = 0;
-		TMTag** _tmp47_ = NULL;
+		TMTag** _tmp32_;
+		GPtrArray* _tmp33_;
+		gpointer* _tmp34_;
+		gint _tmp34__length1;
+		GPtrArray* _tmp35_;
+		gint _tmp36_;
+		gint _tmp37_;
+		gconstpointer _tmp38_;
+		TMTag** _tmp39_;
+		GString* _tmp40_;
+		const gchar* _tmp41_;
+		TMTag* _tmp42_;
+		const gchar* _tmp43_;
+		GString* _tmp44_;
+		gssize _tmp45_;
+		gint _tmp46_;
+		TMTag** _tmp47_;
 		_tmp32_ = last;
 		_tmp33_ = tags;
 		_tmp34_ = _tmp33_->pdata;
@@ -329,19 +329,19 @@ static GPtrArray* peasy_tag_query_get_tags_by_name (PeasyTagQuery* self) {
 		last = _tmp47_ + 1;
 	}
 	{
-		TMTag** _tmp48_ = NULL;
+		TMTag** _tmp48_;
 		gboolean _tmp49_ = FALSE;
 		_tmp48_ = first;
 		first = _tmp48_ + 1;
 		tag = *_tmp48_;
 		_tmp49_ = TRUE;
 		while (TRUE) {
-			TMTag* _tmp51_ = NULL;
-			TMTag** _tmp52_ = NULL;
-			GPtrArray* _tmp53_ = NULL;
-			TMTag* _tmp54_ = NULL;
+			TMTag* _tmp51_;
+			TMTag** _tmp52_;
+			GPtrArray* _tmp53_;
+			TMTag* _tmp54_;
 			if (!_tmp49_) {
-				TMTag** _tmp50_ = NULL;
+				TMTag** _tmp50_;
 				_tmp50_ = first;
 				first = _tmp50_ + 1;
 				tag = *_tmp50_;
@@ -366,22 +366,22 @@ static GPtrArray* peasy_tag_query_get_tags_by_name (PeasyTagQuery* self) {
 static GPtrArray* peasy_tag_query_get_all_tags (PeasyTagQuery* self) {
 	GPtrArray* result = NULL;
 	GPtrArray* all_tags = NULL;
-	GeanyPlugin* _tmp0_ = NULL;
-	GeanyData* _tmp1_ = NULL;
-	GeanyApp* _tmp2_ = NULL;
-	TMWorkspace* _tmp3_ = NULL;
-	GPtrArray* _tmp4_ = NULL;
-	GPtrArray* _tmp5_ = NULL;
+	GeanyPlugin* _tmp0_;
+	GeanyData* _tmp1_;
+	GeanyApp* _tmp2_;
+	TMWorkspace* _tmp3_;
+	GPtrArray* _tmp4_;
+	GPtrArray* _tmp5_;
 	GPtrArray* ret = NULL;
-	gint _tmp6_ = 0;
-	gint _tmp7_ = 0;
-	GPtrArray* _tmp8_ = NULL;
-	gpointer* _tmp9_ = NULL;
-	gint _tmp9__length1 = 0;
-	gpointer* _tmp10_ = NULL;
-	gint _tmp10__length1 = 0;
-	gint _tmp11_ = 0;
-	gint _tmp12_ = 0;
+	gint _tmp6_;
+	gint _tmp7_;
+	GPtrArray* _tmp8_;
+	gpointer* _tmp9_;
+	gint _tmp9__length1;
+	gpointer* _tmp10_;
+	gint _tmp10__length1;
+	gint _tmp11_;
+	gint _tmp12_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = peasy_peasy_plugin;
 	_tmp1_ = _tmp0_->geany_data;
@@ -409,16 +409,16 @@ static GPtrArray* peasy_tag_query_get_all_tags (PeasyTagQuery* self) {
 
 GPtrArray* peasy_tag_query_exec (PeasyTagQuery* self) {
 	GPtrArray* result = NULL;
-	GList* _tmp0_ = NULL;
+	GList* _tmp0_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->priv->names;
 	if (_tmp0_ == NULL) {
-		GPtrArray* _tmp1_ = NULL;
+		GPtrArray* _tmp1_;
 		_tmp1_ = peasy_tag_query_get_all_tags (self);
 		result = _tmp1_;
 		return result;
 	} else {
-		GPtrArray* _tmp2_ = NULL;
+		GPtrArray* _tmp2_;
 		_tmp2_ = peasy_tag_query_get_tags_by_name (self);
 		result = _tmp2_;
 		return result;
@@ -450,7 +450,7 @@ static void peasy_tag_query_instance_init (PeasyTagQuery * self) {
 }
 
 
-static void peasy_tag_query_finalize (GObject* obj) {
+static void peasy_tag_query_finalize (GObject * obj) {
 	PeasyTagQuery * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_TAG_QUERY, PeasyTagQuery);
 	__g_list_free__g_string_free0_0 (self->priv->names);

@@ -85,7 +85,7 @@ static gboolean _peasy_key_binding_geany_handler_geany_key_binding_func (GeanyKe
 PeasyKeyBinding* peasy_key_binding_new_from_geany (PeasyKeyGroup* kb_group, GeanyKeyBinding* kb_item);
 PeasyKeyBinding* peasy_key_binding_construct_from_geany (GType object_type, PeasyKeyGroup* kb_group, GeanyKeyBinding* kb_item);
 void peasy_key_binding_setup_signal_activate (void);
-static void peasy_key_binding_finalize (GObject* obj);
+static void peasy_key_binding_finalize (GObject * obj);
 #define PEASY_KEY_GROUP_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupPrivate))
 enum  {
 	PEASY_KEY_GROUP_DUMMY_PROPERTY
@@ -100,7 +100,7 @@ PeasyKeyBinding* peasy_key_group_get_item (PeasyKeyGroup* self, gint id);
 void peasy_key_group_setup_signal_activate (void);
 PeasyKeyGroup* peasy_key_group_new (void);
 PeasyKeyGroup* peasy_key_group_construct (GType object_type);
-static void peasy_key_group_finalize (GObject* obj);
+static void peasy_key_group_finalize (GObject * obj);
 
 
 static gboolean peasy_key_binding_real_default_handler (PeasyKeyBinding* self, gint id) {
@@ -119,8 +119,8 @@ gboolean peasy_key_binding_default_handler (PeasyKeyBinding* self, gint id) {
 static gboolean peasy_key_binding_geany_handler (PeasyKeyBinding* self, GeanyKeyBinding* item, guint id) {
 	gboolean result = FALSE;
 	gboolean ret = FALSE;
-	guint _tmp0_ = 0U;
-	gboolean _tmp1_ = FALSE;
+	guint _tmp0_;
+	gboolean _tmp1_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	g_return_val_if_fail (item != NULL, FALSE);
 	ret = FALSE;
@@ -128,8 +128,8 @@ static gboolean peasy_key_binding_geany_handler (PeasyKeyBinding* self, GeanyKey
 	g_signal_emit_by_name (self, "activate", _tmp0_, &ret, NULL);
 	_tmp1_ = ret;
 	if (!_tmp1_) {
-		PeasyKeyGroup* _tmp2_ = NULL;
-		guint _tmp3_ = 0U;
+		PeasyKeyGroup* _tmp2_;
+		guint _tmp3_;
 		_tmp2_ = self->priv->m_group;
 		_tmp3_ = id;
 		g_signal_emit_by_name (_tmp2_, "activate", _tmp3_, &ret, NULL);
@@ -153,17 +153,17 @@ static gpointer _g_object_ref0 (gpointer self) {
 
 PeasyKeyBinding* peasy_key_binding_construct (GType object_type, PeasyKeyGroup* kb_group, gint index, gint def_key, GdkModifierType def_mod, const gchar* name, const gchar* label, GtkMenuItem* menu_item) {
 	PeasyKeyBinding * self = NULL;
-	PeasyKeyGroup* _tmp0_ = NULL;
-	GeanyKeyGroup* _tmp1_ = NULL;
-	gint _tmp2_ = 0;
-	gint _tmp3_ = 0;
-	GdkModifierType _tmp4_ = 0;
-	const gchar* _tmp5_ = NULL;
-	const gchar* _tmp6_ = NULL;
-	GtkMenuItem* _tmp7_ = NULL;
-	GeanyKeyBinding* _tmp8_ = NULL;
-	PeasyKeyGroup* _tmp9_ = NULL;
-	PeasyKeyGroup* _tmp10_ = NULL;
+	PeasyKeyGroup* _tmp0_;
+	GeanyKeyGroup* _tmp1_;
+	gint _tmp2_;
+	gint _tmp3_;
+	GdkModifierType _tmp4_;
+	const gchar* _tmp5_;
+	const gchar* _tmp6_;
+	GtkMenuItem* _tmp7_;
+	GeanyKeyBinding* _tmp8_;
+	PeasyKeyGroup* _tmp9_;
+	PeasyKeyGroup* _tmp10_;
 	g_return_val_if_fail (kb_group != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (label != NULL, NULL);
@@ -193,9 +193,9 @@ PeasyKeyBinding* peasy_key_binding_new (PeasyKeyGroup* kb_group, gint index, gin
 
 PeasyKeyBinding* peasy_key_binding_construct_from_geany (GType object_type, PeasyKeyGroup* kb_group, GeanyKeyBinding* kb_item) {
 	PeasyKeyBinding * self = NULL;
-	GeanyKeyBinding* _tmp0_ = NULL;
-	PeasyKeyGroup* _tmp1_ = NULL;
-	PeasyKeyGroup* _tmp2_ = NULL;
+	GeanyKeyBinding* _tmp0_;
+	PeasyKeyGroup* _tmp1_;
+	PeasyKeyGroup* _tmp2_;
 	g_return_val_if_fail (kb_group != NULL, NULL);
 	g_return_val_if_fail (kb_item != NULL, NULL);
 	self = (PeasyKeyBinding*) g_object_new (object_type, NULL);
@@ -217,7 +217,7 @@ PeasyKeyBinding* peasy_key_binding_new_from_geany (PeasyKeyGroup* kb_group, Gean
 static void peasy_key_binding_class_init (PeasyKeyBindingClass * klass) {
 	peasy_key_binding_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (PeasyKeyBindingPrivate));
-	((PeasyKeyBindingClass *) klass)->default_handler = (gboolean (*)(PeasyKeyBinding*, gint)) peasy_key_binding_real_default_handler;
+	((PeasyKeyBindingClass *) klass)->default_handler = (gboolean (*) (PeasyKeyBinding *, gint)) peasy_key_binding_real_default_handler;
 	G_OBJECT_CLASS (klass)->finalize = peasy_key_binding_finalize;
 	peasy_key_binding_setup_signal_activate ();
 }
@@ -228,7 +228,7 @@ static void peasy_key_binding_instance_init (PeasyKeyBinding * self) {
 }
 
 
-static void peasy_key_binding_finalize (GObject* obj) {
+static void peasy_key_binding_finalize (GObject * obj) {
 	PeasyKeyBinding * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_KEY_BINDING, PeasyKeyBinding);
 	_g_object_unref0 (self->priv->m_group);
@@ -263,7 +263,7 @@ gboolean peasy_key_group_default_handler (PeasyKeyGroup* self, gint id) {
 
 PeasyKeyGroup* peasy_key_group_construct_from_geany (GType object_type, GeanyKeyGroup* kb_group) {
 	PeasyKeyGroup * self = NULL;
-	GeanyKeyGroup* _tmp0_ = NULL;
+	GeanyKeyGroup* _tmp0_;
 	g_return_val_if_fail (kb_group != NULL, NULL);
 	self = (PeasyKeyGroup*) g_object_new (object_type, NULL);
 	_tmp0_ = kb_group;
@@ -281,14 +281,14 @@ PeasyKeyGroup* peasy_key_group_new_from_geany (GeanyKeyGroup* kb_group) {
 PeasyKeyBinding* peasy_key_group_add_keybinding (PeasyKeyGroup* self, const gchar* name, const gchar* label, GtkMenuItem* menu_item, gint def_key, GdkModifierType def_mod) {
 	PeasyKeyBinding* result = NULL;
 	PeasyKeyBinding* item = NULL;
-	gint _tmp0_ = 0;
-	gint _tmp1_ = 0;
-	GdkModifierType _tmp2_ = 0;
-	const gchar* _tmp3_ = NULL;
-	const gchar* _tmp4_ = NULL;
-	GtkMenuItem* _tmp5_ = NULL;
-	PeasyKeyBinding* _tmp6_ = NULL;
-	gint _tmp7_ = 0;
+	gint _tmp0_;
+	gint _tmp1_;
+	GdkModifierType _tmp2_;
+	const gchar* _tmp3_;
+	const gchar* _tmp4_;
+	GtkMenuItem* _tmp5_;
+	PeasyKeyBinding* _tmp6_;
+	gint _tmp7_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (label != NULL, NULL);
@@ -310,13 +310,13 @@ PeasyKeyBinding* peasy_key_group_add_keybinding (PeasyKeyGroup* self, const gcha
 
 PeasyKeyBinding* peasy_key_group_add_keybinding_with_id (PeasyKeyGroup* self, const gchar* name, const gchar* label, GtkMenuItem* menu_item, gint def_key, GdkModifierType def_mod, gint id) {
 	PeasyKeyBinding* result = NULL;
-	gint _tmp0_ = 0;
-	gint _tmp1_ = 0;
-	GdkModifierType _tmp2_ = 0;
-	const gchar* _tmp3_ = NULL;
-	const gchar* _tmp4_ = NULL;
-	GtkMenuItem* _tmp5_ = NULL;
-	PeasyKeyBinding* _tmp6_ = NULL;
+	gint _tmp0_;
+	gint _tmp1_;
+	GdkModifierType _tmp2_;
+	const gchar* _tmp3_;
+	const gchar* _tmp4_;
+	GtkMenuItem* _tmp5_;
+	PeasyKeyBinding* _tmp6_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (name != NULL, NULL);
 	g_return_val_if_fail (label != NULL, NULL);
@@ -335,10 +335,10 @@ PeasyKeyBinding* peasy_key_group_add_keybinding_with_id (PeasyKeyGroup* self, co
 PeasyKeyBinding* peasy_key_group_get_item (PeasyKeyGroup* self, gint id) {
 	PeasyKeyBinding* result = NULL;
 	GeanyKeyBinding* item = NULL;
-	GeanyKeyGroup* _tmp0_ = NULL;
-	gint _tmp1_ = 0;
-	GeanyKeyBinding* _tmp2_ = NULL;
-	PeasyKeyBinding* _tmp3_ = NULL;
+	GeanyKeyGroup* _tmp0_;
+	gint _tmp1_;
+	GeanyKeyBinding* _tmp2_;
+	PeasyKeyBinding* _tmp3_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->geany_group;
 	_tmp1_ = id;
@@ -366,7 +366,7 @@ PeasyKeyGroup* peasy_key_group_new (void) {
 static void peasy_key_group_class_init (PeasyKeyGroupClass * klass) {
 	peasy_key_group_parent_class = g_type_class_peek_parent (klass);
 	g_type_class_add_private (klass, sizeof (PeasyKeyGroupPrivate));
-	((PeasyKeyGroupClass *) klass)->default_handler = (gboolean (*)(PeasyKeyGroup*, gint)) peasy_key_group_real_default_handler;
+	((PeasyKeyGroupClass *) klass)->default_handler = (gboolean (*) (PeasyKeyGroup *, gint)) peasy_key_group_real_default_handler;
 	G_OBJECT_CLASS (klass)->finalize = peasy_key_group_finalize;
 	peasy_key_group_setup_signal_activate ();
 }
@@ -377,7 +377,7 @@ static void peasy_key_group_instance_init (PeasyKeyGroup * self) {
 }
 
 
-static void peasy_key_group_finalize (GObject* obj) {
+static void peasy_key_group_finalize (GObject * obj) {
 	PeasyKeyGroup * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_KEY_GROUP, PeasyKeyGroup);
 	_g_list_free0 (self->priv->m_items);

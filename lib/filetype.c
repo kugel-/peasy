@@ -74,7 +74,7 @@ PeasyFiletype* peasy_filetype_construct (GType object_type, GeanyFiletype* ft);
 static void ___lambda5__gfunc (gconstpointer data, gpointer self);
 PeasyObject* peasy_object_new (void);
 PeasyObject* peasy_object_construct (GType object_type);
-static void peasy_filetype_finalize (GObject* obj);
+static void peasy_filetype_finalize (GObject * obj);
 
 
 static Block2Data* block2_data_ref (Block2Data* _data2_) {
@@ -99,8 +99,8 @@ static void _g_object_unref0_ (gpointer var) {
 
 
 static void __lambda5_ (Block2Data* _data2_, GeanyFiletype* ft) {
-	GeanyFiletype* _tmp0_ = NULL;
-	PeasyFiletype* _tmp1_ = NULL;
+	GeanyFiletype* _tmp0_;
+	PeasyFiletype* _tmp1_;
 	g_return_if_fail (ft != NULL);
 	_tmp0_ = ft;
 	_tmp1_ = peasy_filetype_new (_tmp0_);
@@ -121,11 +121,11 @@ static gpointer _g_ptr_array_ref0 (gpointer self) {
 GPtrArray* peasy_filetype_all_filetypes (void) {
 	GPtrArray* result = NULL;
 	Block2Data* _data2_;
-	GPtrArray* _tmp0_ = NULL;
-	GeanyPlugin* _tmp1_ = NULL;
-	GeanyData* _tmp2_ = NULL;
-	GPtrArray* _tmp3_ = NULL;
-	GPtrArray* _tmp4_ = NULL;
+	GPtrArray* _tmp0_;
+	GeanyPlugin* _tmp1_;
+	GeanyData* _tmp2_;
+	GPtrArray* _tmp3_;
+	GPtrArray* _tmp4_;
 	_data2_ = g_slice_new0 (Block2Data);
 	_data2_->_ref_count_ = 1;
 	_tmp0_ = g_ptr_array_new_full ((guint) 0, _g_object_unref0_);
@@ -144,7 +144,7 @@ GPtrArray* peasy_filetype_all_filetypes (void) {
 
 PeasyFiletype* peasy_filetype_construct (GType object_type, GeanyFiletype* ft) {
 	PeasyFiletype * self = NULL;
-	GeanyFiletype* _tmp0_ = NULL;
+	GeanyFiletype* _tmp0_;
 	g_return_val_if_fail (ft != NULL, NULL);
 	self = (PeasyFiletype*) peasy_object_construct (object_type);
 	_tmp0_ = ft;
@@ -168,7 +168,7 @@ static void peasy_filetype_instance_init (PeasyFiletype * self) {
 }
 
 
-static void peasy_filetype_finalize (GObject* obj) {
+static void peasy_filetype_finalize (GObject * obj) {
 	PeasyFiletype * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_FILETYPE, PeasyFiletype);
 	G_OBJECT_CLASS (peasy_filetype_parent_class)->finalize (obj);
