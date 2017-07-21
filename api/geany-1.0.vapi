@@ -590,7 +590,7 @@ namespace Geany {
 		[CCode (cname = "tm_source_file_free")]
 		public void free ();
 	}
-	[CCode (cheader_filename = "geanyplugin.h", cname = "TMTag", has_type_id = false)]
+	[CCode (cheader_filename = "geanyplugin.h", cname = "TMTag", copy_function = "g_boxed_copy", free_function = "g_boxed_free", type_id = "tm_tag_get_type ()")]
 	[Compact]
 	public class TMTag {
 		public char access;
@@ -849,7 +849,8 @@ namespace Geany {
 	[CCode (cheader_filename = "geanyplugin.h", cprefix = "GEANY_INDICATOR_", has_type_id = false)]
 	public enum Indicator {
 		ERROR,
-		SEARCH
+		SEARCH,
+		SNIPPET
 	}
 	[CCode (cheader_filename = "geanyplugin.h", cprefix = "GEANY_KEYS_", has_type_id = false)]
 	public enum KeyBindingID {

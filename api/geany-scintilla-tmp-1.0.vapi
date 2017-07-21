@@ -3991,6 +3991,8 @@ namespace GeanyScintilla {
 	public const int SCI_GETCARETLINEBACK;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETCARETLINEBACKALPHA")]
 	public const int SCI_GETCARETLINEBACKALPHA;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETCARETLINEFRAME")]
+	public const int SCI_GETCARETLINEFRAME;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETCARETLINEVISIBLE")]
 	public const int SCI_GETCARETLINEVISIBLE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_GETCARETLINEVISIBLEALWAYS")]
@@ -4413,6 +4415,8 @@ namespace GeanyScintilla {
 	public const int SCI_LINEFROMPOSITION;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_LINELENGTH")]
 	public const int SCI_LINELENGTH;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_LINEREVERSE")]
+	public const int SCI_LINEREVERSE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_LINESCROLL")]
 	public const int SCI_LINESCROLL;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_LINESCROLLDOWN")]
@@ -4631,6 +4635,8 @@ namespace GeanyScintilla {
 	public const int SCI_SETCARETLINEBACK;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETCARETLINEBACKALPHA")]
 	public const int SCI_SETCARETLINEBACKALPHA;
+	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETCARETLINEFRAME")]
+	public const int SCI_SETCARETLINEFRAME;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETCARETLINEVISIBLE")]
 	public const int SCI_SETCARETLINEVISIBLE;
 	[CCode (cheader_filename = "geanyplugin.h", cname = "SCI_SETCARETLINEVISIBLEALWAYS")]
