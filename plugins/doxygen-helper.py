@@ -416,7 +416,7 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
 
         try:
             self.backends = load_backends(self.key_file)
-            o.connect("editor-notify", self.on_editor_notify)
+            self.handler = o.connect("editor-notify", self.on_editor_notify)
         except Exception as e:
             print("Python exception: " + str(e))
             traceback.print_last()
@@ -424,4 +424,6 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         return True
 
     def do_disable(self):
+        o = self.geany_plugin.geany_data.object
+        o.disconnect(self.handler)
         pass
