@@ -218,65 +218,20 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         y = sci.send_message(GeanyScintilla.SCI_POINTYFROMPOSITION, 0, pos)
         return (wx + alloc.x + x, wy + alloc.y + y, True)
 
-    def next_jump_loc(self, sci, pos):
-        val = sci.send_message(GeanyScintilla.SCI_INDICATORVALUEAT, INDIC_TOKEN, pos)
-        # check if we're within a jump loc, and move out if necessary
-        if (val):
-            start = sci.send_message(GeanyScintilla.SCI_INDICATOREND, INDIC_TOKEN, pos)
-            end = sci.send_message(GeanyScintilla.SCI_INDICATOREND, INDIC_TOKEN, start)
-        else:
-            end = sci.send_message(GeanyScintilla.SCI_INDICATOREND, INDIC_TOKEN, pos)
-
-        if (end == sci.get_length()):
-            end = 0
-        return end
-
     def insert_doc_snippet(self, editor, text):
         sci = editor.sci
         pos = sci.get_current_position()
-        editor.insert_snippet(pos, text.replace("\n ", "\n"))
+        editor.insert_snippet(pos, text)
 
     def insert_doc(self, editor, initial_nl):
         sci = editor.sci
-        buf = ""
-        initial_cursor = 0
         if initial_nl:
-            buf += "\n" + self.back.doccont
-            initial_cursor = len(self.back.doccont)
+            buf = "\n" + self.back.doccont + " %cursor%"
+        else:
+            buf = "%cursor%"
         buf += self.back.make_doc(self.tag)
-        # Eventually we'll just make use of Geany's snippet support
-        if (False):
-            self.insert_doc_snippet(editor, buf)
-            return
-
-        placeholder = u"…"
-        placeholder_nbytes = len(placeholder.encode())
-        byte_loc = 0
-        start = 0
-        jump_locs = list()
-        while (True):
-            off = buf.find(INDIC_MARK, start)
-            if (off == -1):
-                break
-            buf = buf.replace(INDIC_MARK, placeholder, 1)
-            # Scintilla indicates must be specified in bytes
-            byte_loc += len(buf[start:off].encode())
-            jump_locs.append(byte_loc)
-            start = off
-
-        # Insert fixed text
-        editor.insert_text_block(buf, sci.get_current_position(), initial_cursor, 0, 0)
-        sci.send_message(GeanyScintilla.SCI_INDICSETSTYLE, INDIC_TOKEN, GeanyScintilla.INDIC_DOTBOX)
-        sci.indicator_set(INDIC_TOKEN)
-
-        # Set an indicator for each jump location
-        pos = sci.get_current_position() - initial_cursor
-        for i in jump_locs:
-            if i == 0:
-                sci.set_selection_start(pos+i)
-                sci.set_selection_end(pos+i+placeholder_nbytes)
-            else:
-                sci.send_message(GeanyScintilla.SCI_INDICATORFILLRANGE, pos+i, placeholder_nbytes)
+        self.insert_doc_snippet(editor, buf)
+        return
 
     def on_key(self, widget, ev, editor):
         sci = editor.sci
@@ -343,19 +298,6 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
                         self.create_popup(editor)
 
         return False
-
-    def on_item_click(self):
-        pos = 0
-        doc = Geany.Document.get_current()
-        sci = doc.editor.sci
-        pos = self.next_jump_loc(sci, sci.get_current_position())
-        if (pos <= 0):
-            return False
-        sci.indicator_set(INDIC_TOKEN)
-        sci.indicator_clear(pos, len(u"…".encode()))
-        sci.set_selection_start(pos);
-        sci.set_selection_end(pos + len(u"…".encode()));
-        return True
 
     def on_edit_templates_activate(self):
         dlg = self.ui.get_object("dlg_templates")
@@ -463,14 +405,6 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         self.ui.add_from_file(os.path.join(self.plugin_info.get_module_dir(), "doxygen-helper", "doxygen-helper.glade"))
         self.ui.get_object("b_edit_templates").connect("clicked", self.on_edit_templates_clicked)
         self.setup_templates_dialog()
-        # Eventually we'll just make use of Geany's snippet support
-        # then we need no separate keybinding
-        if (True):
-            self.keys = self.add_key_group("doxygen-helper", 3)
-            self.keys.add_keybinding("next jump loc", _("Go to next cursor position"),
-                None, 0, 0).connect("activate", lambda key, id: self.on_item_click())
-            self.keys.add_keybinding("edit templates", _("Open Template Editor"),
-                None, 0, 0).connect("activate", lambda key, id: self.on_edit_templates_activate())
         datapath = self.geany_plugin.geany_data.app.configdir
         kf_dir = os.path.join(datapath, "plugins", "doxygen-helper")
         self.key_file = os.path.join(kf_dir, "backends.conf")
