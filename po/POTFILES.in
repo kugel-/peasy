@@ -14,3 +14,6 @@ plugins/peasyluatest.lua
 plugins/quickswitch.plugin.desktop.in
 plugins/quickswitch.py
 [type: gettext/glade]plugins/quickswitch.glade
+plugins/doxygen-helper.plugin.desktop.in
+plugins/doxygen-helper.py
+[type: gettext/glade]plugins/doxygen-helper.glade

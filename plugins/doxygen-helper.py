@@ -396,7 +396,9 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         self.on_lang_changed(cb_lang)
 
     def do_configure(self, dialog):
+        # create a new Builder because Geany takes over the widget
         ui = Gtk.Builder.new()
+        ui.set_translation_domain("peasy")
         ui.add_objects_from_file(os.path.join(self.plugin_info.get_module_dir(), "doxygen-helper", "doxygen-helper.glade"), ["box_configure"])
         # checkbox
         widget = ui.get_object("ck_enable_comment")
