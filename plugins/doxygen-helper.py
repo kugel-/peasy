@@ -170,7 +170,7 @@ def store_backend(key_file, back):
         try:
             old = key_file.get_string(group, attrib)
         except GLib.Error as e:
-            if (e.domain != "g-key-file-error-quark"):
+            if (e.domain != "g-file-error-quark"):
                 raise e
             old = getattr(cls, attrib)
         if (getattr(back, attrib) != old):
@@ -195,7 +195,9 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         self.doc_added = False
         self.back = None
         self.tag = None
-        self.key_file = None
+        self.kf_config = None
+        self.kf_backends = None
+        self.enable_doc_comments = True
 
     def get_next_tag(self, doc, line):
         if (not doc.has_tags):
@@ -356,7 +358,7 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
             back.docend = self.ui.get_object("txt_end").get_text()
             back.prefix = self.ui.get_object("txt_prefix").get_text()
             back.template = self.sci_edit.get_contents(-1)
-            save_backends(self.key_file, self.backends)
+            save_backends(self.kf_backends, self.backends)
             if (response_id == Gtk.ResponseType.OK):
                 dlg.hide()
         elif (response_id in (Gtk.ResponseType.CANCEL, Gtk.ResponseType.DELETE_EVENT)):
@@ -394,20 +396,55 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         self.on_lang_changed(cb_lang)
 
     def do_configure(self, dialog):
-        widget = self.ui.get_object("b_configure")
-        #~ dialog.connect("response", self.on_dialog_response, btn)
+        ui = Gtk.Builder.new()
+        ui.add_objects_from_file(os.path.join(self.plugin_info.get_module_dir(), "doxygen-helper", "doxygen-helper.glade"), ["box_configure"])
+        # checkbox
+        widget = ui.get_object("ck_enable_comment")
+        widget.props.active = self.enable_doc_comments
+        # template edit button
+        widget = ui.get_object("b_edit_templates")
+        widget.connect("clicked", self.on_edit_templates_clicked)
+        # container
+        widget = ui.get_object("box_configure")
+        hid = dialog.connect("response", self.on_configure_response, ui)
+        dialog.connect("unrealize", lambda dlg: dlg.disconnect(hid))
         return widget
+
+    def load_config(self, key_file_name):
+        key_file = GLib.KeyFile.new()
+        try:
+            key_file.load_from_file(key_file_name, GLib.KeyFileFlags.NONE)
+        except GLib.Error as e:
+            if (e.domain != "g-file-error-quark"):
+                raise e
+        o = self.ui.get_object("ck_enable_comment")
+
+    def on_configure_response(self, dlg, response_id, ui):
+        if (response_id in (Gtk.ResponseType.APPLY, Gtk.ResponseType.OK)):
+            widget = ui.get_object("ck_enable_comment")
+            self.enable_doc_comments = widget.props.active
+            self.save_config(self.kf_config)
+
+    def save_config(self, key_file_name):
+        key_file = GLib.KeyFile.new()
+        try:
+            key_file.load_from_file(key_file_name, GLib.KeyFileFlags.NONE)
+        except GLib.Error as e:
+            if (e.domain != "g-file-error-quark"):
+                raise e
+        key_file.set_boolean("global", "insert_doc_comments", self.enable_doc_comments)
+        key_file.save_to_file(key_file_name)
 
     def do_enable(self):
         o = self.geany_plugin.geany_data.object
         self.ui = Gtk.Builder.new()
         self.ui.set_translation_domain("peasy")
-        self.ui.add_from_file(os.path.join(self.plugin_info.get_module_dir(), "doxygen-helper", "doxygen-helper.glade"))
-        self.ui.get_object("b_edit_templates").connect("clicked", self.on_edit_templates_clicked)
+        self.ui.add_objects_from_file(os.path.join(self.plugin_info.get_module_dir(), "doxygen-helper", "doxygen-helper.glade"), ["dlg_templates"])
         self.setup_templates_dialog()
         datapath = self.geany_plugin.geany_data.app.configdir
         kf_dir = os.path.join(datapath, "plugins", "doxygen-helper")
-        self.key_file = os.path.join(kf_dir, "backends.conf")
+        self.kf_config = os.path.join(kf_dir, "config.conf")
+        self.kf_backends = os.path.join(kf_dir, "backends.conf")
         try:
             os.makedirs(kf_dir)
         except OSError as e:
@@ -415,8 +452,10 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
                 return False
 
         try:
-            self.backends = load_backends(self.key_file)
-            self.handler = o.connect("editor-notify", self.on_editor_notify)
+            self.load_config(self.kf_config)
+            self.backends = load_backends(self.kf_backends)
+            if (self.enable_doc_comments):
+                self.handler = o.connect("editor-notify", self.on_editor_notify)
         except Exception as e:
             print("Python exception: " + str(e))
             traceback.print_last()
