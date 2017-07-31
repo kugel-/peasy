@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: peasy 0.1\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-18 23:36+0200\n"
+"POT-Creation-Date: 2017-08-01 10:09+0200\n"
 "PO-Revision-Date: 2016-07-14 07:06+0200\n"
 "Last-Translator: Thomas Martitz <kugel@rockbox.org>\n"
 "Language-Team: German <translation-team-de@lists.sourceforge.net>\n"
@@ -18,7 +18,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: ../src/peasy-plugin.c:460
+#: ../src/peasy-plugin.c:461
 msgid "Provides libpeas-based plugins."
 msgstr "Bietet Unterstützung für Plugins basierend auf libpeas."
 
@@ -81,11 +81,11 @@ msgstr "Parst vim modelines und wendet die Einstellungen auf"
 msgid "Key %s is not supported!"
 msgstr "Schlüssel %s wird nicht unterstützt!"
 
-#: ../plugins/modeline.py:228
+#: ../plugins/modeline.py:226
 msgid "Follow Geany's settings for detecting indentation from the file"
 msgstr "Folge Geanys Einstellungen zum Auslesen der Einrückung aus der Datei"
 
-#: ../plugins/modeline.py:229
+#: ../plugins/modeline.py:227
 msgid ""
 "If enabled, indent type  and width from modeline only apply if Geany is set "
 "to detect these settings from the file. Other modeline settings apply always."
@@ -108,7 +108,12 @@ msgstr "Hallo aus %s!"
 msgid "%s says bye!"
 msgstr "%s sagt Tschüss!"
 
-#: ../plugins/quickswitch.plugin.desktop.in.h:1 ../plugins/quickswitch.py:228
+#: ../plugins/peasyluatest.plugin.desktop.in.h:1
+#, fuzzy
+msgid "Tests whether peasy actually works with lua"
+msgstr "Test ob Peasy überhaupt mit Python funzt!"
+
+#: ../plugins/quickswitch.plugin.desktop.in.h:1 ../plugins/quickswitch.py:199
 #: ../plugins/quickswitch.glade.h:1
 msgid "Quick Tab Switch"
 msgstr "Schneller Tabwechsel"
@@ -118,15 +123,15 @@ msgid "Adds a dialog that allows to quckly switch tabs."
 msgstr ""
 "Fügt einen Dialog hinzu, der es erlaubt schnell zu anderen Tabs zu wechseln."
 
-#: ../plugins/quickswitch.py:243
+#: ../plugins/quickswitch.py:214
 msgid "Switch to file"
 msgstr "Wechsle Datei"
 
-#: ../plugins/quickswitch.py:245
+#: ../plugins/quickswitch.py:216
 msgid "Switch to function"
 msgstr "Gehe zu Funktion"
 
-#: ../plugins/quickswitch.py:247
+#: ../plugins/quickswitch.py:218
 msgid "Switch to symbol declaration"
 msgstr "Gehe zu Symboldeklaration"
 
@@ -141,6 +146,67 @@ msgstr "Symbol"
 #: ../plugins/quickswitch.glade.h:4
 msgid "File"
 msgstr "Datei"
+
+#: ../plugins/doxygen-helper.plugin.desktop.in.h:1
+msgid "Doxygen Support"
+msgstr ""
+
+#: ../plugins/doxygen-helper.plugin.desktop.in.h:2
+msgid "Adds useful features for Doxygen-based documention."
+msgstr ""
+
+#: ../plugins/doxygen-helper.py:253
+#, python-format
+msgid "Create Doxygen comment for %s"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:1
+msgid "Enabled"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:2
+msgid "Edit templates"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:3
+msgid "Insert Comments"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:4
+msgid "Doxygen template editor"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:5
+msgid "Language"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:6
+msgid "Start"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:7
+msgid "Line"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:8
+msgid "End"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:9
+msgid "Prefix"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:10
+msgid "Settings"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:11
+msgid "Format"
+msgstr ""
+
+#: ../plugins/doxygen-helper.glade.h:12
+msgid "Preview"
+msgstr ""
 
 #~ msgid "Quick Tab Switch…"
 #~ msgstr "Schneller Tabwechsel…"
