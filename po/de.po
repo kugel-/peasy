@@ -153,60 +153,60 @@ msgstr ""
 
 #: ../plugins/doxygen-helper.plugin.desktop.in.h:2
 msgid "Adds useful features for Doxygen-based documention."
-msgstr ""
+msgstr "Nützliche Features für Doxygen-basierte Quelltextdokumenation"
 
 #: ../plugins/doxygen-helper.py:253
 #, python-format
 msgid "Create Doxygen comment for %s"
-msgstr ""
+msgstr "Einfügen von Dokumentation für %s"
 
 #: ../plugins/doxygen-helper.glade.h:1
 msgid "Enabled"
-msgstr ""
+msgstr "Aktiviert"
 
 #: ../plugins/doxygen-helper.glade.h:2
 msgid "Edit templates"
-msgstr ""
+msgstr "Bearbeite Vorlagen"
 
 #: ../plugins/doxygen-helper.glade.h:3
 msgid "Insert Comments"
-msgstr ""
+msgstr "Einfügen von Kommentaren"
 
 #: ../plugins/doxygen-helper.glade.h:4
 msgid "Doxygen template editor"
-msgstr ""
+msgstr "Doxygen Vorlageneditor"
 
 #: ../plugins/doxygen-helper.glade.h:5
 msgid "Language"
-msgstr ""
+msgstr "Sprache"
 
 #: ../plugins/doxygen-helper.glade.h:6
 msgid "Start"
-msgstr ""
+msgstr "Begin"
 
 #: ../plugins/doxygen-helper.glade.h:7
 msgid "Line"
-msgstr ""
+msgstr "Zeile"
 
 #: ../plugins/doxygen-helper.glade.h:8
 msgid "End"
-msgstr ""
+msgstr "Ende"
 
 #: ../plugins/doxygen-helper.glade.h:9
 msgid "Prefix"
-msgstr ""
+msgstr "Präfix"
 
 #: ../plugins/doxygen-helper.glade.h:10
 msgid "Settings"
-msgstr ""
+msgstr "Einstellungen"
 
 #: ../plugins/doxygen-helper.glade.h:11
 msgid "Format"
-msgstr ""
+msgstr "Vorlage"
 
 #: ../plugins/doxygen-helper.glade.h:12
 msgid "Preview"
-msgstr ""
+msgstr "Vorschau"
 
 #~ msgid "Quick Tab Switch…"
 #~ msgstr "Schneller Tabwechsel…"
