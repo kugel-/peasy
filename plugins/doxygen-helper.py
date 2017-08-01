@@ -156,6 +156,7 @@ def load_backends(key_file_name):
     except Exception as e:
         if not (e.domain == "g-file-error-quark"):
             raise e
+        all_backends = [ BackendC(), BackendPython() ]
     return all_backends
 
 
@@ -170,7 +171,7 @@ def store_backend(key_file, back):
         try:
             old = key_file.get_string(group, attrib)
         except GLib.Error as e:
-            if (e.domain != "g-file-error-quark"):
+            if (e.domain != "g-key-file-error-quark"):
                 raise e
             old = getattr(cls, attrib)
         if (getattr(back, attrib) != old):
@@ -180,7 +181,11 @@ def store_backend(key_file, back):
 
 def save_backends(key_file_name, all_backends):
     key_file = GLib.KeyFile.new()
-    key_file.load_from_file(key_file_name, GLib.KeyFileFlags.NONE)
+    try:
+        key_file.load_from_file(key_file_name, GLib.KeyFileFlags.NONE)
+    except GLib.Error as e:
+        if (e.domain != "g-file-error-quark"):
+            raise e
     changed = 0
     for back in all_backends:
         changed += store_backend(key_file, back)
