@@ -198,6 +198,7 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         self.kf_config = None
         self.kf_backends = None
         self.enable_doc_comments = True
+        self.ui = None # set during configuration
 
     def get_next_tag(self, doc, line):
         if (not doc.has_tags):
@@ -301,14 +302,12 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
 
         return False
 
-    def on_edit_templates_activate(self):
+    def on_edit_templates_clicked(self, btn):
+        self.setup_templates_dialog()
         dlg = self.ui.get_object("dlg_templates")
         dlg.set_transient_for(self.geany_plugin.geany_data.main_widgets.window)
         self.populate_templates_dialog()
         dlg.show_all()
-
-    def on_edit_templates_clicked(self, btn):
-        self.on_edit_templates_activate()
 
     def update_preview(self, back):
         self.sci_preview.send_message(GeanyScintilla.SCI_SETREADONLY, 0, 0)
@@ -395,21 +394,23 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         cb_lang.set_active(0)
         self.on_lang_changed(cb_lang)
 
+    def on_unrealize(self, widget):
+        self.ui = None # GtkBuilder.unref()
+
     def do_configure(self, dialog):
         # create a new Builder because Geany takes over the widget
-        ui = Gtk.Builder.new()
-        ui.set_translation_domain("peasy")
-        ui.add_objects_from_file(os.path.join(self.plugin_info.get_module_dir(), "doxygen-helper", "doxygen-helper.glade"), ["box_configure"])
+        o = self.geany_plugin.geany_data.object
+        self.ui = Gtk.Builder.new_from_file(os.path.join(self.plugin_info.get_module_dir(), "doxygen-helper", "doxygen-helper.glade"))
         # checkbox
-        widget = ui.get_object("ck_enable_comment")
+        widget = self.ui.get_object("ck_enable_comment")
         widget.props.active = self.enable_doc_comments
         # template edit button
-        widget = ui.get_object("b_edit_templates")
+        widget = self.ui.get_object("b_edit_templates")
         widget.connect("clicked", self.on_edit_templates_clicked)
         # container
-        widget = ui.get_object("box_configure")
-        hid = dialog.connect("response", self.on_configure_response, ui)
-        dialog.connect("unrealize", lambda dlg: dlg.disconnect(hid))
+        widget = self.ui.get_object("box_configure")
+        dialog.connect("response", self.on_configure_response)
+        dialog.connect("unrealize", self.on_unrealize)
         return widget
 
     def load_config(self, key_file_name):
@@ -419,11 +420,10 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         except GLib.Error as e:
             if (e.domain != "g-file-error-quark"):
                 raise e
-        o = self.ui.get_object("ck_enable_comment")
 
-    def on_configure_response(self, dlg, response_id, ui):
+    def on_configure_response(self, dlg, response_id):
         if (response_id in (Gtk.ResponseType.APPLY, Gtk.ResponseType.OK)):
-            widget = ui.get_object("ck_enable_comment")
+            widget = self.ui.get_object("ck_enable_comment")
             self.enable_doc_comments = widget.props.active
             self.save_config(self.kf_config)
 
@@ -439,10 +439,6 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
 
     def do_enable(self):
         o = self.geany_plugin.geany_data.object
-        self.ui = Gtk.Builder.new()
-        self.ui.set_translation_domain("peasy")
-        self.ui.add_objects_from_file(os.path.join(self.plugin_info.get_module_dir(), "doxygen-helper", "doxygen-helper.glade"), ["dlg_templates"])
-        self.setup_templates_dialog()
         datapath = self.geany_plugin.geany_data.app.configdir
         kf_dir = os.path.join(datapath, "plugins", "doxygen-helper")
         self.kf_config = os.path.join(kf_dir, "config.conf")
