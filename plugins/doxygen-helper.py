@@ -37,7 +37,7 @@ $return
         return style == self._style and line.startswith(self.docstart)
 
     def make_preview(self):
-        docs = self.make_doc(self._example).replace("%cursor%", u"…")
+        docs = self.make_doc(self._example).replace("%cursor%", "_")
         return self.docstart + docs +"\n"+ self._example.decl
 
     def make_doc(self, tag):
