@@ -6,7 +6,7 @@ AC_INIT([peasy],[0.4],[kugel@rockbox.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([src/peasy-plugin.c])
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([1.11 -Wall parallel-tests subdir-objects])
+AM_INIT_AUTOMAKE([1.11 -Wall parallel-tests subdir-objects foreign])
 AC_CONFIG_HEADERS([config.h])
 
 m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
