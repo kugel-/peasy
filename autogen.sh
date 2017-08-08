@@ -1,7 +1,7 @@
 #!/bin/sh -e
 
 intltoolize -c -f
-autoreconf -vf
+autoreconf -vi
 
 echo
 echo "Bootstrap finished, ready to run configure..."
