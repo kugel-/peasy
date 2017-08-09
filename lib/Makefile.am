@@ -28,6 +28,7 @@ libpeasy_la_VALAFLAGS    = --pkg libpeas-1.0 --pkg geany-1.0 --pkg geany-scintil
                            --library libpeasy                                          \
                            --gir=Peasy-0.1.gir --vapi=libpeasy-0.1.vapi                \
                            --disable-version-header -H peasy.h                         \
+                           --target-glib=2.48                                          \
                            --shared-library=$(SHLIB)
 libpeasy_la_CFLAGS       = $(GTK_CFLAGS) $(PEAS_CFLAGS) $(GEANY_CFLAGS)
 libpeasy_la_LDFLAGS      = -no-undefined -version 0:0:0
