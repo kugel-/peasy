@@ -64,6 +64,16 @@ typedef struct _PeasyFiletypePrivate PeasyFiletypePrivate;
 
 typedef struct _PeasySignals PeasySignals;
 typedef struct _PeasySignalsClass PeasySignalsClass;
+enum  {
+	PEASY_DOCUMENT_CLOSING_SIGNAL,
+	PEASY_DOCUMENT_RELOADED_SIGNAL,
+	PEASY_DOCUMENT_ACTIVATE_SIGNAL,
+	PEASY_DOCUMENT_BEFORE_SAVE_SIGNAL,
+	PEASY_DOCUMENT_SAVED_SIGNAL,
+	PEASY_DOCUMENT_FILETYPE_SET_SIGNAL,
+	PEASY_DOCUMENT_LAST_SIGNAL
+};
+static guint peasy_document_signals[PEASY_DOCUMENT_LAST_SIGNAL] = {0};
 
 struct _PeasyObject {
 	GObject parent_instance;
@@ -161,7 +171,7 @@ static void _peasy_document___lambda10_ (PeasyDocument* self, PeasyDocument* doc
 static void __peasy_document___lambda10__peasy_signals_document_save (PeasySignals* _sender, PeasyDocument* doc, gpointer self);
 static void _peasy_document___lambda11_ (PeasyDocument* self, PeasyDocument* doc, PeasyFiletype* ft);
 static void __peasy_document___lambda11__peasy_signals_document_filetype_set (PeasySignals* _sender, PeasyDocument* doc, PeasyFiletype* old_ft, gpointer self);
-static void peasy_document_finalize (GObject* obj);
+static void peasy_document_finalize (GObject * obj);
 static void _vala_peasy_document_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void _vala_peasy_document_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
 
@@ -188,14 +198,14 @@ static void _g_object_unref0_ (gpointer var) {
 
 
 static void __lambda4_ (Block1Data* _data1_, GeanyDocument* doc) {
-	GeanyDocument* _tmp0_ = NULL;
-	gboolean _tmp1_ = FALSE;
+	GeanyDocument* _tmp0_;
+	gboolean _tmp1_;
 	g_return_if_fail (doc != NULL);
 	_tmp0_ = doc;
 	_tmp1_ = _tmp0_->is_valid;
 	if (_tmp1_) {
-		GeanyDocument* _tmp2_ = NULL;
-		PeasyDocument* _tmp3_ = NULL;
+		GeanyDocument* _tmp2_;
+		PeasyDocument* _tmp3_;
 		_tmp2_ = doc;
 		_tmp3_ = peasy_document_new (_tmp2_);
 		g_ptr_array_add (_data1_->docs, _tmp3_);
@@ -216,11 +226,11 @@ static gpointer _g_ptr_array_ref0 (gpointer self) {
 GPtrArray* peasy_document_all_documents (void) {
 	GPtrArray* result = NULL;
 	Block1Data* _data1_;
-	GPtrArray* _tmp0_ = NULL;
-	GeanyPlugin* _tmp1_ = NULL;
-	GeanyData* _tmp2_ = NULL;
-	GPtrArray* _tmp3_ = NULL;
-	GPtrArray* _tmp4_ = NULL;
+	GPtrArray* _tmp0_;
+	GeanyPlugin* _tmp1_;
+	GeanyData* _tmp2_;
+	GPtrArray* _tmp3_;
+	GPtrArray* _tmp4_;
 	_data1_ = g_slice_new0 (Block1Data);
 	_data1_->_ref_count_ = 1;
 	_tmp0_ = g_ptr_array_new_full ((guint) 0, _g_object_unref0_);
@@ -239,8 +249,8 @@ GPtrArray* peasy_document_all_documents (void) {
 
 PeasyDocument* peasy_document_construct (GType object_type, GeanyDocument* doc) {
 	PeasyDocument * self = NULL;
-	GeanyDocument* _tmp0_ = NULL;
-	PeasyEditor* _tmp1_ = NULL;
+	GeanyDocument* _tmp0_;
+	PeasyEditor* _tmp1_;
 	g_return_val_if_fail (doc != NULL, NULL);
 	self = (PeasyDocument*) peasy_object_construct (object_type);
 	_tmp0_ = doc;
@@ -260,20 +270,20 @@ PeasyDocument* peasy_document_new (GeanyDocument* doc) {
 PeasyDocument* peasy_document_construct_from_file (GType object_type, const gchar* locale_filename, gboolean readonly, PeasyFiletype* ft, const gchar* forced_enc) {
 	PeasyDocument * self = NULL;
 	GeanyFiletype* gft = NULL;
-	PeasyFiletype* _tmp0_ = NULL;
-	const gchar* _tmp3_ = NULL;
-	gboolean _tmp4_ = FALSE;
-	GeanyFiletype* _tmp5_ = NULL;
-	const gchar* _tmp6_ = NULL;
-	GeanyDocument* _tmp7_ = NULL;
-	PeasyEditor* _tmp8_ = NULL;
+	PeasyFiletype* _tmp0_;
+	const gchar* _tmp3_;
+	gboolean _tmp4_;
+	GeanyFiletype* _tmp5_;
+	const gchar* _tmp6_;
+	GeanyDocument* _tmp7_;
+	PeasyEditor* _tmp8_;
 	g_return_val_if_fail (locale_filename != NULL, NULL);
 	self = (PeasyDocument*) peasy_object_construct (object_type);
 	gft = NULL;
 	_tmp0_ = ft;
 	if (_tmp0_ != NULL) {
-		PeasyFiletype* _tmp1_ = NULL;
-		GeanyFiletype* _tmp2_ = NULL;
+		PeasyFiletype* _tmp1_;
+		GeanyFiletype* _tmp2_;
 		_tmp1_ = ft;
 		_tmp2_ = _tmp1_->geany_ft;
 		gft = _tmp2_;
@@ -298,8 +308,8 @@ PeasyDocument* peasy_document_new_from_file (const gchar* locale_filename, gbool
 
 PeasyDocument* peasy_document_get_current (void) {
 	PeasyDocument* result = NULL;
-	GeanyDocument* _tmp0_ = NULL;
-	PeasyDocument* _tmp1_ = NULL;
+	GeanyDocument* _tmp0_;
+	PeasyDocument* _tmp1_;
 	_tmp0_ = document_get_current ();
 	_tmp1_ = peasy_document_new (_tmp0_);
 	result = _tmp1_;
@@ -309,10 +319,10 @@ PeasyDocument* peasy_document_get_current (void) {
 
 gboolean peasy_document_close (PeasyDocument* self) {
 	gboolean result = FALSE;
-	gboolean _tmp0_ = FALSE;
-	gboolean _tmp1_ = FALSE;
-	GeanyDocument* _tmp2_ = NULL;
-	gboolean _tmp3_ = FALSE;
+	gboolean _tmp0_;
+	gboolean _tmp1_;
+	GeanyDocument* _tmp2_;
+	gboolean _tmp3_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = peasy_document_get_is_valid (self);
 	_tmp1_ = _tmp0_;
@@ -329,10 +339,10 @@ gboolean peasy_document_close (PeasyDocument* self) {
 
 gboolean peasy_document_save (PeasyDocument* self, gboolean force) {
 	gboolean result = FALSE;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	gboolean _tmp2_ = FALSE;
-	gboolean _tmp3_ = FALSE;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	gboolean _tmp2_;
+	gboolean _tmp3_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, FALSE);
@@ -346,10 +356,10 @@ gboolean peasy_document_save (PeasyDocument* self, gboolean force) {
 
 gboolean peasy_document_save_as (PeasyDocument* self, const gchar* file_name) {
 	gboolean result = FALSE;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	const gchar* _tmp2_ = NULL;
-	gboolean _tmp3_ = FALSE;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	const gchar* _tmp2_;
+	gboolean _tmp3_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, FALSE);
@@ -363,10 +373,10 @@ gboolean peasy_document_save_as (PeasyDocument* self, const gchar* file_name) {
 
 gboolean peasy_document_reload (PeasyDocument* self, const gchar* forced_enc) {
 	gboolean result = FALSE;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	const gchar* _tmp2_ = NULL;
-	gboolean _tmp3_ = FALSE;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	const gchar* _tmp2_;
+	gboolean _tmp3_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, FALSE);
@@ -380,9 +390,9 @@ gboolean peasy_document_reload (PeasyDocument* self, const gchar* forced_enc) {
 
 gboolean peasy_document_get_changed (PeasyDocument* self) {
 	gboolean result;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	gboolean _tmp2_ = FALSE;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	gboolean _tmp2_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, FALSE);
@@ -394,8 +404,8 @@ gboolean peasy_document_get_changed (PeasyDocument* self) {
 
 
 void peasy_document_set_changed (PeasyDocument* self, gboolean value) {
-	GeanyDocument* _tmp0_ = NULL;
-	gboolean _tmp1_ = FALSE;
+	GeanyDocument* _tmp0_;
+	gboolean _tmp1_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->geany_doc;
 	_tmp1_ = value;
@@ -406,9 +416,9 @@ void peasy_document_set_changed (PeasyDocument* self, gboolean value) {
 
 const gchar* peasy_document_get_encoding (PeasyDocument* self) {
 	const gchar* result;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	const gchar* _tmp2_ = NULL;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	const gchar* _tmp2_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, "");
@@ -420,8 +430,8 @@ const gchar* peasy_document_get_encoding (PeasyDocument* self) {
 
 
 void peasy_document_set_encoding (PeasyDocument* self, const gchar* value) {
-	GeanyDocument* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
+	GeanyDocument* _tmp0_;
+	const gchar* _tmp1_;
 	g_return_if_fail (self != NULL);
 	_tmp0_ = self->geany_doc;
 	_tmp1_ = value;
@@ -432,9 +442,9 @@ void peasy_document_set_encoding (PeasyDocument* self, const gchar* value) {
 
 gboolean peasy_document_get_is_valid (PeasyDocument* self) {
 	gboolean result;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	gboolean _tmp2_ = FALSE;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	gboolean _tmp2_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->geany_doc;
 	if (_tmp0_ == NULL) {
@@ -450,9 +460,9 @@ gboolean peasy_document_get_is_valid (PeasyDocument* self) {
 
 gboolean peasy_document_get_has_bom (PeasyDocument* self) {
 	gboolean result;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	gboolean _tmp2_ = FALSE;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	gboolean _tmp2_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, FALSE);
@@ -465,9 +475,9 @@ gboolean peasy_document_get_has_bom (PeasyDocument* self) {
 
 gboolean peasy_document_get_has_tags (PeasyDocument* self) {
 	gboolean result;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	gboolean _tmp2_ = FALSE;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	gboolean _tmp2_;
 	g_return_val_if_fail (self != NULL, FALSE);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, FALSE);
@@ -480,9 +490,9 @@ gboolean peasy_document_get_has_tags (PeasyDocument* self) {
 
 guint peasy_document_get_id (PeasyDocument* self) {
 	guint result;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	guint _tmp2_ = 0U;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	guint _tmp2_;
 	g_return_val_if_fail (self != NULL, 0U);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, 0);
@@ -495,9 +505,9 @@ guint peasy_document_get_id (PeasyDocument* self) {
 
 gchar* peasy_document_get_display_name (PeasyDocument* self) {
 	gchar* result;
-	GeanyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	gchar* _tmp2_ = NULL;
+	GeanyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	gchar* _tmp2_;
 	g_return_val_if_fail (self != NULL, NULL);
 	_tmp0_ = self->geany_doc;
 	g_return_val_if_fail (_tmp0_ != NULL, NULL);
@@ -509,15 +519,15 @@ gchar* peasy_document_get_display_name (PeasyDocument* self) {
 
 
 static void _peasy_document___lambda6_ (PeasyDocument* self, PeasyDocument* doc) {
-	PeasyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	GeanyDocument* _tmp2_ = NULL;
+	PeasyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	GeanyDocument* _tmp2_;
 	g_return_if_fail (doc != NULL);
 	_tmp0_ = doc;
 	_tmp1_ = _tmp0_->geany_doc;
 	_tmp2_ = self->geany_doc;
 	if (_tmp1_ == _tmp2_) {
-		g_signal_emit_by_name (self, "closing");
+		g_signal_emit (self, peasy_document_signals[PEASY_DOCUMENT_CLOSING_SIGNAL], 0);
 	}
 }
 
@@ -528,15 +538,15 @@ static void __peasy_document___lambda6__peasy_signals_document_close (PeasySigna
 
 
 static void _peasy_document___lambda7_ (PeasyDocument* self, PeasyDocument* doc) {
-	PeasyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	GeanyDocument* _tmp2_ = NULL;
+	PeasyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	GeanyDocument* _tmp2_;
 	g_return_if_fail (doc != NULL);
 	_tmp0_ = doc;
 	_tmp1_ = _tmp0_->geany_doc;
 	_tmp2_ = self->geany_doc;
 	if (_tmp1_ == _tmp2_) {
-		g_signal_emit_by_name (self, "reloaded");
+		g_signal_emit (self, peasy_document_signals[PEASY_DOCUMENT_RELOADED_SIGNAL], 0);
 	}
 }
 
@@ -547,15 +557,15 @@ static void __peasy_document___lambda7__peasy_signals_document_reload (PeasySign
 
 
 static void _peasy_document___lambda8_ (PeasyDocument* self, PeasyDocument* doc) {
-	PeasyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	GeanyDocument* _tmp2_ = NULL;
+	PeasyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	GeanyDocument* _tmp2_;
 	g_return_if_fail (doc != NULL);
 	_tmp0_ = doc;
 	_tmp1_ = _tmp0_->geany_doc;
 	_tmp2_ = self->geany_doc;
 	if (_tmp1_ == _tmp2_) {
-		g_signal_emit_by_name (self, "activate");
+		g_signal_emit (self, peasy_document_signals[PEASY_DOCUMENT_ACTIVATE_SIGNAL], 0);
 	}
 }
 
@@ -566,15 +576,15 @@ static void __peasy_document___lambda8__peasy_signals_document_activate (PeasySi
 
 
 static void _peasy_document___lambda9_ (PeasyDocument* self, PeasyDocument* doc) {
-	PeasyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	GeanyDocument* _tmp2_ = NULL;
+	PeasyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	GeanyDocument* _tmp2_;
 	g_return_if_fail (doc != NULL);
 	_tmp0_ = doc;
 	_tmp1_ = _tmp0_->geany_doc;
 	_tmp2_ = self->geany_doc;
 	if (_tmp1_ == _tmp2_) {
-		g_signal_emit_by_name (self, "before-save");
+		g_signal_emit (self, peasy_document_signals[PEASY_DOCUMENT_BEFORE_SAVE_SIGNAL], 0);
 	}
 }
 
@@ -585,15 +595,15 @@ static void __peasy_document___lambda9__peasy_signals_document_before_save (Peas
 
 
 static void _peasy_document___lambda10_ (PeasyDocument* self, PeasyDocument* doc) {
-	PeasyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	GeanyDocument* _tmp2_ = NULL;
+	PeasyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	GeanyDocument* _tmp2_;
 	g_return_if_fail (doc != NULL);
 	_tmp0_ = doc;
 	_tmp1_ = _tmp0_->geany_doc;
 	_tmp2_ = self->geany_doc;
 	if (_tmp1_ == _tmp2_) {
-		g_signal_emit_by_name (self, "saved");
+		g_signal_emit (self, peasy_document_signals[PEASY_DOCUMENT_SAVED_SIGNAL], 0);
 	}
 }
 
@@ -604,17 +614,17 @@ static void __peasy_document___lambda10__peasy_signals_document_save (PeasySigna
 
 
 static void _peasy_document___lambda11_ (PeasyDocument* self, PeasyDocument* doc, PeasyFiletype* ft) {
-	PeasyDocument* _tmp0_ = NULL;
-	GeanyDocument* _tmp1_ = NULL;
-	GeanyDocument* _tmp2_ = NULL;
+	PeasyDocument* _tmp0_;
+	GeanyDocument* _tmp1_;
+	GeanyDocument* _tmp2_;
 	g_return_if_fail (doc != NULL);
 	_tmp0_ = doc;
 	_tmp1_ = _tmp0_->geany_doc;
 	_tmp2_ = self->geany_doc;
 	if (_tmp1_ == _tmp2_) {
-		PeasyFiletype* _tmp3_ = NULL;
+		PeasyFiletype* _tmp3_;
 		_tmp3_ = ft;
-		g_signal_emit_by_name (self, "filetype-set", _tmp3_);
+		g_signal_emit (self, peasy_document_signals[PEASY_DOCUMENT_FILETYPE_SET_SIGNAL], 0, _tmp3_);
 	}
 }
 
@@ -628,18 +638,18 @@ static GObject * peasy_document_constructor (GType type, guint n_construct_prope
 	GObject * obj;
 	GObjectClass * parent_class;
 	PeasyDocument * self;
-	PeasySignals* _tmp0_ = NULL;
-	PeasySignals* _tmp1_ = NULL;
-	PeasySignals* _tmp2_ = NULL;
-	PeasySignals* _tmp3_ = NULL;
-	PeasySignals* _tmp4_ = NULL;
-	PeasySignals* _tmp5_ = NULL;
-	PeasySignals* _tmp6_ = NULL;
-	PeasySignals* _tmp7_ = NULL;
-	PeasySignals* _tmp8_ = NULL;
-	PeasySignals* _tmp9_ = NULL;
-	PeasySignals* _tmp10_ = NULL;
-	PeasySignals* _tmp11_ = NULL;
+	PeasySignals* _tmp0_;
+	PeasySignals* _tmp1_;
+	PeasySignals* _tmp2_;
+	PeasySignals* _tmp3_;
+	PeasySignals* _tmp4_;
+	PeasySignals* _tmp5_;
+	PeasySignals* _tmp6_;
+	PeasySignals* _tmp7_;
+	PeasySignals* _tmp8_;
+	PeasySignals* _tmp9_;
+	PeasySignals* _tmp10_;
+	PeasySignals* _tmp11_;
 	parent_class = G_OBJECT_CLASS (peasy_document_parent_class);
 	obj = parent_class->constructor (type, n_construct_properties, construct_properties);
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_DOCUMENT, PeasyDocument);
@@ -678,12 +688,12 @@ static void peasy_document_class_init (PeasyDocumentClass * klass) {
 	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_HAS_TAGS, g_param_spec_boolean ("has-tags", "has-tags", "has-tags", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_ID, g_param_spec_uint ("id", "id", "id", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_DISPLAY_NAME, g_param_spec_string ("display-name", "display-name", "display-name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_signal_new ("closing", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
-	g_signal_new ("reloaded", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
-	g_signal_new ("activate", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
-	g_signal_new ("before_save", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
-	g_signal_new ("saved", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
-	g_signal_new ("filetype_set", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_FILETYPE);
+	peasy_document_signals[PEASY_DOCUMENT_CLOSING_SIGNAL] = g_signal_new ("closing", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+	peasy_document_signals[PEASY_DOCUMENT_RELOADED_SIGNAL] = g_signal_new ("reloaded", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+	peasy_document_signals[PEASY_DOCUMENT_ACTIVATE_SIGNAL] = g_signal_new ("activate", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+	peasy_document_signals[PEASY_DOCUMENT_BEFORE_SAVE_SIGNAL] = g_signal_new ("before_save", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+	peasy_document_signals[PEASY_DOCUMENT_SAVED_SIGNAL] = g_signal_new ("saved", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+	peasy_document_signals[PEASY_DOCUMENT_FILETYPE_SET_SIGNAL] = g_signal_new ("filetype_set", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_FILETYPE);
 }
 
 
@@ -691,7 +701,7 @@ static void peasy_document_instance_init (PeasyDocument * self) {
 }
 
 
-static void peasy_document_finalize (GObject* obj) {
+static void peasy_document_finalize (GObject * obj) {
 	PeasyDocument * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_DOCUMENT, PeasyDocument);
 	_g_object_unref0 (self->editor);

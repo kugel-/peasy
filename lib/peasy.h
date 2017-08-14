@@ -130,6 +130,19 @@ typedef struct _PeasyKeyBindingClass PeasyKeyBindingClass;
 typedef struct _PeasyKeyBindingPrivate PeasyKeyBindingPrivate;
 typedef struct _PeasyKeyGroupPrivate PeasyKeyGroupPrivate;
 
+#define PEASY_TYPE_TAG_QUERY (peasy_tag_query_get_type ())
+#define PEASY_TAG_QUERY(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_TAG_QUERY, PeasyTagQuery))
+#define PEASY_TAG_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), PEASY_TYPE_TAG_QUERY, PeasyTagQueryClass))
+#define PEASY_IS_TAG_QUERY(obj) (G_TYPE_CHECK_INSTANCE_TYPE ((obj), PEASY_TYPE_TAG_QUERY))
+#define PEASY_IS_TAG_QUERY_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), PEASY_TYPE_TAG_QUERY))
+#define PEASY_TAG_QUERY_GET_CLASS(obj) (G_TYPE_INSTANCE_GET_CLASS ((obj), PEASY_TYPE_TAG_QUERY, PeasyTagQueryClass))
+
+typedef struct _PeasyTagQuery PeasyTagQuery;
+typedef struct _PeasyTagQueryClass PeasyTagQueryClass;
+typedef struct _PeasyTagQueryPrivate PeasyTagQueryPrivate;
+
+#define PEASY_TAG_QUERY_TYPE_SOURCE (peasy_tag_query_source_get_type ())
+
 struct _PeasyPluginConfigureIface {
 	GTypeInterface parent_iface;
 	GtkWidget* (*configure) (PeasyPluginConfigure* self, GtkDialog* parent);
@@ -234,6 +247,20 @@ struct _PeasyKeyGroupClass {
 	gboolean (*default_handler) (PeasyKeyGroup* self, gint id);
 };
 
+struct _PeasyTagQuery {
+	GObject parent_instance;
+	PeasyTagQueryPrivate * priv;
+};
+
+struct _PeasyTagQueryClass {
+	GObjectClass parent_class;
+};
+
+typedef enum  {
+	PEASY_TAG_QUERY_SOURCE_GLOBAL_TAGS,
+	PEASY_TAG_QUERY_SOURCE_SESSION_TAGS
+} PeasyTagQuerySource;
+
 
 const gchar* peasy_get_locale_dir (void);
 const gchar* peasy_gettext (const gchar* msgid);
@@ -298,6 +325,14 @@ PeasyKeyBinding* peasy_key_group_add_keybinding_with_id (PeasyKeyGroup* self, co
 PeasyKeyBinding* peasy_key_group_get_item (PeasyKeyGroup* self, gint id);
 PeasyKeyGroup* peasy_key_group_new (void);
 PeasyKeyGroup* peasy_key_group_construct (GType object_type);
+GType peasy_tag_query_get_type (void) G_GNUC_CONST;
+GType peasy_tag_query_source_get_type (void) G_GNUC_CONST;
+PeasyTagQuery* peasy_tag_query_new_with_source (PeasyTagQuerySource source);
+PeasyTagQuery* peasy_tag_query_construct_with_source (GType object_type, PeasyTagQuerySource source);
+gint peasy_tag_query_match_name (PeasyTagQuery* self, const gchar* name, gint len);
+GPtrArray* peasy_tag_query_exec (PeasyTagQuery* self);
+PeasyTagQuery* peasy_tag_query_new (void);
+PeasyTagQuery* peasy_tag_query_construct (GType object_type);
 
 
 G_END_DECLS

@@ -3,8 +3,10 @@ include $(top_srcdir)/initvars.mk
 INTROSPECTION_GIRS     += Geany-1.0-tmp.gir GeanyScintilla-1.0-tmp.gir
 SCANNERFLAGS            = --accept-unprefixed
 SCANNERFLAGS           += --c-include=geanyplugin.h
-# external seems to be necessary on msys2 but it ain't wrong anyway
-SCANNERFLAGS           += --external
+SCANNERFLAGS           += --external-library
+
+# err, g-ir-scanner doesn't pass -L to the linker, seems like a bug
+LDFLAGS                 = $(GEANY_LIBS)
 
 GTK_GIR = Gtk-@GP_GTK_VERSION_MAJOR@.0
 

@@ -70,52 +70,13 @@ def get_icon_name(tag):
     else:
         return "classviewer-other"
 
-# copied from mainline cpython, modified to bisect a TMTag array with a
-# x being string
-def tag_bisect_left(a, x, lo=0, hi=None):
-    """Return the index where to insert item x in list a, assuming a is sorted.
-
-    The return value i is such that all e in a[:i] have e < x, and all e in
-    a[i:] have e >= x.  So if x already appears in the list, a.insert(x) will
-    insert just before the leftmost x already there.
-
-    Optional args lo (default 0) and hi (default len(a)) bound the
-    slice of a to be searched.
-    """
-
-    if lo < 0:
-        raise ValueError('lo must be non-negative')
-    if hi is None:
-        hi = len(a)
-    while lo < hi:
-        mid = (lo+hi)//2
-        if a[mid].name < x: lo = mid+1
-        else: hi = mid
-    return lo
-
 class QuickSwitchPlugin(Peasy.Plugin):
     __gtype_name__ = 'QuickSwitchPlugin'
 
-    def search_tags2(self, prefix):
-        ws = self.geany_plugin.geany_data.app.tm_workspace
-        q = Geany.TMQuery.new(ws, Geany.TMQuerySource.SESSION_TAGS);
-        q.add_name(prefix, len(prefix))
-        return q.exec(None, None)
-
     def search_tags(self, prefix):
-        if (hasattr(Geany, "TMQuery")):
-            return self.search_tags2(prefix)
-        ret = []
-        # This is super slow with lots of tags. pygobject seems to call getattr()
-        # for all elements on the first use, regardless of how it used
-        array = self.geany_plugin.geany_data.app.tm_workspace.tags_array
-        n = tag_bisect_left(array, prefix)
-        for tag in array[n:]:
-            if (tag.name.startswith(prefix)):
-                ret.append(tag)
-            else:
-                break
-        return ret
+        q = Peasy.TagQuery.with_source(Peasy.TagQuerySource.SESSION_TAGS)
+        q.match_name(prefix, len(prefix))
+        return q.exec()
 
     def pos_func(self, *args):
         alloc = args[3].get_allocation()
@@ -153,7 +114,7 @@ class QuickSwitchPlugin(Peasy.Plugin):
             docs_fn = [doc["doc"].display_name() for doc in docs]
             if (len(docs_fn) == len(set(docs_fn))):
                 # simple case: multiple docs but unique display names
-                def get_label(doc):
+                def get_label(doc, i):
                     fname = doc["doc"].display_name()
                     try:
                         return "%s @%s:%d" % (doc["tag"].name, fname, doc["tag"].line)
@@ -165,11 +126,21 @@ class QuickSwitchPlugin(Peasy.Plugin):
                 # display name. show parts of the path to distinguish
                 # strategy is to hide the common prefix of each doc ellipsize
                 # the longest common paths components
-                self.prefix, self.substr = get_prefix_and_substring([d["doc"].file_name for d in docs])
-                label_fn = lambda doc: self.get_doc_label(doc)
+                if (hasattr(Geany, "utils_strv_shorten_file_list")):
+                    strv = Geany.utils_strv_shorten_file_list([d["doc"].file_name for d in docs])
+                    def get_label(doc, i):
+                        if doc.get("tag") is not None:
+                            return "%s @ <i>%s:%d</i>" % (doc["tag"].name, strv[i], doc["tag"].line)
+                        else:
+                            return strv[i]
+                    label_fn = get_label
+                else:
+                    self.prefix, self.substr = get_prefix_and_substring([d["doc"].file_name for d in docs])
+                    label_fn = lambda doc, i: self.get_doc_label(doc)
             m = Gtk.Menu.new()
-            def add_doc(doc):
-                w = Gtk.ImageMenuItem.new_with_label(label_fn(doc))
+            def add_doc(i):
+                doc = docs[i]
+                w = Gtk.ImageMenuItem.new_with_label(label_fn(doc, i))
                 w.get_child().props.use_markup = True
                 try:
                     w.set_image(Gtk.Image.new_from_icon_name(get_icon_name(doc["tag"]), Gtk.IconSize.MENU))
@@ -180,10 +151,10 @@ class QuickSwitchPlugin(Peasy.Plugin):
                 m.append(w)
                 return w
             # always select the first item for better keyboard navigation
-            w = add_doc(docs[0])
+            w = add_doc(0)
             m.connect("realize", lambda menu: menu.select_item(w))
-            for d in docs[1:]:
-                add_doc(d)
+            for i in range(1, len(docs)):
+                add_doc(i)
             m.show_all()
             # grab a ref to the menu or it would be destroyed after leaving this function
             # is there a better solution??

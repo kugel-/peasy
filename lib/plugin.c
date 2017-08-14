@@ -107,7 +107,7 @@ struct _PeasyPluginClass {
 extern GHashTable* peasy_native_abis;
 GHashTable* peasy_native_abis = NULL;
 static gpointer peasy_plugin_parent_class = NULL;
-static PeasyPluginIfaceIface* peasy_plugin_peasy_plugin_iface_parent_iface = NULL;
+static PeasyPluginIfaceIface * peasy_plugin_peasy_plugin_iface_parent_iface = NULL;
 
 const gchar* peasy_get_locale_dir (void);
 const gchar* peasy_gettext (const gchar* msgid);
@@ -134,7 +134,7 @@ GType peasy_key_group_get_type (void) G_GNUC_CONST;
 PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* section_name, gsize count);
 PeasyKeyGroup* peasy_key_group_new_from_geany (GeanyKeyGroup* kb_group);
 PeasyKeyGroup* peasy_key_group_construct_from_geany (GType object_type, GeanyKeyGroup* kb_group);
-static void peasy_plugin_finalize (GObject* obj);
+static void peasy_plugin_finalize (GObject * obj);
 
 
 /**
@@ -150,19 +150,19 @@ static void peasy_plugin_finalize (GObject* obj);
  */
 gboolean peasy_check_abi (PeasObjectModule* mod, gint abi_ver) {
 	gboolean result = FALSE;
-	gint _tmp0_ = 0;
-	gboolean _tmp1_ = FALSE;
+	gint _tmp0_;
+	gboolean _tmp1_;
 	g_return_val_if_fail (mod != NULL, FALSE);
 	_tmp0_ = abi_ver;
 	_tmp1_ = peasy_do_check_abi (_tmp0_);
 	if (!_tmp1_) {
-		GHashTable* _tmp2_ = NULL;
-		PeasObjectModule* _tmp3_ = NULL;
-		gchar* _tmp4_ = NULL;
-		gchar* _tmp5_ = NULL;
-		gchar* _tmp6_ = NULL;
-		gchar* _tmp7_ = NULL;
-		gint _tmp8_ = 0;
+		GHashTable* _tmp2_;
+		PeasObjectModule* _tmp3_;
+		gchar* _tmp4_;
+		gchar* _tmp5_;
+		gchar* _tmp6_;
+		gchar* _tmp7_;
+		gint _tmp8_;
 		_tmp2_ = peasy_native_abis;
 		_tmp3_ = mod;
 		g_object_get (_tmp3_, "module-name", &_tmp4_, NULL);
@@ -233,8 +233,9 @@ GType peasy_plugin_help_get_type (void) {
 
 
 static gboolean peasy_plugin_real_enable (PeasyPlugin* self) {
+	gboolean _tmp0_ = FALSE;
 	g_critical ("Type `%s' does not implement abstract method `peasy_plugin_enable'", g_type_name (G_TYPE_FROM_INSTANCE (self)));
-	return FALSE;
+	return _tmp0_;
 }
 
 
@@ -266,11 +267,11 @@ static PeasyPlugin* peasy_plugin_construct (GType object_type) {
 PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* section_name, gsize count) {
 	PeasyKeyGroup* result = NULL;
 	GeanyKeyGroup* kb_group = NULL;
-	GeanyPlugin* _tmp0_ = NULL;
-	const gchar* _tmp1_ = NULL;
-	gsize _tmp2_ = 0UL;
-	GeanyKeyGroup* _tmp3_ = NULL;
-	PeasyKeyGroup* _tmp4_ = NULL;
+	GeanyPlugin* _tmp0_;
+	const gchar* _tmp1_;
+	gsize _tmp2_;
+	GeanyKeyGroup* _tmp3_;
+	PeasyKeyGroup* _tmp4_;
 	g_return_val_if_fail (self != NULL, NULL);
 	g_return_val_if_fail (section_name != NULL, NULL);
 	_tmp0_ = self->geany_plugin;
@@ -287,8 +288,8 @@ PeasyKeyGroup* peasy_plugin_add_key_group (PeasyPlugin* self, const gchar* secti
 
 static void peasy_plugin_class_init (PeasyPluginClass * klass) {
 	peasy_plugin_parent_class = g_type_class_peek_parent (klass);
-	((PeasyPluginClass *) klass)->enable = peasy_plugin_real_enable;
-	((PeasyPluginClass *) klass)->disable = peasy_plugin_real_disable;
+	((PeasyPluginClass *) klass)->enable = (gboolean (*) (PeasyPlugin *)) peasy_plugin_real_enable;
+	((PeasyPluginClass *) klass)->disable = (void (*) (PeasyPlugin *)) peasy_plugin_real_disable;
 	G_OBJECT_CLASS (klass)->finalize = peasy_plugin_finalize;
 }
 
@@ -302,7 +303,7 @@ static void peasy_plugin_instance_init (PeasyPlugin * self) {
 }
 
 
-static void peasy_plugin_finalize (GObject* obj) {
+static void peasy_plugin_finalize (GObject * obj) {
 	PeasyPlugin * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (obj, PEASY_TYPE_PLUGIN, PeasyPlugin);
 	G_OBJECT_CLASS (peasy_plugin_parent_class)->finalize (obj);

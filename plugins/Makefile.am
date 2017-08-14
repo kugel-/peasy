@@ -9,6 +9,7 @@ libpeasytest_la_LIBADD  = $(PEAS_LIBS) $(GEANY_LIBS) $(top_builddir)/lib/libpeas
 
 PLUGIN_INFO      = peasytest.plugin \
                    console-peasy.plugin \
+                   doxygen-helper.plugin \
                    modeline.plugin \
                    peasyluatest.plugin \
                    peasypytest.plugin \
@@ -17,6 +18,7 @@ PLUGIN_INFO      = peasytest.plugin \
 plugin_DATA     += $(PLUGIN_INFO)
 
 dist_plugin_DATA+= console-peasy.py  \
+                   doxygen-helper.py  \
                    modeline.py  \
                    peasyluatest.lua  \
                    peasypytest.py  \
@@ -26,6 +28,9 @@ EXTRA_DIST += ${PLUGIN_INFO:.plugin=.plugin.desktop.in}
 
 pluginquickswitchdatadir = $(plugindatadir)/quickswitch
 dist_pluginquickswitchdata_DATA = quickswitch.glade
+
+doxyhelperdatadir = $(plugindatadir)/doxygen-helper
+dist_doxyhelperdata_DATA = doxygen-helper.glade
 
 SUFFIXES = .plugin .plugin.desktop.in
 # TODO: wildcard dependency on *.po in a portable fashion
