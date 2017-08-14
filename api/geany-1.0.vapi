@@ -1194,6 +1194,9 @@ namespace Geany {
 	[CCode (cheader_filename = "geanyplugin.h", cname = "keybindings_get_modifiers")]
 	[Version (since = "1.25.")]
 	public static Gdk.ModifierType keybindings_get_modifiers (Gdk.ModifierType mods);
+	[CCode (cheader_filename = "geanyplugin.h", cname = "keybindings_load_keyfile")]
+	[Version (since = "1.32")]
+	public static void keybindings_load_keyfile ();
 	[CCode (cheader_filename = "geanyplugin.h", cname = "keybindings_send_command")]
 	public static void keybindings_send_command (uint group_id, uint key_id);
 	[CCode (cheader_filename = "geanyplugin.h", cname = "keybindings_set_item_full")]
