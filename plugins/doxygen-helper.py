@@ -292,15 +292,18 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
             line = sci.get_line(line_num)
             if (back.probe(line, style)):
                 empty_comment = True
-                while True:
-                    line_num += 1
-                    buf = sci.get_line(line_num)
-                    if (buf.find(back.docend) != -1):
-                        break
-                    if (buf.strip() != back.doccont.strip()):
-                        #~ empty_comment = False
-                        line_num -= 1
-                        break
+                if None:
+                    # Dead code that attempts to find an existing empty
+                    # comment at the insertion point
+                    while True:
+                        line_num += 1
+                        buf = sci.get_line(line_num)
+                        if (buf.find(back.docend) != -1):
+                            break
+                        if (buf.strip() != back.doccont.strip()):
+                            empty_comment = False
+                            line_num -= 1
+                            break
                 if empty_comment:
                     if self.tag:
                         self.back = back
