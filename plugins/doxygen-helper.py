@@ -206,7 +206,8 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         self.ui = None # set during configuration
 
     def get_next_tag(self, doc, line):
-        if (not doc.has_tags):
+        # Check if the doc has valid tags at all
+        if (doc.tm_file is None or doc.tm_file.tags_array is None):
             return None
         tags = []
         next = None
