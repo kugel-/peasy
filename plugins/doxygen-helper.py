@@ -79,8 +79,8 @@ class BackendC(BackendBase):
     _example  = ExampleTag("(int arg1, char *arg2)", "int", "{0} example{1};")
     prefix    = "@"
     docstart  = "/**"
-    doccont   = " **"
-    docend    = " **/"
+    doccont   = " *"
+    docend    = " */"
 
     def get_args(self, tag):
         # "(int a, char * b, sturct Foo *c)" -> ["int a","char * b", "struct Foo *c"]
