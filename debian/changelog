@@ -1,3 +1,46 @@
+peasy (0.5-10kugel-1) unstable; urgency=medium
+
+  * Team upload.
+  * api: regenerate vapis against Geany 1.30 (including my extensions)
+  * lib: new tags module
+  * quickswitch: make use of new peasy TagQuery API
+  * lib: update generated valac code.
+  * quickswitch: use Geany's utils_strv_shorten_file_list if available
+  * plugins: Initial state of new doxygen helper plugin
+  * plugins: add doxygen-helper to build system and distribute
+  * doxygen-helper: make use of scintilla indicators
+  * doxygen-helper: Initial configuration plus dialogs
+  * doxygen-helper: Initial preview and template editing
+  * doxygen-helper: implement saving config
+  * build-sys: update INSTALL, and stop generated it
+  * libpeasy: update for vala 0.36
+  * api: update for vala 0.36
+  * build-sys: fix GIR generation
+  * api: regenerate vapi against geany-1.31-10kugel
+  * doxygen-helper: only support editor_insert_snippet code path
+  * doxygen-helper: disconnect editor-notify in on_disable, to truly disable
+  * doxygen-helper: make configuration work
+  * doxygen-helper: give the template dialog a name
+  * doxygen-helper: prepare for l18n
+  * doxygen-helper: improved UI
+  * l18n: make update-po
+  * doxygen-helper: use _ as placeholder to match what's actually inserted by Geany
+  * doxygen-helper: German translation
+  * doxygen-helper: only load glade when needed
+  * doxygen-helper: fix issues if the config files are not present
+  * doxygen-helper: rework templates dialog management
+  * Improved README.md
+  * doxygen-helper: bump API requirement to 233
+  * Python 3 fix
+  * build-sys: redo 3aa3b952e28c5ab562fd79701eb65f07202b26f2
+  * build-sys: pass --target-glib to valac
+  * doxygen-helper: tweak default C template to match Geany
+  * doxygen-helper: don't check document->has_tags
+  * doxygen-helper: clearly label dead code as such
+  * peasy: bump to version 0.5 for next unstable release
+
+ -- Thomas Martitz <kugel@rockbox.org>  Mon, 14 Aug 2017 23:08:53 +0200
+
 peasy (0.4-10kugel2) unstable; urgency=medium
 
   * Team upload.
