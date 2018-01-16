@@ -31,7 +31,18 @@ typedef struct _PeasySignalsClass PeasySignalsClass;
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 #define _g_hash_table_unref0(var) ((var == NULL) ? NULL : (var = (g_hash_table_unref (var), NULL)))
 typedef struct _PeasyObjectPrivate PeasyObjectPrivate;
+enum  {
+	PEASY_OBJECT_0_PROPERTY,
+	PEASY_OBJECT_PLUGIN_SIGNALS_PROPERTY,
+	PEASY_OBJECT_NUM_PROPERTIES
+};
+static GParamSpec* peasy_object_properties[PEASY_OBJECT_NUM_PROPERTIES];
 typedef struct _PeasySignalsPrivate PeasySignalsPrivate;
+enum  {
+	PEASY_SIGNALS_0_PROPERTY,
+	PEASY_SIGNALS_NUM_PROPERTIES
+};
+static GParamSpec* peasy_signals_properties[PEASY_SIGNALS_NUM_PROPERTIES];
 
 #define PEASY_TYPE_DOCUMENT (peasy_document_get_type ())
 #define PEASY_DOCUMENT(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_DOCUMENT, PeasyDocument))
@@ -61,9 +72,9 @@ enum  {
 	PEASY_SIGNALS_DOCUMENT_SAVE_SIGNAL,
 	PEASY_SIGNALS_DOCUMENT_CLOSE_SIGNAL,
 	PEASY_SIGNALS_DOCUMENT_FILETYPE_SET_SIGNAL,
-	PEASY_SIGNALS_LAST_SIGNAL
+	PEASY_SIGNALS_NUM_SIGNALS
 };
-static guint peasy_signals_signals[PEASY_SIGNALS_LAST_SIGNAL] = {0};
+static guint peasy_signals_signals[PEASY_SIGNALS_NUM_SIGNALS] = {0};
 
 struct _PeasyObject {
 	GObject parent_instance;
@@ -104,10 +115,6 @@ PeasySignals* peasy_signals_new (void);
 PeasySignals* peasy_signals_construct (GType object_type);
 static void _g_free0_ (gpointer var);
 #define PEASY_OBJECT_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_OBJECT, PeasyObjectPrivate))
-enum  {
-	PEASY_OBJECT_DUMMY_PROPERTY,
-	PEASY_OBJECT_PLUGIN_SIGNALS
-};
 void peasy_object_signal_connect (GObject* obj, const gchar* signal_name, gboolean after, GCallback cb, void* data);
 PeasyObject* peasy_object_new (void);
 PeasyObject* peasy_object_construct (GType object_type);
@@ -117,9 +124,6 @@ static GObject * peasy_object_constructor (GType type, guint n_construct_propert
 static void peasy_object_finalize (GObject * obj);
 static void _vala_peasy_object_get_property (GObject * object, guint property_id, GValue * value, GParamSpec * pspec);
 static void _vala_peasy_object_set_property (GObject * object, guint property_id, const GValue * value, GParamSpec * pspec);
-enum  {
-	PEASY_SIGNALS_DUMMY_PROPERTY
-};
 static void peasy_signals_emit_new (GObject* obj, GeanyDocument* geany_doc, PeasySignals* sig);
 PeasyDocument* peasy_document_new (GeanyDocument* doc);
 PeasyDocument* peasy_document_construct (GType object_type, GeanyDocument* doc);
@@ -220,7 +224,7 @@ static void peasy_object_set_plugin_signals (PeasyObject* self, PeasySignals* va
 		_tmp1_ = _g_object_ref0 (_tmp0_);
 		_g_object_unref0 (self->priv->_plugin_signals);
 		self->priv->_plugin_signals = _tmp1_;
-		g_object_notify ((GObject *) self, "plugin-signals");
+		g_object_notify_by_pspec ((GObject *) self, peasy_object_properties[PEASY_OBJECT_PLUGIN_SIGNALS_PROPERTY]);
 	}
 }
 
@@ -246,7 +250,7 @@ static void peasy_object_class_init (PeasyObjectClass * klass) {
 	G_OBJECT_CLASS (klass)->set_property = _vala_peasy_object_set_property;
 	G_OBJECT_CLASS (klass)->constructor = peasy_object_constructor;
 	G_OBJECT_CLASS (klass)->finalize = peasy_object_finalize;
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_OBJECT_PLUGIN_SIGNALS, g_param_spec_object ("plugin-signals", "plugin-signals", "plugin-signals", PEASY_TYPE_SIGNALS, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_OBJECT_PLUGIN_SIGNALS_PROPERTY, peasy_object_properties[PEASY_OBJECT_PLUGIN_SIGNALS_PROPERTY] = g_param_spec_object ("plugin-signals", "plugin-signals", "plugin-signals", PEASY_TYPE_SIGNALS, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 }
 
 
@@ -279,7 +283,7 @@ static void _vala_peasy_object_get_property (GObject * object, guint property_id
 	PeasyObject * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_OBJECT, PeasyObject);
 	switch (property_id) {
-		case PEASY_OBJECT_PLUGIN_SIGNALS:
+		case PEASY_OBJECT_PLUGIN_SIGNALS_PROPERTY:
 		g_value_set_object (value, peasy_object_get_plugin_signals (self));
 		break;
 		default:
@@ -293,7 +297,7 @@ static void _vala_peasy_object_set_property (GObject * object, guint property_id
 	PeasyObject * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_OBJECT, PeasyObject);
 	switch (property_id) {
-		case PEASY_OBJECT_PLUGIN_SIGNALS:
+		case PEASY_OBJECT_PLUGIN_SIGNALS_PROPERTY:
 		peasy_object_set_plugin_signals (self, g_value_get_object (value));
 		break;
 		default:
@@ -501,14 +505,14 @@ static void g_cclosure_user_marshal_VOID__OBJECT_OBJECT (GClosure * closure, GVa
 
 static void peasy_signals_class_init (PeasySignalsClass * klass) {
 	peasy_signals_parent_class = g_type_class_peek_parent (klass);
-	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_NEW_SIGNAL] = g_signal_new ("document_new", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
-	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_OPEN_SIGNAL] = g_signal_new ("document_open", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
-	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_ACTIVATE_SIGNAL] = g_signal_new ("document_activate", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
-	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_RELOAD_SIGNAL] = g_signal_new ("document_reload", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
-	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_BEFORE_SAVE_SIGNAL] = g_signal_new ("document_before_save", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
-	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_SAVE_SIGNAL] = g_signal_new ("document_save", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
-	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_CLOSE_SIGNAL] = g_signal_new ("document_close", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
-	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_FILETYPE_SET_SIGNAL] = g_signal_new ("document_filetype_set", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__OBJECT_OBJECT, G_TYPE_NONE, 2, PEASY_TYPE_DOCUMENT, PEASY_TYPE_FILETYPE);
+	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_NEW_SIGNAL] = g_signal_new ("document-new", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
+	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_OPEN_SIGNAL] = g_signal_new ("document-open", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
+	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_ACTIVATE_SIGNAL] = g_signal_new ("document-activate", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
+	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_RELOAD_SIGNAL] = g_signal_new ("document-reload", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
+	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_BEFORE_SAVE_SIGNAL] = g_signal_new ("document-before-save", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
+	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_SAVE_SIGNAL] = g_signal_new ("document-save", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
+	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_CLOSE_SIGNAL] = g_signal_new ("document-close", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_DOCUMENT);
+	peasy_signals_signals[PEASY_SIGNALS_DOCUMENT_FILETYPE_SET_SIGNAL] = g_signal_new ("document-filetype-set", PEASY_TYPE_SIGNALS, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_user_marshal_VOID__OBJECT_OBJECT, G_TYPE_NONE, 2, PEASY_TYPE_DOCUMENT, PEASY_TYPE_FILETYPE);
 }
 
 

@@ -57,6 +57,11 @@ typedef struct _PeasyPluginIfaceIface PeasyPluginIfaceIface;
 typedef struct _PeasyPlugin PeasyPlugin;
 typedef struct _PeasyPluginClass PeasyPluginClass;
 typedef struct _PeasyPluginPrivate PeasyPluginPrivate;
+enum  {
+	PEASY_PLUGIN_0_PROPERTY,
+	PEASY_PLUGIN_NUM_PROPERTIES
+};
+static GParamSpec* peasy_plugin_properties[PEASY_PLUGIN_NUM_PROPERTIES];
 
 #define PEASY_TYPE_KEY_GROUP (peasy_key_group_get_type ())
 #define PEASY_KEY_GROUP(obj) (G_TYPE_CHECK_INSTANCE_CAST ((obj), PEASY_TYPE_KEY_GROUP, PeasyKeyGroup))
@@ -120,9 +125,6 @@ void peasy_plugin_help_help (PeasyPluginHelp* self);
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_plugin_iface_get_type (void) G_GNUC_CONST;
 GType peasy_plugin_get_type (void) G_GNUC_CONST;
-enum  {
-	PEASY_PLUGIN_DUMMY_PROPERTY
-};
 gboolean peasy_plugin_enable (PeasyPlugin* self);
 static gboolean peasy_plugin_real_enable (PeasyPlugin* self);
 void peasy_plugin_disable (PeasyPlugin* self);

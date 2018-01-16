@@ -31,8 +31,18 @@ typedef struct _PeasyKeyBindingPrivate PeasyKeyBindingPrivate;
 
 typedef struct _PeasyKeyGroup PeasyKeyGroup;
 typedef struct _PeasyKeyGroupClass PeasyKeyGroupClass;
+enum  {
+	PEASY_KEY_BINDING_0_PROPERTY,
+	PEASY_KEY_BINDING_NUM_PROPERTIES
+};
+static GParamSpec* peasy_key_binding_properties[PEASY_KEY_BINDING_NUM_PROPERTIES];
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 typedef struct _PeasyKeyGroupPrivate PeasyKeyGroupPrivate;
+enum  {
+	PEASY_KEY_GROUP_0_PROPERTY,
+	PEASY_KEY_GROUP_NUM_PROPERTIES
+};
+static GParamSpec* peasy_key_group_properties[PEASY_KEY_GROUP_NUM_PROPERTIES];
 #define _g_list_free0(var) ((var == NULL) ? NULL : (var = (g_list_free (var), NULL)))
 
 struct _PeasyKeyBinding {
@@ -73,9 +83,6 @@ static gpointer peasy_key_group_parent_class = NULL;
 GType peasy_key_binding_get_type (void) G_GNUC_CONST;
 GType peasy_key_group_get_type (void) G_GNUC_CONST;
 #define PEASY_KEY_BINDING_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_KEY_BINDING, PeasyKeyBindingPrivate))
-enum  {
-	PEASY_KEY_BINDING_DUMMY_PROPERTY
-};
 gboolean peasy_key_binding_default_handler (PeasyKeyBinding* self, gint id);
 static gboolean peasy_key_binding_real_default_handler (PeasyKeyBinding* self, gint id);
 static gboolean peasy_key_binding_geany_handler (PeasyKeyBinding* self, GeanyKeyBinding* item, guint id);
@@ -87,9 +94,6 @@ PeasyKeyBinding* peasy_key_binding_construct_from_geany (GType object_type, Peas
 void peasy_key_binding_setup_signal_activate (void);
 static void peasy_key_binding_finalize (GObject * obj);
 #define PEASY_KEY_GROUP_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_KEY_GROUP, PeasyKeyGroupPrivate))
-enum  {
-	PEASY_KEY_GROUP_DUMMY_PROPERTY
-};
 gboolean peasy_key_group_default_handler (PeasyKeyGroup* self, gint id);
 static gboolean peasy_key_group_real_default_handler (PeasyKeyGroup* self, gint id);
 PeasyKeyGroup* peasy_key_group_new_from_geany (GeanyKeyGroup* kb_group);

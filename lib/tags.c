@@ -19,6 +19,11 @@
 typedef struct _PeasyTagQuery PeasyTagQuery;
 typedef struct _PeasyTagQueryClass PeasyTagQueryClass;
 typedef struct _PeasyTagQueryPrivate PeasyTagQueryPrivate;
+enum  {
+	PEASY_TAG_QUERY_0_PROPERTY,
+	PEASY_TAG_QUERY_NUM_PROPERTIES
+};
+static GParamSpec* peasy_tag_query_properties[PEASY_TAG_QUERY_NUM_PROPERTIES];
 
 #define PEASY_TAG_QUERY_TYPE_SOURCE (peasy_tag_query_source_get_type ())
 #define __g_list_free__g_string_free0_0(var) ((var == NULL) ? NULL : (var = (_g_list_free__g_string_free0_ (var), NULL)))
@@ -50,12 +55,9 @@ extern GeanyPlugin* peasy_peasy_plugin;
 
 GType peasy_tag_query_get_type (void) G_GNUC_CONST;
 #define PEASY_TAG_QUERY_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), PEASY_TYPE_TAG_QUERY, PeasyTagQueryPrivate))
-enum  {
-	PEASY_TAG_QUERY_DUMMY_PROPERTY
-};
 GType peasy_tag_query_source_get_type (void) G_GNUC_CONST;
 static void _g_string_free0_ (gpointer var);
-static void _g_list_free__g_string_free0_ (GList* self);
+static inline void _g_list_free__g_string_free0_ (GList* self);
 PeasyTagQuery* peasy_tag_query_new_with_source (PeasyTagQuerySource source);
 PeasyTagQuery* peasy_tag_query_construct_with_source (GType object_type, PeasyTagQuerySource source);
 gint peasy_tag_query_match_name (PeasyTagQuery* self, const gchar* name, gint len);
@@ -86,9 +88,8 @@ static void _g_string_free0_ (gpointer var) {
 }
 
 
-static void _g_list_free__g_string_free0_ (GList* self) {
-	g_list_foreach (self, (GFunc) _g_string_free0_, NULL);
-	g_list_free (self);
+static inline void _g_list_free__g_string_free0_ (GList* self) {
+	g_list_free_full (self, (GDestroyNotify) _g_string_free0_);
 }
 
 

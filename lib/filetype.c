@@ -28,6 +28,11 @@ typedef struct _PeasyObjectPrivate PeasyObjectPrivate;
 typedef struct _PeasyFiletype PeasyFiletype;
 typedef struct _PeasyFiletypeClass PeasyFiletypeClass;
 typedef struct _PeasyFiletypePrivate PeasyFiletypePrivate;
+enum  {
+	PEASY_FILETYPE_0_PROPERTY,
+	PEASY_FILETYPE_NUM_PROPERTIES
+};
+static GParamSpec* peasy_filetype_properties[PEASY_FILETYPE_NUM_PROPERTIES];
 typedef struct _Block2Data Block2Data;
 #define _g_ptr_array_unref0(var) ((var == NULL) ? NULL : (var = (g_ptr_array_unref (var), NULL)))
 
@@ -61,9 +66,6 @@ extern GeanyPlugin* peasy_peasy_plugin;
 
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_filetype_get_type (void) G_GNUC_CONST;
-enum  {
-	PEASY_FILETYPE_DUMMY_PROPERTY
-};
 GPtrArray* peasy_filetype_all_filetypes (void);
 static Block2Data* block2_data_ref (Block2Data* _data2_);
 static void block2_data_unref (void * _userdata_);

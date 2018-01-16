@@ -260,7 +260,7 @@
 				<type name="none"/>
 			</return-value>
 		</glib:signal>
-		<glib:signal name="before_save">
+		<glib:signal name="before-save">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -270,7 +270,7 @@
 				<type name="none"/>
 			</return-value>
 		</glib:signal>
-		<glib:signal name="filetype_set">
+		<glib:signal name="filetype-set">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -435,7 +435,7 @@
 				<type name="Peasy.Signals" c:type="PeasySignals*"/>
 			</return-value>
 		</constructor>
-		<glib:signal name="document_new">
+		<glib:signal name="document-new">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -445,7 +445,7 @@
 				</parameter>
 			</parameters>
 		</glib:signal>
-		<glib:signal name="document_open">
+		<glib:signal name="document-open">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -455,7 +455,7 @@
 				</parameter>
 			</parameters>
 		</glib:signal>
-		<glib:signal name="document_activate">
+		<glib:signal name="document-activate">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -465,7 +465,7 @@
 				</parameter>
 			</parameters>
 		</glib:signal>
-		<glib:signal name="document_reload">
+		<glib:signal name="document-reload">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -475,7 +475,7 @@
 				</parameter>
 			</parameters>
 		</glib:signal>
-		<glib:signal name="document_before_save">
+		<glib:signal name="document-before-save">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -485,7 +485,7 @@
 				</parameter>
 			</parameters>
 		</glib:signal>
-		<glib:signal name="document_save">
+		<glib:signal name="document-save">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -495,7 +495,7 @@
 				</parameter>
 			</parameters>
 		</glib:signal>
-		<glib:signal name="document_close">
+		<glib:signal name="document-close">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>
@@ -505,7 +505,7 @@
 				</parameter>
 			</parameters>
 		</glib:signal>
-		<glib:signal name="document_filetype_set">
+		<glib:signal name="document-filetype-set">
 			<return-value transfer-ownership="full">
 				<type name="none"/>
 			</return-value>

@@ -40,6 +40,18 @@ typedef struct _PeasyDocumentPrivate PeasyDocumentPrivate;
 
 typedef struct _PeasyEditor PeasyEditor;
 typedef struct _PeasyEditorClass PeasyEditorClass;
+enum  {
+	PEASY_DOCUMENT_0_PROPERTY,
+	PEASY_DOCUMENT_CHANGED_PROPERTY,
+	PEASY_DOCUMENT_ENCODING_PROPERTY,
+	PEASY_DOCUMENT_IS_VALID_PROPERTY,
+	PEASY_DOCUMENT_HAS_BOM_PROPERTY,
+	PEASY_DOCUMENT_HAS_TAGS_PROPERTY,
+	PEASY_DOCUMENT_ID_PROPERTY,
+	PEASY_DOCUMENT_DISPLAY_NAME_PROPERTY,
+	PEASY_DOCUMENT_NUM_PROPERTIES
+};
+static GParamSpec* peasy_document_properties[PEASY_DOCUMENT_NUM_PROPERTIES];
 #define _g_object_unref0(var) ((var == NULL) ? NULL : (var = (g_object_unref (var), NULL)))
 typedef struct _Block1Data Block1Data;
 #define _g_ptr_array_unref0(var) ((var == NULL) ? NULL : (var = (g_ptr_array_unref (var), NULL)))
@@ -71,9 +83,9 @@ enum  {
 	PEASY_DOCUMENT_BEFORE_SAVE_SIGNAL,
 	PEASY_DOCUMENT_SAVED_SIGNAL,
 	PEASY_DOCUMENT_FILETYPE_SET_SIGNAL,
-	PEASY_DOCUMENT_LAST_SIGNAL
+	PEASY_DOCUMENT_NUM_SIGNALS
 };
-static guint peasy_document_signals[PEASY_DOCUMENT_LAST_SIGNAL] = {0};
+static guint peasy_document_signals[PEASY_DOCUMENT_NUM_SIGNALS] = {0};
 
 struct _PeasyObject {
 	GObject parent_instance;
@@ -117,16 +129,6 @@ extern GeanyPlugin* peasy_peasy_plugin;
 GType peasy_object_get_type (void) G_GNUC_CONST;
 GType peasy_document_get_type (void) G_GNUC_CONST;
 GType peasy_editor_get_type (void) G_GNUC_CONST;
-enum  {
-	PEASY_DOCUMENT_DUMMY_PROPERTY,
-	PEASY_DOCUMENT_CHANGED,
-	PEASY_DOCUMENT_ENCODING,
-	PEASY_DOCUMENT_IS_VALID,
-	PEASY_DOCUMENT_HAS_BOM,
-	PEASY_DOCUMENT_HAS_TAGS,
-	PEASY_DOCUMENT_ID,
-	PEASY_DOCUMENT_DISPLAY_NAME
-};
 GPtrArray* peasy_document_all_documents (void);
 static Block1Data* block1_data_ref (Block1Data* _data1_);
 static void block1_data_unref (void * _userdata_);
@@ -410,7 +412,7 @@ void peasy_document_set_changed (PeasyDocument* self, gboolean value) {
 	_tmp0_ = self->geany_doc;
 	_tmp1_ = value;
 	document_set_text_changed (_tmp0_, _tmp1_);
-	g_object_notify ((GObject *) self, "changed");
+	g_object_notify_by_pspec ((GObject *) self, peasy_document_properties[PEASY_DOCUMENT_CHANGED_PROPERTY]);
 }
 
 
@@ -436,7 +438,7 @@ void peasy_document_set_encoding (PeasyDocument* self, const gchar* value) {
 	_tmp0_ = self->geany_doc;
 	_tmp1_ = value;
 	document_set_encoding (_tmp0_, _tmp1_);
-	g_object_notify ((GObject *) self, "encoding");
+	g_object_notify_by_pspec ((GObject *) self, peasy_document_properties[PEASY_DOCUMENT_ENCODING_PROPERTY]);
 }
 
 
@@ -681,19 +683,19 @@ static void peasy_document_class_init (PeasyDocumentClass * klass) {
 	G_OBJECT_CLASS (klass)->set_property = _vala_peasy_document_set_property;
 	G_OBJECT_CLASS (klass)->constructor = peasy_document_constructor;
 	G_OBJECT_CLASS (klass)->finalize = peasy_document_finalize;
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_CHANGED, g_param_spec_boolean ("changed", "changed", "changed", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_ENCODING, g_param_spec_string ("encoding", "encoding", "encoding", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_IS_VALID, g_param_spec_boolean ("is-valid", "is-valid", "is-valid", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_HAS_BOM, g_param_spec_boolean ("has-bom", "has-bom", "has-bom", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_HAS_TAGS, g_param_spec_boolean ("has-tags", "has-tags", "has-tags", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_ID, g_param_spec_uint ("id", "id", "id", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_DISPLAY_NAME, g_param_spec_string ("display-name", "display-name", "display-name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_CHANGED_PROPERTY, peasy_document_properties[PEASY_DOCUMENT_CHANGED_PROPERTY] = g_param_spec_boolean ("changed", "changed", "changed", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_ENCODING_PROPERTY, peasy_document_properties[PEASY_DOCUMENT_ENCODING_PROPERTY] = g_param_spec_string ("encoding", "encoding", "encoding", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE | G_PARAM_WRITABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_IS_VALID_PROPERTY, peasy_document_properties[PEASY_DOCUMENT_IS_VALID_PROPERTY] = g_param_spec_boolean ("is-valid", "is-valid", "is-valid", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_HAS_BOM_PROPERTY, peasy_document_properties[PEASY_DOCUMENT_HAS_BOM_PROPERTY] = g_param_spec_boolean ("has-bom", "has-bom", "has-bom", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_HAS_TAGS_PROPERTY, peasy_document_properties[PEASY_DOCUMENT_HAS_TAGS_PROPERTY] = g_param_spec_boolean ("has-tags", "has-tags", "has-tags", FALSE, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_ID_PROPERTY, peasy_document_properties[PEASY_DOCUMENT_ID_PROPERTY] = g_param_spec_uint ("id", "id", "id", 0, G_MAXUINT, 0U, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
+	g_object_class_install_property (G_OBJECT_CLASS (klass), PEASY_DOCUMENT_DISPLAY_NAME_PROPERTY, peasy_document_properties[PEASY_DOCUMENT_DISPLAY_NAME_PROPERTY] = g_param_spec_string ("display-name", "display-name", "display-name", NULL, G_PARAM_STATIC_NAME | G_PARAM_STATIC_NICK | G_PARAM_STATIC_BLURB | G_PARAM_READABLE));
 	peasy_document_signals[PEASY_DOCUMENT_CLOSING_SIGNAL] = g_signal_new ("closing", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 	peasy_document_signals[PEASY_DOCUMENT_RELOADED_SIGNAL] = g_signal_new ("reloaded", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 	peasy_document_signals[PEASY_DOCUMENT_ACTIVATE_SIGNAL] = g_signal_new ("activate", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
-	peasy_document_signals[PEASY_DOCUMENT_BEFORE_SAVE_SIGNAL] = g_signal_new ("before_save", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
+	peasy_document_signals[PEASY_DOCUMENT_BEFORE_SAVE_SIGNAL] = g_signal_new ("before-save", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
 	peasy_document_signals[PEASY_DOCUMENT_SAVED_SIGNAL] = g_signal_new ("saved", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__VOID, G_TYPE_NONE, 0);
-	peasy_document_signals[PEASY_DOCUMENT_FILETYPE_SET_SIGNAL] = g_signal_new ("filetype_set", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_FILETYPE);
+	peasy_document_signals[PEASY_DOCUMENT_FILETYPE_SET_SIGNAL] = g_signal_new ("filetype-set", PEASY_TYPE_DOCUMENT, G_SIGNAL_RUN_LAST, 0, NULL, NULL, g_cclosure_marshal_VOID__OBJECT, G_TYPE_NONE, 1, PEASY_TYPE_FILETYPE);
 }
 
 
@@ -725,25 +727,25 @@ static void _vala_peasy_document_get_property (GObject * object, guint property_
 	PeasyDocument * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_DOCUMENT, PeasyDocument);
 	switch (property_id) {
-		case PEASY_DOCUMENT_CHANGED:
+		case PEASY_DOCUMENT_CHANGED_PROPERTY:
 		g_value_set_boolean (value, peasy_document_get_changed (self));
 		break;
-		case PEASY_DOCUMENT_ENCODING:
+		case PEASY_DOCUMENT_ENCODING_PROPERTY:
 		g_value_set_string (value, peasy_document_get_encoding (self));
 		break;
-		case PEASY_DOCUMENT_IS_VALID:
+		case PEASY_DOCUMENT_IS_VALID_PROPERTY:
 		g_value_set_boolean (value, peasy_document_get_is_valid (self));
 		break;
-		case PEASY_DOCUMENT_HAS_BOM:
+		case PEASY_DOCUMENT_HAS_BOM_PROPERTY:
 		g_value_set_boolean (value, peasy_document_get_has_bom (self));
 		break;
-		case PEASY_DOCUMENT_HAS_TAGS:
+		case PEASY_DOCUMENT_HAS_TAGS_PROPERTY:
 		g_value_set_boolean (value, peasy_document_get_has_tags (self));
 		break;
-		case PEASY_DOCUMENT_ID:
+		case PEASY_DOCUMENT_ID_PROPERTY:
 		g_value_set_uint (value, peasy_document_get_id (self));
 		break;
-		case PEASY_DOCUMENT_DISPLAY_NAME:
+		case PEASY_DOCUMENT_DISPLAY_NAME_PROPERTY:
 		g_value_take_string (value, peasy_document_get_display_name (self));
 		break;
 		default:
@@ -757,10 +759,10 @@ static void _vala_peasy_document_set_property (GObject * object, guint property_
 	PeasyDocument * self;
 	self = G_TYPE_CHECK_INSTANCE_CAST (object, PEASY_TYPE_DOCUMENT, PeasyDocument);
 	switch (property_id) {
-		case PEASY_DOCUMENT_CHANGED:
+		case PEASY_DOCUMENT_CHANGED_PROPERTY:
 		peasy_document_set_changed (self, g_value_get_boolean (value));
 		break;
-		case PEASY_DOCUMENT_ENCODING:
+		case PEASY_DOCUMENT_ENCODING_PROPERTY:
 		peasy_document_set_encoding (self, g_value_get_string (value));
 		break;
 		default:
