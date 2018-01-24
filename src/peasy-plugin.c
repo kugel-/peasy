@@ -406,19 +406,21 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
 
     peas_engine_enable_loader(peas, "python3");
     peas_engine_enable_loader(peas, "lua5.1");
-#ifdef G_OS_WIN32
+
     {
+        gchar *datadir = g_build_filename(plugin->geany_data->app->configdir, "plugins");
+#ifdef G_OS_WIN32
         /* TODO: export and use utils_resource_dir() */
         gchar *prefix = g_win32_get_package_installation_directory_of_module(NULL);
         gchar *plugindir = g_build_filename(prefix, "lib", "geany", NULL);
         peas_engine_add_search_path(peas, plugindir, plugin->geany_data->app->datadir);
         g_free(prefix);
         g_free(plugindir);
-    }
 #else
-    peas_engine_add_search_path(peas, GEANY_PLUGINDIR, plugin->geany_data->app->datadir);
+        peas_engine_add_search_path(peas, GEANY_PLUGINDIR, datadir);
 #endif
-    peas_engine_add_search_path(peas, plugin->geany_data->prefs->custom_plugin_path, plugin->geany_data->app->datadir);
+        peas_engine_add_search_path(peas, plugin->geany_data->prefs->custom_plugin_path, datadir);
+    }
 
     if (strncmp(TYPELIBDIR, "/usr/lib", 8))
         g_irepository_prepend_search_path(TYPELIBDIR);
