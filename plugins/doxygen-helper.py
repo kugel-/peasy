@@ -401,7 +401,7 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         sci_preview = GeanyScintilla.ScintillaObject.new()
         self.ui.get_object("al_preview").add(sci_preview)
         # Setup Scintilla widgets
-        font_name, size = self.geany_plugin.geany_data.interface_prefs.editor_font.split()
+        font_name, size = self.geany_plugin.geany_data.interface_prefs.editor_font.rsplit(None, 1)
         for sci in (sci_edit, sci_preview):
             sci.send_message(GeanyScintilla.SCI_SETCODEPAGE, GeanyScintilla.SC_CP_UTF8, 0)
             for style in range(0, GeanyScintilla.STYLE_MAX):
