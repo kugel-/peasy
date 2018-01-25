@@ -405,7 +405,7 @@ static gboolean
 peasy_init(GeanyPlugin *plugin, gpointer pdata)
 {
     const gchar *extensions[] = { "plugin", G_MODULE_SUFFIX, NULL };
-    PeasEngine *peas = peas_engine_get_default();
+    PeasEngine *peas = peas_engine_new();
     GError *err = NULL;
     GITypelib *t;
     static gchar pypath[256];
