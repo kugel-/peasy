@@ -267,7 +267,29 @@ peasy_probe(GeanyPlugin *plugin, const gchar *filename, gpointer pdata)
     gint ret = PROXY_IGNORED;
     PeasEngine *peas = (PeasEngine *) pdata;
     gchar *modname = get_mod_name(filename);
-    PeasPluginInfo *info = peas_engine_get_plugin_info(peas, modname);
+    gchar *dirname = g_path_get_dirname(filename);
+    gchar *system_path = g_object_get_data(G_OBJECT(peas), "system-path");
+    gchar *config_path = g_object_get_data(G_OBJECT(peas), "config-path");
+    gchar *custom_path = g_object_get_data(G_OBJECT(peas), "custom-path");
+    PeasPluginInfo *info;
+
+    /* The custom plugin path that can be set in in the prefs is added on
+     * demand because it may actually change at runtime. If it changes, the
+     * new directory is prepended, except if the same as system or config path
+     * anyway. Hopefully the old custom plugin path (if any) doesn't introduce
+     * clashes as we can't remove it from libpeas' search paths unforunately.
+     *  */
+    if (!g_str_equal(dirname, system_path) && !g_str_equal(dirname, config_path))
+    {
+        /* also, avoid adding multiple times */
+        if (!custom_path || !g_str_equal(dirname, custom_path))
+        {
+            peas_engine_prepend_search_path(peas, dirname, custom_path);
+            g_object_set_data_full(G_OBJECT(peas), "custom-path", custom_path, g_free);
+        }
+    }
+
+    info = peas_engine_get_plugin_info(peas, modname);
     if (info != NULL)
     {
         /* We only *load* .plugin files, however we are
@@ -408,18 +430,25 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
     peas_engine_enable_loader(peas, "lua5.1");
 
     {
-        gchar *datadir = g_build_filename(plugin->geany_data->app->configdir, "plugins");
+        /* Geany's plugin directories must be added to libpeas' search paths.
+         * The custom path (can be set in Geany's prefs) is dynamically in
+         * peasy_probe(). */
+        gchar *system_path, *config_path;
 #ifdef G_OS_WIN32
         /* TODO: export and use utils_resource_dir() */
         gchar *prefix = g_win32_get_package_installation_directory_of_module(NULL);
-        gchar *plugindir = g_build_filename(prefix, "lib", "geany", NULL);
-        peas_engine_add_search_path(peas, plugindir, plugin->geany_data->app->datadir);
+        system_path = g_build_filename(prefix, "lib", "geany", NULL);
         g_free(prefix);
-        g_free(plugindir);
 #else
-        peas_engine_add_search_path(peas, GEANY_PLUGINDIR, datadir);
+        system_path = strdup(GEANY_PLUGINDIR);
 #endif
-        peas_engine_add_search_path(peas, plugin->geany_data->prefs->custom_plugin_path, datadir);
+        config_path = g_build_filename(plugin->geany_data->app->configdir, "plugins", NULL);
+        /* Plugin data is usually stored in ~/.config/geany/plugins. Geany
+         * does also look there for the plugins themselves */
+        peas_engine_add_search_path(peas, system_path, config_path);
+        g_object_set_data_full(G_OBJECT(peas), "system-path", system_path, g_free);
+        peas_engine_prepend_search_path(peas, config_path, config_path);
+        g_object_set_data_full(G_OBJECT(peas), "config-path", config_path, g_free);
     }
 
     if (strncmp(TYPELIBDIR, "/usr/lib", 8))
