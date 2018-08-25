@@ -120,7 +120,9 @@ at the PeasyKeyBinding and PeasyKeyGroup classes.
 Installation
 ------------
 
-Peasy uses autoconf and automake, therefore INSTALL gives a generic overview.
+Peasy uses autoconf and kmake, therefore INSTALL gives a generic overview.
+
+For kmake, see https://github.com/kugel-/kmake.
 
 If you are running from git, then configure does not exist. Run ./autogen.sh to
 generate it. In contrast to building Geany, autogen.sh does not automatically
@@ -131,7 +133,7 @@ Peasy has some dependencies, some of them are compile-time only:
 * Geany 1.25 or newer
 * Glib
 * Libpeas
-* Vala toolchain (valac and vapigen), when building from Git.
+* Vala toolchain (valac and vapigen)
 * Python 3.x, Lua 5.1
 
 Peasy is partly written in Vala, therefore valac is required. Vapigen is

@@ -7,8 +7,6 @@
 *.lo
 *.so
 *.dll
-Makefile
-Makefile.in
 configure
 .deps/
 .libs/
@@ -16,14 +14,20 @@ configure
 *.gir
 /api/*.h
 /api/*.deps
+/api/geany-*.vapi
 /api/geany-scintilla-1.0.vapi
 /plugins/*.plugin
+/lib/peasy.h
+/lib/*.vapi
+/lib/*.c
+!/*_c.c
 
 #-----------------------------------------------------------------------
 # / (root)
 #-----------------------------------------------------------------------
 /aclocal.m4
 /autom4te.cache
+/autoconf.mk
 /build-aux/
 /build-stamp
 /config.guess
@@ -61,3 +65,5 @@ configure
 /po/*.sin
 /po/stamp-it
 /po/.intlcache
+/po/Makefile
+/po/Makefile.in

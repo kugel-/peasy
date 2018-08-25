@@ -6,19 +6,19 @@ AC_INIT([peasy],[0.6],[kugel@rockbox.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([src/peasy-plugin.c])
 AC_CONFIG_MACRO_DIR([m4])
-AM_INIT_AUTOMAKE([1.11 -Wall parallel-tests subdir-objects foreign])
 AC_CONFIG_HEADERS([config.h])
 
-m4_ifdef([AM_SILENT_RULES],[AM_SILENT_RULES([yes])])
+AC_SUBST([PACKAGE],[$PACKAGE_NAME])
+AC_SUBST([VERSION],[$PACKAGE_VERSION])
 
-AM_PROG_AR
+AC_PROG_INSTALL
+AC_PROG_LIBTOOL
+AC_PROG_MKDIR_P
+
 AC_PROG_CC
 AC_PROG_CC_C99
 AM_PROG_CC_C_O
-AC_PROG_INSTALL
-AM_PROG_LIBTOOL
 AM_PROG_VALAC([0.30])
-AC_PROG_MKDIR_P
 
 IT_PROG_INTLTOOL([0.40.0])
 AC_SUBST([GETTEXT_PACKAGE], ["peasy"])
@@ -66,12 +66,8 @@ AC_MSG_NOTICE([Installing pygobjet override bindings for Geany to $pyoverridesdi
 AC_SUBST(pyoverridesdir)
 
 AC_CONFIG_FILES([
-	Makefile
-	api/Makefile
+	autoconf.mk
 	api/geany-1.0.deps
 	api/geany-scintilla-tmp-1.0.deps
-	lib/Makefile
-	plugins/Makefile
-	po/Makefile.in
-	src/Makefile])
+	po/Makefile.in])
 AC_OUTPUT

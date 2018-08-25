@@ -1,7 +1,8 @@
 #!/bin/sh -e
 
+mkdir -p m4
 intltoolize -c -f
-autoreconf -vi
+env LIBTOOLIZE="libtoolize --install" autoreconf -vi
 
 echo
 echo "Bootstrap finished, ready to run configure..."
