@@ -1,6 +1,7 @@
 import os
 import traceback
 import copy
+import errno
 
 from gi.repository import Gdk
 from gi.repository import Gtk
@@ -461,7 +462,7 @@ class DoxygenHelper(Peasy.Plugin, Peasy.PluginConfigure):
         try:
             os.makedirs(kf_dir)
         except OSError as e:
-            if (e.errno != os.errno.EEXIST):
+            if (e.errno != errno.EEXIST):
                 return False
 
         try:
