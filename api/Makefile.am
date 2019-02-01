@@ -23,7 +23,7 @@ GeanyScintilla_1_0_tmp_gir_NAMESPACE = GeanyScintilla
 GeanyScintilla_1_0_tmp_gir_VERSION   = 1.0
 GeanyScintilla_1_0_tmp_gir_INCLUDES  = $(GTK_GIR) GLib-2.0 GObject-2.0
 GeanyScintilla_1_0_tmp_gir_CFLAGS    = $(GTK_CFLAGS) -DG_IR_SCANNING $(GEANY_CFLAGS) -include gtk/gtk.h
-GeanyScintilla_1_0_tmp_gir_CFLAGS   += -Dsptr_t=gintptr -Duptr_t=guintptr
+GeanyScintilla_1_0_tmp_gir_CFLAGS   += -Dsptr_t=gintptr -Duptr_t=guintptr -Dptrdiff_t=gintptr
 GeanyScintilla_1_0_tmp_gir_LIBS      = geany
 GeanyScintilla_1_0_tmp_gir_FILES     = $(geany_includedir)/scintilla/Sci_Position.h \
 									   $(geany_includedir)/scintilla/Scintilla.h \
