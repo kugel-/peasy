@@ -1,0 +1,1 @@
+libs-y := libz.a
