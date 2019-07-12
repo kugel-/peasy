@@ -8,7 +8,9 @@ GIR_SCANFLAGS-y                  += --external-library
 GIR_LIB-y                        := geany
 GIR_CFLAGS-y                     := $(GTK_CFLAGS) -DG_IR_SCANNING $(GEANY_CFLAGS)
 
-VAPIGEN_GIRDIRS-y                := $(srcdir)
+VAPIGEN_GIRDIRS-y                := $(objdir)
+VAPIGEN_VAPIDIRS-y               := $(objdir)
+INTROSPECTION_COMPILER_ARGS-y    := --includedir $(objdir)
 
 sed-y                            := geany-sciwrappers-gtkdoc-tmp.h geany-gtkdoc-tmp.h
 sed-y                            += GeanyScintilla-1.0.gir Geany-1.0.gir

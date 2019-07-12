@@ -2,6 +2,7 @@ extra-gen          += gir typelib
 
 extra-flags        += GIR_NAMESPACE GIR_VERSION GIR_SCANFLAGS
 extra-flags        += GIR_INCLUDES GIR_CFLAGS GIR_LIB
+extra-flags        += INTROSPECTION_COMPILER_ARGS
 
 ifeq ($(INTROSPECTION_SCANNER),)
 $(error INTROSPECTION_SCANNER is not set)
