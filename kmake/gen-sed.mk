@@ -11,6 +11,7 @@ endef
 define sed_recipe
 $(addprefix $(OUTDIR),$(1)):
 	$$(call printcmd,GEN,$$@)
+	$$(AT)mkdir -p $$(dir $$@)
 	$$(Q)sed $$(addprefix --expression=,$$(SED_SCRIPT)) $$< >$$@.tmp && ( mv $$@.tmp $$@ ; rm -f $$@.tmp )
 endef
 
