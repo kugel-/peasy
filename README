@@ -93,8 +93,8 @@ Because kmake supports directory-level CFLAGS (and other flags, including
 custom flags that are not known to kmake initially), the sub-makefiles remain
 concise.
 
-To further aid compactness, kmake supports one-line conditionals similar to
-kbuild.
+To further aid compactness, kmake supports one-line ("inline") conditionals
+similar to kbuild.
 
 Extensibility
 ^^^^^^^^^^^^^
@@ -105,10 +105,13 @@ and recipes for custom targets that kmake doesn't support out of the box.
 This can be used to tell kmake how to generate source files with the help of
 external commands. If a build target depends on such a generated file kmake
 introduces the proper dependency so that the file is generated as needed.
+Additionally, if a target doesn't explicitly lists a generated file as
+dependency, but instead lists its directory in the INCLUDES flag, kmake will
+add a dependency as well. This is particularly useful for generated headers.
 
 Those generators can benefit from the same mechanism that re-compiles C files
 when CFLAGS changes. A properly implemented generator re-generates output
-of any of the options to the external command changes.
+if any of the options to the external command changes.
 
 Generators can be chained, which makes it possible teach kmake to generate
 and build arbitrary file formats, without having to change kmake core itself.
@@ -124,11 +127,11 @@ Variables (vars)
 ^^^^^^^^^^^^^^^^
 
 The key element in kmake are variables, or just short vars. kmake defines some
-but also learns new ones dynamically (see XXX dynamic variables). Vars
-generally have a associated list via the -y suffix and may have properties (see
-XXX) via other suffixes. The associated list usually holds files, but can also
-list options or other things. How the list is interpreted depends on the
-variable.
+but also learns new ones dynamically (see `Adding vars`_). Vars generally have
+a associated list via the -y suffix and may have properties (see
+`Properties`_). via other suffixes. The associated list usually holds files,
+but can also list options or other things. How the list is interpreted depends
+on the variable.
 
 Pre-defined variables include:
 
@@ -160,7 +163,7 @@ basically states that there is a target named program that must be built and
 installed.
 
 You may dynamically add more variables, for example if you need to install
-in a non-standard location, see `Customization and extensions`_ for
+in a non-standard location, see `customization and extensions`_ for
 defining new vars and `Properties` on how to select the install directory.
 
 
@@ -177,23 +180,27 @@ and may have properties (see `Properties`_).
 
 There are no predefined target variables, kmake learns about them dynamically.
 
-For target variables, `target`-y usually lists source files. If no such
-specification exists, kmake attempts to find exactly one source file
-that matches the name of the target, plus a suffix that is defined by
-the `target`-suffix property (which defaults to `DEFAULT_SUFFIX` if
-defined, or simply .c).
+For target variables, `target`-y usually lists source files. If no such list
+exists and the target variable defines (or inherits) the suffix property, then
+kmake attempts to find exactly one source file that matches the name of the
+target plus its suffix property value. If the target has a suffix on its own,
+it's replaced.
 
 Additionally, `target`-y can list library targets that are defined in the same
 subdir.mk file.
 
 Here's an example for a target specification::
 
-    bin-y     := mytool
+    bin-y     := tool
     libs-y    := libmy.a
 
-    libmy.a-y := mylib.c # actually superfluous
-    mytool-y  := tool.c
-    mytool-y  := libmy.a
+    libmy.a-y := libmy.c
+    tool-y    := tool.c
+    tool-y    += libmy.a
+
+With the suffix property, this can be shortened a bit::
+    bin-suffix := .c
+    bin-y      := tool # tool.c automatically picked up
 
 
 Properties
@@ -219,13 +226,21 @@ Pre-defined properties include:
     See https://www.gnu.org/software/libtool/manual/html_node/Tags.html.
 
 `-dir`
-    The installation directory used at `make install` time.
+    The installation directory used at `make install` time. The special value
+    `noinst` indicates that the target isn't meant to be installed at all.
 
 `-driver`
-    The command that is used to run test targets
+    The command that is used to run test targets. By default, this property
+    is not set and tests will execute within a shell spawned by make. But if
+    it's set then kmake will invoke this driver program with the test
+    as the first parameter.
 
 `-suffix`
-    The suffix that is used to find the default source file
+    The suffix that is used to find the default source file if the target
+    does not list any source file in `target`-y. By default, this property
+    is not set. But if it's set then kmake assumes that the only
+    source file is named `target` plus the suffix. If the target has
+    a suffix it's replaced.
 
 As you might see, not all properties make sense on all targets and therefore
 some suffixes are simply ignored on some targets.
@@ -242,22 +257,43 @@ Predefined flag vars include:
 `CPPFLAGS`, `CFLAGS`, `CXXFLAGS` and `LDFLAGS`
     Options listed are passed to the preprocessor, compilers and the linker,
     respectively.
+`INCLUDES`
+    Include directories that are passed to the preprocessor. List only the
+    directory with a trailing slash, kmake will prepend -I itself. In addition
+    kmake will produce (order-only) dependencies on generated files located
+    in such directories. This automatically ensures that headers are generated
+    before any source file that includes such headers, although the
+    mechanism isn't strictly restricted to headers.
 `LIBS`
-    Library path and link that are passed last to the linker.
+    Library path and link options that are passed last to the linker.
 `DEPS`
     Additional dependencies that used during compilation and linking stages,
-    depending on whether library our sources files are listed (see XXX
+    depending on whether library our sources files are listed. The DEPS flag
+    behaves mostly the same as `var`-y except that the paths are not
+    relative to the current sub-makefile.
     for a distinction between `var`-y).
 
-There is one more special property about flag variables: they can be combined
+One special property about flag variables is that they can be combined
 with targets, effectively building *target-specific flags*. The values are
 generally appended to the flag variables, allowing to override
-some options for individual::
+some options for individual targets::
 
     CFLAGS-y          := -O1
     mytool-CFLAGS-y   := -O2
     mytool-LIBS-y     := -lz
 
+Here, mytool will be compiled with both -O1 -O2, but the compiler generally
+uses the last occurence.
+
+Another special property is that for all flags there exists a subdir-XXX-y
+flavor. This flavor sets the initial flags for targets defined in
+sub-directories (see next section), and *only* for them. subdir-XXX-y
+does not affect the targets of the current subdir.mk (this is different
+to kbuild's subdir-ccflags-y). Therefore you probably want to initialize
+them like this::
+
+    CFLAGS-y          := -O1
+    subdir-CFLAGS-y   := $(CFLAGS-y) -Werror
 
 Recursive inclusion of subdir.mk
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -294,8 +330,15 @@ is mandatory.
 Between including two subdir.mk, kmake resets all kinds of vars (except target
 vars) to empty values, so no subdir.mk has the chance to accidentally delete
 targets defined in another subdir.mk or otherwise affect them negatively. Note
-that this is also true for subdir.mk files in a sub-directory. Variables,
-including CFLAGS and friends, do *not* affect sub-directories in any way.
+that this is also true for subdir.mk files in a sub-directory. Flags,
+such as CFLAGS and friends, do *not* affect sub-directories in any way.
+
+To set flags for sub-directories, use subdir-CFLAGS-y. subdir-CFLAGS-y is
+reset itself as well for sub-directory subdir.mk files, so they may add even
+more compiler options by defining their own subdir-CFLAGS-y. kmake will
+ensure leaf directories will see the concatenation of all subdir-CFLAGS-y
+in the parent directiroes. Again, remember that subdir-CFLAGS-y does
+only affect sub-directories but not the current one.
 
 However, target vars not reset since other subdir.mk files shouldn't know about
 them. This may be used to have multiple subdir.mk contribute to a global target
@@ -324,11 +367,10 @@ arbitrarily, for example to pre- and post-process files with sed.
 Please note that the generators are not executed unless the output file
 is a prerequisite of some other target or is to be installed itself.
 
-kmake ships two real generators (for calling sed and cat) which these are not
+kmake ships two real generators (for calling sed and cat) which are not
 enabled by default. They are enabled by including the files `gen-sed.mk` and
-`gen-cat.mk` respectively. A third generator, called byproduct, helps
-specifying dependencies for generator programs with multiple output files.
-This one is enabled by default.
+`gen-cat.mk` respectively. Two pseudo generators, `byproduct` and `generated`,
+are also included enabled by default.
 
 gen-sed
   The sed generator allows you to feed a file into sed in order to generate
@@ -367,7 +409,7 @@ gen-cat
   The output file is generated as needed: if it doesn't exist or any
   of its input files is newer.
 
-gen-byproduct
+byproduct
   The byproduct pseudo generator helps managing dependencies for programs
   that produce multiple output files. Because GNU make provides no universal
   facility to manage those (except pattern rules which require uniform names
@@ -391,10 +433,29 @@ gen-byproduct
   In this example, by listing bar.h in program-y, kmake can ensure
   that bar.h will exist before any object of program is build.
 
+generated
+  The generated pseudo generator marks files as generated that are
+  entirely generated using custom rules. By making kmake aware of such
+  generated files it can set vpath accordingly, among other things. The
+  custom rule will be run if any target build by kmake lists that file.
+
+  Example::
+
+    bin-y              := program
+    program-y          := foo.c myheader.h
+    generated-y        := myheader.h
+
+    $(objdir)myheader.h: $(srcdir)myheader.h.in
+      generate -in $< -out $@
+
+  Always use $(srcdir) and $(objdir) to prepend the proper prefix to target
+  and prerequsite files in such custom rules, in case a
+  `separate output directory`_ is used.
+  
 You can see that generators are quite powerful. In fact, they make kmake truly
 extensible since generators can be dynamically added to kmake if a project has
 specific requirements. Details on how to create generators follow in section
-`Customization and extensions`_.
+`customization and extensions`_.
 
 How to use kmake
 ----------------
@@ -444,8 +505,6 @@ uses the following defaults::
   libs-dir       = /usr/local/lib
   data-dir       = /usr/local/share
   sysconf-dir    = /usr/local/etc
-  DEFAULT_SUFFIX = .c
-  DEFAULT_DRIVER = "sh -c"
 
   CROSS_COMPILE  =
   CC             = cc
@@ -459,16 +518,6 @@ If you want to override the above defaults, you can define ``prefix`` to
 affects all directories, or define `bindir`, `sbinddir`, `libdir`, `datadir`
 and `sysconfdir` to override individual ones.
 
-`DEFAULT_SUFFIX` can be set to ``.cpp`` if you project primarily consists of
-C++ sources. Remember that you can always set the `var`-suffix property
-for variables and targets to override even `DEFAULT_SUFFIX`.
-
-`DEFAULT_DRIVER` can be overridden to any command, by default we'll just pass
-them to the shell. If you have lots of Python-based unit tests you may want to
-pass them to the python interpreter directly. Remember that you can always set
-the `var`-driver property for variables and targets to override even
-`DEFAULT_DRIVER`.
-
 Toolchain
 `````````
 
@@ -477,6 +526,17 @@ which is prefixed to the relevant toolchain programs (`CC`, `CXX`, `AR` and
 `STRIP`). Additionally you can also change the individual programs, e.g. to use
 `clang` instead of the usual system's default of `gcc`. However, be aware that
 `CROSS_COMPILE` is applied regardless.
+
+Tests
+`````
+
+Tests are are listed in the `tests` variable. Tests are compiled and executed
+only on `make check`. kmake, by default, will simply execute via make recipies,
+meaning that they are passed to the shell. The exit status is indicated by a
+"PASS" or "FAIL" output. If you have lots of Python-based unit tests you may
+want to pass them to the python interpreter directly. To do that, set the
+driver property for the `tests` variables (or any custom tests variable added
+via `extra-tests`) or set the driver property of each python test individually.
 
 Silent / verbose output
 ````````````````````````
@@ -502,7 +562,26 @@ kmake will place every output file under that sub-directory. The directory
 structure of the source tree is reproduced, except if no outfile would be
 produced in a given directory.
 
-Costumization and extensions
+Partial build
+`````````````
+
+kmake can be told to build only targets in specific directories. These
+directories are defined by setting M on the command line. For example,
+``make M=foo`` builds only libraries and programs under foo/.
+
+However, this is not quite the same as building only in a sub-directory
+with Automake. Even with partial build, kmake will respect dependencies
+of each target. This means any required dependency will be updated if
+necessary, even if outside the selected directories. This is usually
+exactly what you want, as you don't need to explicitly build dependency
+libraries beforehand.
+
+Multiple directories are supported (separated by spaces) but remember to
+properly escape the space on the command line (e.g. ``M=foo\ bar``).
+
+The partial build filter also applies to check, clean and install targets.
+
+Customization and extensions
 ----------------------------
 
 As has been mentioned before, kmake leaves room for extensions, because the
