@@ -12,7 +12,7 @@ configure
 .libs/
 *.typelib
 *.gir
-/api/*.h
+/api/*-tmp.h
 /api/*.deps
 /api/geany-*.vapi
 /api/geany-scintilla-1.0.vapi

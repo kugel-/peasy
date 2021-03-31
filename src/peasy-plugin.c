@@ -454,6 +454,12 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
     if (strncmp(TYPELIBDIR, "/usr/lib", 8))
         g_irepository_prepend_search_path(TYPELIBDIR);
 
+    {
+        const char *extra = g_getenv("GI_TYPELIB_PATH");
+        if (extra)
+            g_irepository_prepend_search_path(extra);
+    }
+
     t = g_irepository_require(NULL, "Peasy", NULL, 0, &err);
     if (err)
     {

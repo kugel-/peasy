@@ -15,10 +15,10 @@ INTROSPECTION_COMPILER_ARGS-y    := --includedir $(objdir)
 sed-y                            := geany-sciwrappers-gtkdoc-tmp.h geany-gtkdoc-tmp.h
 sed-y                            += GeanyScintilla-1.0.gir Geany-1.0.gir
 
-geany-sciwrappers-gtkdoc-tmp.h-y := $(geany_includedir)/gtkdoc/geany-sciwrappers-gtkdoc.h
+geany-sciwrappers-gtkdoc-tmp.h-y := geany-sciwrappers-gtkdoc.h
 geany-sciwrappers-gtkdoc-tmp.h-SED_SCRIPT-y := 's,sci_,scintilla_object__GI__MARK_,g'
 
-geany-gtkdoc-tmp.h-y             := $(geany_includedir)/gtkdoc/geany-gtkdoc.h
+geany-gtkdoc-tmp.h-y             := geany-gtkdoc.h
 geany-gtkdoc-tmp.h-SED_SCRIPT-y  := 's,\(document_\)new\(_file\),\1_GI__WORKAROUNDNEW_\2,g'
 
 gir-y                            := GeanyScintilla-1.0-tmp.gir Geany-1.0-tmp.gir
