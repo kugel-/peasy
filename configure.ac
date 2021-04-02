@@ -18,7 +18,7 @@ AC_PROG_MKDIR_P
 
 AC_PROG_CC
 AM_PROG_CC_C_O
-AM_PROG_VALAC([0.30])
+AM_PROG_VALAC([0.30],[],[AC_MSG_ERROR([suitable valac is required])])
 
 IT_PROG_INTLTOOL([0.40.0])
 AC_SUBST([GETTEXT_PACKAGE], ["peasy"])
