@@ -15,10 +15,25 @@ INTROSPECTION_COMPILER_ARGS-y    := --includedir $(objdir)
 sed-y                            := geany-sciwrappers-gtkdoc-tmp.h geany-gtkdoc-tmp.h
 sed-y                            += GeanyScintilla-1.0.gir Geany-1.0.gir
 
-geany-sciwrappers-gtkdoc-tmp.h-y := $(geany_includedir)/gtkdoc/geany-sciwrappers-gtkdoc.h
+# workaround buggy debian packages that forgot to ship the headers
+# luckily currently there are only two relevant API versions affected
+# 235 used by Debian 10 and Ubuntu 18.04, and 239 used by Debian 11 and
+# Ubuntu 20.04-21.04. hyperair says from now on the packages are fixed.
+ifeq ($(wildcard $(geany_includedir)/gtkdoc/geany-gtkdoc.h),)
+# fallback to shipped headers
+API_V := $(shell echo GEANY_API_VERSION | cpp $(GEANY_CFLAGS) -include plugindata.h - | tail -n1)
+$(info INFO: Using fallback headers from $(srcdir)gtkdoc_h/$(API_V))
+geany_gtkdoc_h     := gtkdoc_h/$(API_V)/geany-gtkdoc.h
+geany_sci_gtkdoc_h := gtkdoc_h/$(API_V)/geany-sciwrappers-gtkdoc.h
+else
+geany_gtkdoc_h     := $(geany_includedir)/gtkdoc/geany-gtkdoc.h
+geany_sci_gtkdoc_h := $(geany_includedir)/gtkdoc/geany-sciwrappers-gtkdoc.h
+endif
+
+geany-sciwrappers-gtkdoc-tmp.h-y := $(geany_sci_gtkdoc_h)
 geany-sciwrappers-gtkdoc-tmp.h-SED_SCRIPT-y := 's,sci_,scintilla_object__GI__MARK_,g'
 
-geany-gtkdoc-tmp.h-y             := $(geany_includedir)/gtkdoc/geany-gtkdoc.h
+geany-gtkdoc-tmp.h-y             := $(geany_gtkdoc_h)
 geany-gtkdoc-tmp.h-SED_SCRIPT-y  := 's,\(document_\)new\(_file\),\1_GI__WORKAROUNDNEW_\2,g'
 
 gir-y                            := GeanyScintilla-1.0-tmp.gir Geany-1.0-tmp.gir
