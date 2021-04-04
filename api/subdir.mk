@@ -69,10 +69,9 @@ girdata-y                            := GeanyScintilla-1.0.gir Geany-1.0.gir
 typelib-y                            := Geany-1.0.typelib GeanyScintilla-1.0.typelib
 
 typelibdata-y                        := Geany-1.0.typelib GeanyScintilla-1.0.typelib
-typelibdata-dir                      := $(typelibdir)
 
-pyoverrides-y                        := Geany.py
-pyoverrides-dir                      := $(pyoverridesdir)
+pyoverrides-y                        := pyoverrides/Geany.py pyoverrides/__init__.py
+pyoverrides-dir                      := $(peasylibdir)/python/gi/overrides
 
 vapigen-y                            := geany-1.0.vapi geany-scintilla-tmp-1.0.vapi
 geany-1.0.vapi-y                     := Geany-1.0.gir Geany-1.0-custom.vala

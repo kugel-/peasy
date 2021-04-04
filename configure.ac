@@ -52,19 +52,6 @@ GOBJECT_INTROSPECTION_CHECK([1.30.0])
 VAPIGEN_CHECK([0.32])
 
 AM_PATH_PYTHON([2.7])
-AC_ARG_WITH([pyoverridesdir],
-    AS_HELP_STRING([--with-pyoverridesdir=PATH], [Path to install pygobjet override bindings for Geany (auto = Automatically detect) [default=auto]]),
-    [pyoverridesdir="$withval"],
-    [if echo $prefix | grep -q "^/home" ; then
-        _pyexecdir=$(echo $prefix | sed -e 's,\(/home/[[^/]]*\).*,\1/.local,')
-        _suffix=$(echo $pyexecdir | sed -e 's,\${exec_prefix}/,,')
-        pyexecdir="$_pyexecdir/$_suffix"
-        AC_MSG_NOTICE([Automatically detected $pyexecdir for installing local python modules])
-    fi
-    pyoverridesdir="$pyexecdir/gi/overrides"])
-
-AC_MSG_NOTICE([Installing pygobjet override bindings for Geany to $pyoverridesdir])
-AC_SUBST(pyoverridesdir)
 
 AC_CONFIG_FILES([
 	autoconf.mk

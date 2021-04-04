@@ -13,6 +13,8 @@ extra-libs              = plugins
 plugins-dir             = $(plugindir)
 plugins-suffix          = .c
 
+peasylibdir            := $(plugindir)/peasy
+
 extra-data              = plugindata
 plugindata-dir          = $(plugindatadir)
 

@@ -410,21 +410,23 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
     GITypelib *t;
     static gchar pypath[256];
     const gchar *envp;
+    gchar *extrapath;
 
-    /* Workaround for libpeas < 1.17 which blindly pops sys.path[0] which
-     * happens to be /usr/lib/pythonX.Y containing standard modules. It is
-     * fixed in libpeas 1.18 and later */
-    envp =  g_getenv("PYTHONPATH");
-    if (!envp)
-    {
-        g_strlcpy(pypath, "/__DUMMY_PATH_FOR_WORKAROUND__", sizeof(pypath));
-        g_setenv("PYTHONPATH", pypath, TRUE);
-    }
-    else if (!g_strstr_len(envp, -1, "__DUMMY_PATH_FOR_WORKAROUND__"))
-    {
-        g_snprintf(pypath, sizeof(pypath), "/__DUMMY_PATH_FOR_WORKAROUND__:%s", envp);
-        g_setenv("PYTHONPATH", pypath, TRUE);
-    }
+    /* Contains Geany.py under gi/overrides.
+     * Setting PYTHONPATH saves us from calling into the Python
+     * interpreter directly (which would mean we have to link cpython
+     * and decide for a version). In theory we could support
+     * the python2 and python3 loader in the same binary (but not
+     * at the same time).
+     */
+    extrapath = g_build_filename(PEASY_LIBDIR, "python", NULL);
+    envp = g_getenv("PYTHONPATH");
+    if (envp)
+        g_snprintf(pypath, sizeof(pypath), "%s%c%s", envp, G_SEARCHPATH_SEPARATOR, extrapath);
+    else
+        g_strlcpy(pypath, extrapath, sizeof(pypath));
+    g_setenv("PYTHONPATH", pypath, TRUE);
+    g_free(extrapath);
 
     peas_engine_enable_loader(peas, "python3");
     peas_engine_enable_loader(peas, "lua5.1");
@@ -451,8 +453,9 @@ peasy_init(GeanyPlugin *plugin, gpointer pdata)
         g_object_set_data_full(G_OBJECT(peas), "config-path", config_path, g_free);
     }
 
-    if (strncmp(TYPELIBDIR, "/usr/lib", 8))
-        g_irepository_prepend_search_path(TYPELIBDIR);
+    extrapath = g_build_filename(PEASY_LIBDIR, "girepository-1.0", NULL);
+    g_irepository_prepend_search_path(extrapath);
+    g_free(extrapath);
 
     t = g_irepository_require(NULL, "Peasy", NULL, 0, &err);
     if (err)

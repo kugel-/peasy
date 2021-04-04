@@ -1,4 +1,5 @@
-from ..importer import modules
+from gi import importer
+from gi.importer import modules
 
 Geany = modules['Geany']._introspection_module
 
