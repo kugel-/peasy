@@ -2,7 +2,7 @@
 Module=peasyluatest
 Loader=lua5.1
 Name=Peasy Lua Tester
-_Description=Tests whether peasy actually works with lua
+Description=Tests whether peasy actually works with lua
 Authors=Thomas Maritiz <kugel@rockbox.org>
 Copyright=Copyright © 2017 Thomas Martitz
 X-Peasy-API=228

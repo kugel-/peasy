@@ -2,18 +2,16 @@ extra-data           := quickswitchdata doxyhelperdata
 extra-gen            := desktop
 
 define desktop_rule
-$(OUTDIR)$(1): CMD = $(INTLTOOL_MERGE) $(if $(QQ),-q) -d -u -c \
-                     $(SRCDIR)po/.intltool-merge-cache \
-                     $(OUTDIR)po
+$(OUTDIR)$(1): CMD = $$(MSGFMT) --desktop -d $(src)po
 $(OUTDIR)$(1): $(SRCDIR)$(call getsrc,$(1))
 $(OUTDIR)$(1): $(OUTDIR)$(call getcmdfile,$(1))
 $(OUTDIR)$(1): $(addprefix $(SRCDIR),$(wildcard po/*.po))
 endef
 
 define desktop_recipe
-%.plugin: %.plugin.desktop.in
+%.plugin: %.plugin.desktop.in $(wildcard $(src)po/*.po)
 	$$(call printcmd,GEN,$$@)
-	$$(Q)$(INTLTOOL_V_MERGE)LC_ALL=C $$(CMD) $$< $$@
+	$$(Q)$$(CMD) --template $$< -o $$@
 endef
 
 .SUFFIXES: .plugin .plugin.desktop.in

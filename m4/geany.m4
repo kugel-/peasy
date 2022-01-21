@@ -2,7 +2,7 @@ AC_DEFUN([_GP_GEANY_LIBDIR],
 [
     AC_REQUIRE([PKG_PROG_PKG_CONFIG])
     AC_ARG_WITH([geany-plugindir],
-        AC_HELP_STRING([--with-geany-plugindir=PATH],
+        AS_HELP_STRING([--with-geany-plugindir=PATH],
             [Set plugin installation path [[default=auto]]]),
         [geanypluginsdir=${withval}],
         [geanypluginsdir=$(${PKG_CONFIG} --variable=libdir geany)/geany])

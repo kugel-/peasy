@@ -1,8 +1,8 @@
 [Plugin]
 Module=quickswitch
 Loader=python3
-_Name=Quick Tab Switch
-_Description=Adds a dialog that allows to quckly switch tabs.
+Name=Quick Tab Switch
+Description=Adds a dialog that allows to quckly switch tabs.
 Authors=Thomas Martitz <kugel@rockbox.org>
 Copyright=Copyright © 2016 Thomas Martitz
 X-Peasy-Requires=gtk3 >= 3.10
