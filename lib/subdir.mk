@@ -23,25 +23,34 @@ VALAFILES     += keygroup.vala
 VALAFILES     += tags.vala
 
 # Generate secondary outputs only once, not for all .vala files
-plugin.c-VALAFLAGS-y    := --disable-version-header -H $(objdir)peasy.h
-plugin.c-VALAFLAGS-y    += --library libpeasy --gir=$(objdir)Peasy-0.0.gir
-plugin.c-VALAFLAGS-y    += --vapi=$(objdir)libpeasy-0.1.vapi
+plugin.c-VALAFLAGS-y    := --disable-version-header -H lib/peasy.h
+plugin.c-VALAFLAGS-y    += --library libpeasy --gir=lib/Peasy-0.0.gir
+plugin.c-VALAFLAGS-y    += --vapi=lib/libpeasy-0.1.vapi
 
 vala-y                  := $(VALAFILES:.vala=.c)
 
-plugin.c-y              := $(VALAFILES)
+get_fast_vapi = $(addprefix $(srcdir),$(patsubst %.vala,%.vapi,$(filter-out $2,$1)))
+
+plugin.c-y              := plugin.vala
+plugin.c-FAST_VAPI-y    := $(call get_fast_vapi,$(VALAFILES),plugin.vala)
 plugin.c-DEPS-y         := api/geany-1.0.vapi api/geany-scintilla-1.0.vapi
-document.c-y            := $(VALAFILES)
+document.c-y            := document.vala
+document.c-FAST_VAPI-y  := $(call get_fast_vapi,$(VALAFILES),document.vala)
 document.c-DEPS-y       := api/geany-1.0.vapi api/geany-scintilla-1.0.vapi
-editor.c-y              := $(VALAFILES)
+editor.c-y              := editor.vala
+editor.c-FAST_VAPI-y    := $(call get_fast_vapi,$(VALAFILES),editor.vala)
 editor.c-DEPS-y         := api/geany-1.0.vapi api/geany-scintilla-1.0.vapi
-peasyobject.c-y         := $(VALAFILES)
+peasyobject.c-y         := peasyobject.vala
+peasyobject.c-FAST_VAPI-y := $(call get_fast_vapi,$(VALAFILES),peasyobject.vala)
 peasyobject.c-DEPS-y    := api/geany-1.0.vapi api/geany-scintilla-1.0.vapi
-filetype.c-y            := $(VALAFILES)
+filetype.c-y            := filetype.vala
+filetype.c-FAST_VAPI-y  := $(call get_fast_vapi,$(VALAFILES),filetype.vala)
 filetype.c-DEPS-y       := api/geany-1.0.vapi api/geany-scintilla-1.0.vapi
-keygroup.c-y            := $(VALAFILES)
+keygroup.c-y            := keygroup.vala
+keygroup.c-FAST_VAPI-y  := $(call get_fast_vapi,$(VALAFILES),keygroup.vala)
 keygroup.c-DEPS-y       := api/geany-1.0.vapi api/geany-scintilla-1.0.vapi
-tags.c-y                := $(VALAFILES)
+tags.c-y                := tags.vala
+tags.c-FAST_VAPI-y      := $(call get_fast_vapi,$(VALAFILES),tags.vala)
 tags.c-DEPS-y           := api/geany-1.0.vapi api/geany-scintilla-1.0.vapi
 
 byproduct-y             := peasy.h Peasy-0.0.gir libpeasy-0.1.vapi

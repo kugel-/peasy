@@ -1,0 +1,7 @@
+O = $(patsubst /%,%,$(subst $(abspath @abs_top_srcdir@),,$(CURDIR)))
+TARGET = $(or $(MAKECMDGOALS),all)
+
+.PHONY: $(TARGET)
+
+$(TARGET):
+	$(MAKE) -C @top_srcdir@ -f Makefile.kmake O=$(O) V=$(V) $@

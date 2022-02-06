@@ -8,7 +8,8 @@ $(OUTDIR)$(1): VAPIGEN_METADATADIRS = $(call getvar,$(1),VAPIGEN_METADATADIRS)
 $(OUTDIR)$(1): VAPIGEN_VAPIDIRS = $(call getvar,$(1),VAPIGEN_VAPIDIRS)
 $(OUTDIR)$(1): VAPIGEN_GIRDIRS = $(call getvar,$(1),VAPIGEN_GIRDIRS)
 $(OUTDIR)$(1): VAPIGEN_DEPS = $(call getvar,$(1),VAPIGEN_DEPS)
-$(OUTDIR)$(1): CMD = $$(addprefix --metadatadirs=,$$(VAPIGEN_METADATADIRS)) \
+$(OUTDIR)$(1): CMD =  $(addprefix --directory=,$(OUTDIR)) \
+                     $$(addprefix --metadatadir=,$$(VAPIGEN_METADATADIRS)) \
                      $$(addprefix --vapidir=,$$(VAPIGEN_VAPIDIRS)) \
                      $$(addprefix --girdir=,$$(VAPIGEN_GIRDIRS)) \
                      $$(addprefix --pkg=,$$(VAPIGEN_DEPS)) \
@@ -20,7 +21,6 @@ endef
 define vapigen_recipe
 $(addprefix $(OUTDIR),$(1)):
 	$$(call printcmd,VAPIGEN,$$@)
-	$$(Q)$$(VAPIGEN) $$(CMD) $$(call getsrc,$$@)
+	$$(Q)$$(VAPIGEN) $$(CMD) $$(filter-out %.cmd,$$^)
 	$$(QQ)touch $$@
 endef
-

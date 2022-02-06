@@ -9,7 +9,7 @@ $(OUTDIR)$(1): $(addprefix $(SRCDIR),$(wildcard po/*.po))
 endef
 
 define desktop_recipe
-%.plugin: %.plugin.desktop.in $(wildcard $(src)po/*.po)
+$(OUTDIR)%.plugin: $(SRCDIR)%.plugin.desktop.in $(wildcard $(src)po/*.po)
 	$$(call printcmd,GEN,$$@)
 	$$(Q)$$(CMD) --template $$< -o $$@
 endef

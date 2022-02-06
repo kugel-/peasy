@@ -1,29 +1,32 @@
 extra-gen   += vala
-extra-flags += VALAFLAGS
+extra-flags += VALAFLAGS FAST_VAPI
 
 define vala_rule
-cleanfiles += $(1:.c=.vapi)
-$(1)_fapis = $(patsubst %.vala,%.vapi,$(filter %.vala,$(filter-out $(1:.c=.vala),$(call getsrc,$(1)))))
+cleanfiles += $(addprefix $(OUTDIR),$(1:.c=.vapi))
 
-$(OUTDIR)$(1): FAST_VAPIS = $$($(1)_fapis)
+$(OUTDIR)$(1): FAPI = $(addprefix $(OUTDIR),$(call getvar,$(1),FAST_VAPI))
 $(OUTDIR)$(1): VALAFLAGS = $(call getvar,$(1),VALAFLAGS)
-$(OUTDIR)$(1): VAPI_DEPS = $(filter %.vapi,$(call getsrc,$(1)))
-$(OUTDIR)$(1): CMD = $$(VALAFLAGS)
-$(OUTDIR)$(1): $(filter $(1:.c=.vala),$(call getsrc,$(1)))
-$(OUTDIR)$(1): $$($(1)_fapis) $(filter %.vapi,$(call getsrc,$(1)))
+$(OUTDIR)$(1): CMD = $(addprefix --directory=,$(OUTDIR)) $$(VALAFLAGS)
+$(OUTDIR)$(1): $(call getsrc,$(1))
+$(OUTDIR)$(1): $(addprefix $(OUTDIR),$(call getvar,$(1),FAST_VAPI))
+$(OUTDIR)$(1): $(filter %.vapi,$(call getsrc,$(1)))
 $(OUTDIR)$(1): $(OUTDIR)$(call getcmdfile,$(1))
 endef
 
 define vala_recipe
 # an extra recipe to generate "fast vapi" files for --use-fast-vapi
-%.vapi: %.vala
+$(OUTDIR)%.vapi: %.vala
 	$$(call printcmd,GEN,$$@)
+	$$(AT)mkdir -p $$(@D)
 	$$(Q)$(VALAC) --fast-vapi=$$@ $$<
 	$$(AT)touch $$@
 
-%.c: %.vala
+$(addprefix $(OUTDIR),$(1)):
 	$$(call printcmd,VALAC,$$@)
-	$$(Q)$$(VALAC) $$(CMD) -C $$(filter %.vala,$$^) $$(addprefix --use-fast-vapi=$(OUTDIR),$$(FAST_VAPIS)) $$(VAPI_DEPS)
+	$$(AT)mkdir -p $$(@D)
+	$$(Q)$$(VALAC) $$(CMD) -C $$(filter %.vala,$$^) \
+		$$(addprefix --use-fast-vapi=,$$(filter $$(FAPI),$$^)) \
+		$$(filter-out $$(FAPI),$$(filter %.vapi,$$^))
 	$$(AT)touch $$@
 endef
 

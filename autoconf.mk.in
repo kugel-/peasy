@@ -31,15 +31,19 @@ datarootdir=@datarootdir@
 datadir=@datadir@
 sysconfdir=@sysconfdir@
 pyoverridesdir=@pyoverridesdir@
+localedir=@localedir@
 
+abs_builddir=@abs_builddir@
 builddir=@builddir@
 srcdir=@srcdir@
 
 CC=@CC@
 VALAC=@VALAC@
-LIBTOOL=$(SHELL) $(builddir)/libtool
+LIBTOOL=$(SHELL) $(abs_builddir)/libtool
 
 GP_GTK_VERSION_MAJOR=@GP_GTK_VERSION_MAJOR@
+GP_GLIB_PACKAGE=@GP_GLIB_PACKAGE@
+GP_GTK_PACKAGE=@GP_GTK_PACKAGE@
 GTK_CFLAGS=@GTK_CFLAGS@
 GTK_LIBS=@GTK_LIBS@
 PEAS_CFLAGS=@PEAS_CFLAGS@
@@ -57,6 +61,6 @@ GEANY_INCLUDEDIR=@GEANY_INCLUDEDIR@
 GEANY_LIBDIR=@GEANY_LIBDIR@
 GEANY_DATADIR=@GEANY_DATADIR@
 
-KM_CPPFLAGS=@DEFS@ @CPPFLAGS@
+KM_CPPFLAGS=@DEFS@ @CPPFLAGS@ -I@abs_builddir@ -DLOCALEDIR=\"$(localedir)@\"
 KM_CFLAGS=@CFLAGS@
 KM_LDFLAGS=@LDFLAGS@

@@ -28,7 +28,8 @@
 /aclocal.m4
 /autom4te.cache
 /autoconf.mk
-/build-aux/
+/build/
+/build-*/
 /build-stamp
 /config.guess
 /config.h
@@ -42,6 +43,7 @@
 /stamp-h1
 /stamp-h.in
 /libtool
+/Makefile
 
 #-----------------------------------------------------------------------
 # /m4/

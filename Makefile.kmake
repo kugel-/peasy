@@ -1,4 +1,4 @@
-include autoconf.mk
+include $(or $(O),.)/autoconf.mk
 include initvars.mk
 
 include gen-vala.mk
@@ -8,8 +8,6 @@ include kmake/gen-sed.mk
 include kmake/gen-cat.mk
 
 export INTROSPECTION_SCANNER
-
-KM_CPPFLAGS += -I.
 
 extra-libs              = plugins
 plugins-dir             = $(plugindir)
@@ -24,7 +22,7 @@ dist-y                 := AUTHORS COPYING ChangeLog INSTALL NEWS README.md
 dist-y                 += autoconf.mk.in autogen.sh configure.ac
 dist-y                 += gen-gir.mk gen-vala.mk gen-vapigen.mk initvars.mk
 dist-y                 += m4/geany.m4 m4/gtk.m4 m4/mingw.m4 m4/vapigen.m4
-dist-y                 += Makefile
+dist-y                 += Makefile.in Makefile.kmake
 
 # Generated files
 dist-y                 += configure

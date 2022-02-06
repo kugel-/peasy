@@ -8,8 +8,10 @@ GIR_SCANFLAGS-y                  += --external-library
 GIR_LIB-y                        := geany
 GIR_CFLAGS-y                     := $(GTK_CFLAGS) -DG_IR_SCANNING $(GEANY_CFLAGS)
 
+VAPIGEN_DEPS-y                   := gio-2.0 gtk+-3.0
 VAPIGEN_GIRDIRS-y                := $(objdir)
 VAPIGEN_VAPIDIRS-y               := $(objdir)
+VAPIGEN_METADATADIRS-y           := $(srcdir)
 INTROSPECTION_COMPILER_ARGS-y    := --includedir $(objdir)
 
 sed-y                            := geany-sciwrappers-gtkdoc-tmp.h geany-gtkdoc-tmp.h
@@ -76,6 +78,16 @@ pyoverrides-dir                      := $(peasylibdir)/python/gi/overrides
 vapigen-y                            := geany-1.0.vapi geany-scintilla-tmp-1.0.vapi
 geany-1.0.vapi-y                     := Geany-1.0.gir Geany-1.0-custom.vala
 geany-scintilla-tmp-1.0.vapi-y       := GeanyScintilla-1.0.gir
+
+sed-y                                += geany-1.0.deps geany-scintilla-tmp-1.0.deps
+
+geany-1.0.deps-y                     := geany-1.0.deps.in
+geany-1.0.deps-SED_SCRIPT-y          := s,@GP_GLIB_PACKAGE@,$(GP_GLIB_PACKAGE),
+geany-1.0.deps-SED_SCRIPT-y          += s,@GP_GTK_PACKAGE@,$(GP_GTK_PACKAGE),
+
+geany-scintilla-tmp-1.0.deps-y       := geany-scintilla-tmp-1.0.deps.in
+geany-scintilla-tmp-1.0.deps-SED_SCRIPT-y := s,@GP_GLIB_PACKAGE@,$(GP_GLIB_PACKAGE),
+geany-scintilla-tmp-1.0.deps-SED_SCRIPT-y += s,@GP_GTK_PACKAGE@,$(GP_GTK_PACKAGE),
 
 cat-y                                := geany-scintilla-1.0.deps geany-scintilla-1.0.vapi
 

@@ -31,7 +31,7 @@ $(OUTDIR)$(1): $(OUTDIR)$(call getcmdfile,$(1))
 endef
 
 define gir_recipe
-$(1):
+$(addprefix $(OUTDIR),$(1)):
 	$$(call printcmd,GISCAN,$$@)
 	$$(Q)LDFLAGS="$$(GEANY_LIBS)" CC=gcc \
 		$(INTROSPECTION_SCANNER) $(if $(Q),--quiet) $$(CMD) $$^ --output $$@

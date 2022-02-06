@@ -59,7 +59,6 @@ AM_PATH_PYTHON([2.7])
 
 AC_CONFIG_FILES([
 	autoconf.mk
-	api/geany-1.0.deps
-	api/geany-scintilla-tmp-1.0.deps
+	Makefile
 	po/Makefile.in])
 AC_OUTPUT
