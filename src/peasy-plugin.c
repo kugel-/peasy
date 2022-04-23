@@ -264,7 +264,7 @@ check_key_present(PeasPluginInfo *info, const gchar *key)
 static gint
 peasy_probe(GeanyPlugin *plugin, const gchar *filename, gpointer pdata)
 {
-    gint ret = PROXY_IGNORED;
+    gint ret = GEANY_PROXY_IGNORE;
     PeasEngine *peas = (PeasEngine *) pdata;
     gchar *modname = get_mod_name(filename);
     gchar *dirname = g_path_get_dirname(filename);
@@ -304,13 +304,13 @@ peasy_probe(GeanyPlugin *plugin, const gchar *filename, gpointer pdata)
          * The actual API compatibility test is performed by Geany
          * (along with an ABI check for native plugins).
          * */
-        ret = PROXY_MATCHED;
+        ret = GEANY_PROXY_MATCH;
         if (!g_strrstr(filename, ".plugin"))
-            ret |= PROXY_NOLOAD;
+            ret |= GEANY_PROXY_RELATED;
         else if (!check_compatibility(info))
-            ret |= PROXY_NOLOAD;
+            ret |= GEANY_PROXY_RELATED;
         else if (!check_key_present(info, "X-Peasy-API"))
-            ret |= PROXY_NOLOAD;
+            ret |= GEANY_PROXY_RELATED;
     }
     g_free(modname);
 
