@@ -2,7 +2,7 @@ dnl Process this file with autoconf to produce a configure script.
 
 AC_PREREQ([2.60])
 
-AC_INIT([peasy],[0.12],[kugel@rockbox.org])
+AC_INIT([peasy],[0.13],[kugel@rockbox.org])
 AC_CONFIG_AUX_DIR([build-aux])
 AC_CONFIG_SRCDIR([src/peasy-plugin.c])
 AC_CONFIG_MACRO_DIR([m4])
